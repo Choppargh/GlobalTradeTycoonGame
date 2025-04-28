@@ -18,9 +18,9 @@ export default function GamePage() {
       {/* Game Header with stats */}
       <GameHeader />
       
-      {/* Main Game Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Left Column - Map and Travel */}
+      {/* Main Game Grid - On smaller screens everything stacks */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* Left Column - Map and Travel (takes 1/4 on larger screens) */}
         <div className="space-y-4 col-span-1">
           {/* World Map */}
           <LocationMap currentLocation={currentLocation} />
@@ -29,13 +29,20 @@ export default function GamePage() {
           <TravelOptions />
         </div>
         
-        {/* Right Column - Market and Inventory */}
-        <div className="col-span-1 md:col-span-2 space-y-4">
-          {/* Product Market */}
-          <ProductMarket />
-          
-          {/* Inventory */}
-          <Inventory />
+        {/* Right Columns for Market and Inventory */}
+        <div className="col-span-1 md:col-span-3">
+          {/* Nested Grid for Market and Inventory (side by side on large screens) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Product Market */}
+            <div className="col-span-1">
+              <ProductMarket />
+            </div>
+            
+            {/* Inventory */}
+            <div className="col-span-1">
+              <Inventory />
+            </div>
+          </div>
         </div>
       </div>
       
