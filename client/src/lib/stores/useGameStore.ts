@@ -151,6 +151,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       alert(challengeMessage);
     }
     
+    // Set new game state
     set({
       currentLocation: destination,
       daysRemaining: state.daysRemaining - 1,
@@ -159,6 +160,13 @@ export const useGameStore = create<GameState>((set, get) => ({
       cash: updatedCash,
       inventory: updatedInventory
     });
+    
+    // Higher chance for random events after travel (25% chance)
+    if (Math.random() < 0.25) {
+      setTimeout(() => {
+        get().triggerRandomEvent();
+      }, 1500); // Small delay after travel
+    }
   },
   
   buyProduct: (productId, quantity, price) => {
