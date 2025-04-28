@@ -19,7 +19,8 @@ export default function GamePage() {
       <GameHeader />
       
       {/* Main Game Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Left Column - Map and Travel */}
         <div className="space-y-4 col-span-1">
           {/* World Map */}
           <LocationMap currentLocation={currentLocation} />
@@ -28,7 +29,8 @@ export default function GamePage() {
           <TravelOptions />
         </div>
         
-        <div className="col-span-1 lg:col-span-2 space-y-4">
+        {/* Right Column - Market and Inventory */}
+        <div className="col-span-1 md:col-span-2 space-y-4">
           {/* Product Market */}
           <ProductMarket />
           
