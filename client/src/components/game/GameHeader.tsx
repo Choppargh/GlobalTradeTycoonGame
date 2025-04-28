@@ -31,9 +31,15 @@ export function GameHeader() {
     <div className="bg-card shadow p-4 rounded-lg">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
-          <div>
-            <div className="text-sm font-medium text-muted-foreground">Trader</div>
-            <div className="text-xl font-bold">{username}</div>
+          <div className="flex space-x-2">
+            <div>
+              <div className="text-sm font-medium text-muted-foreground">Trader</div>
+              <div className="text-xl font-bold">{username}</div>
+            </div>
+            <div className="border-l pl-2">
+              <div className="text-sm font-medium text-muted-foreground">Location</div>
+              <div className="text-xl font-bold">{currentLocation}</div>
+            </div>
           </div>
           
           <div>
