@@ -1,4 +1,4 @@
-import { Location, ProductListing, PRODUCTS } from "@shared/schema";
+import { Location, ProductListing, PRODUCTS, InventoryItem } from "@shared/schema";
 
 // Base price ranges for products (min, max)
 const PRODUCT_PRICE_RANGES: Record<number, [number, number]> = {
@@ -137,4 +137,189 @@ export function calculateNetWorth(cash: number, bankBalance: number, inventory: 
   );
   
   return cash + bankBalance + inventoryValue - loanAmount;
+}
+
+// Random events system
+export type GameEvent = {
+  id: string;
+  title: string;
+  description: string;
+  type: 'price_change' | 'inventory_boost' | 'cash_bonus' | 'market_crash' | 'market_boom';
+  affectedProducts?: number[];  // Product IDs affected
+  modifier?: number;  // Price multiplier or quantity modifier
+  cashAmount?: number; // For cash bonus events
+  location?: Location; // If the event is location-specific
+}
+
+// Define possible random events
+export const GAME_EVENTS: GameEvent[] = [
+  {
+    id: 'coffee_shortage',
+    title: 'Coffee Shortage',
+    description: 'A drought in major coffee-producing regions has caused coffee prices to soar worldwide!',
+    type: 'price_change',
+    affectedProducts: [1], // Coffee
+    modifier: 1.5 // 50% price increase
+  },
+  {
+    id: 'tea_surplus',
+    title: 'Tea Surplus',
+    description: 'Exceptional harvest conditions have led to a glut of tea supply, driving prices down.',
+    type: 'price_change',
+    affectedProducts: [2], // Tea
+    modifier: 0.7 // 30% price decrease
+  },
+  {
+    id: 'oil_crisis',
+    title: 'Oil Crisis',
+    description: 'Political tensions have disrupted oil supply chains, causing a dramatic price spike!',
+    type: 'price_change',
+    affectedProducts: [10], // Oil
+    modifier: 1.8 // 80% price increase
+  },
+  {
+    id: 'tech_innovation',
+    title: 'Technology Breakthrough',
+    description: 'A new manufacturing process has made electronics cheaper to produce.',
+    type: 'price_change',
+    affectedProducts: [15], // Electronics
+    modifier: 0.6 // 40% price decrease
+  },
+  {
+    id: 'precious_metals_boom',
+    title: 'Precious Metals Boom',
+    description: 'Investor panic has caused a run on precious metals!',
+    type: 'price_change',
+    affectedProducts: [4, 5], // Gold, Silver
+    modifier: 1.4 // 40% price increase
+  },
+  {
+    id: 'agriculture_subsidy',
+    title: 'Agricultural Subsidies',
+    description: 'Government subsidies have temporarily lowered prices on agricultural goods.',
+    type: 'price_change',
+    affectedProducts: [12, 13, 14], // Corn, Wheat, Rice
+    modifier: 0.75 // 25% price decrease
+  },
+  {
+    id: 'diamond_discovery',
+    title: 'Major Diamond Discovery',
+    description: 'A significant new diamond deposit has been discovered, increasing global supply.',
+    type: 'price_change',
+    affectedProducts: [6], // Diamonds
+    modifier: 0.8 // 20% price decrease
+  },
+  {
+    id: 'shipping_disruption',
+    title: 'Shipping Disruption',
+    description: 'A major shipping lane is blocked, causing price increases across multiple goods.',
+    type: 'price_change',
+    affectedProducts: [1, 3, 7, 8, 15], // Coffee, Spices, Silk, Cotton, Electronics
+    modifier: 1.3 // 30% price increase
+  },
+  {
+    id: 'market_crash',
+    title: 'Market Crash',
+    description: 'A sudden financial panic has caused markets to crash! All prices have dropped significantly.',
+    type: 'market_crash',
+    modifier: 0.6 // 40% decrease on all products
+  },
+  {
+    id: 'market_boom',
+    title: 'Market Boom',
+    description: 'Optimistic economic forecasts have driven up prices across all markets!',
+    type: 'market_boom',
+    modifier: 1.35 // 35% increase on all products
+  },
+  {
+    id: 'inventory_windfall',
+    title: 'Unexpected Inventory',
+    description: 'You found additional inventory you didn\'t know you had!',
+    type: 'inventory_boost',
+    modifier: 1.2 // 20% increase in all inventory quantities
+  },
+  {
+    id: 'cash_finding',
+    title: 'Found Money',
+    description: 'You found a hidden envelope with cash inside!',
+    type: 'cash_bonus',
+    cashAmount: 500 // $500 bonus
+  },
+  {
+    id: 'asia_textile_boom',
+    title: 'Asian Textile Boom',
+    description: 'High demand for textiles in Asia has driven up silk and cotton prices.',
+    type: 'price_change',
+    affectedProducts: [7, 8], // Silk, Cotton
+    modifier: 1.4, // 40% price increase
+    location: Location.Asia
+  },
+  {
+    id: 'europe_energy_crisis',
+    title: 'European Energy Crisis',
+    description: 'An energy shortage in Europe has caused gas prices to skyrocket.',
+    type: 'price_change',
+    affectedProducts: [11], // Gas
+    modifier: 1.7, // 70% price increase
+    location: Location.Europe
+  }
+];
+
+// Generate a random event
+export function generateRandomEvent(currentLocation: Location): GameEvent | null {
+  // 10% chance of a random event happening
+  if (Math.random() > 0.1) return null;
+  
+  // Filter events by location if needed
+  const eligibleEvents = GAME_EVENTS.filter(event => !event.location || event.location === currentLocation);
+  
+  // Choose a random event
+  const randomIndex = Math.floor(Math.random() * eligibleEvents.length);
+  return eligibleEvents[randomIndex];
+}
+
+// Apply a random event to market listings
+export function applyEventToMarket(event: GameEvent, marketListings: ProductListing[]): ProductListing[] {
+  let updatedListings = [...marketListings];
+  
+  switch (event.type) {
+    case 'price_change':
+      if (event.affectedProducts && event.modifier) {
+        updatedListings = updatedListings.map(listing => {
+          if (event.affectedProducts?.includes(listing.productId)) {
+            return {
+              ...listing,
+              marketPrice: Math.round(listing.marketPrice * event.modifier! * 100) / 100
+            };
+          }
+          return listing;
+        });
+      }
+      break;
+      
+    case 'market_crash':
+    case 'market_boom':
+      if (event.modifier) {
+        updatedListings = updatedListings.map(listing => ({
+          ...listing,
+          marketPrice: Math.round(listing.marketPrice * event.modifier! * 100) / 100
+        }));
+      }
+      break;
+      
+    default:
+      break;
+  }
+  
+  return updatedListings;
+}
+
+// Apply inventory boost event
+export function applyEventToInventory(event: GameEvent, inventory: InventoryItem[]): InventoryItem[] {
+  if (event.type !== 'inventory_boost' || !event.modifier) return inventory;
+  
+  return inventory.map(item => ({
+    ...item,
+    quantity: Math.ceil(item.quantity * event.modifier!)
+  }));
 }
