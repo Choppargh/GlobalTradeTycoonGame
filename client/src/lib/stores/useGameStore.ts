@@ -1,7 +1,13 @@
 import { create } from "zustand";
 import { Location, PRODUCTS, ProductListing, InventoryItem, PRODUCT_NAMES } from "@shared/schema";
 import { apiRequest } from "../queryClient";
-import { generateMarketListings } from "../gameLogic";
+import { 
+  generateMarketListings, 
+  generateRandomEvent, 
+  applyEventToMarket, 
+  applyEventToInventory, 
+  GameEvent 
+} from "../gameLogic";
 
 interface GameState {
   // Player state
@@ -16,6 +22,11 @@ interface GameState {
   
   // Game phase
   gamePhase: 'intro' | 'playing' | 'game-over';
+  
+  // Random events
+  currentEvent: GameEvent | null;
+  triggerRandomEvent: () => void;
+  clearCurrentEvent: () => void;
   
   // Game actions
   setUsername: (username: string) => void;
@@ -45,6 +56,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   gamePhase: 'intro',
   isBankModalOpen: false,
+  currentEvent: null,
   
   setUsername: (username) => {
     set({ username });
@@ -339,5 +351,50 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   setBankModalOpen: (isOpen) => {
     set({ isBankModalOpen: isOpen });
+  },
+  
+  // Random event handlers
+  triggerRandomEvent: () => {
+    const state = get();
+    if (!state.currentLocation) return;
+    
+    // Generate a random event based on current location
+    const event = generateRandomEvent(state.currentLocation);
+    if (!event) return; // No event generated
+    
+    let updatedMarketListings = [...state.marketListings];
+    let updatedInventory = [...state.inventory];
+    let updatedCash = state.cash;
+    
+    // Apply event effects
+    switch (event.type) {
+      case 'price_change':
+      case 'market_crash':
+      case 'market_boom':
+        updatedMarketListings = applyEventToMarket(event, state.marketListings);
+        break;
+        
+      case 'inventory_boost':
+        updatedInventory = applyEventToInventory(event, state.inventory);
+        break;
+        
+      case 'cash_bonus':
+        if (event.cashAmount) {
+          updatedCash = state.cash + event.cashAmount;
+        }
+        break;
+    }
+    
+    // Update the state with event effects and the current event
+    set({
+      currentEvent: event,
+      marketListings: updatedMarketListings,
+      inventory: updatedInventory,
+      cash: updatedCash
+    });
+  },
+  
+  clearCurrentEvent: () => {
+    set({ currentEvent: null });
   }
 }));
