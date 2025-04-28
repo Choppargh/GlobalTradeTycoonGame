@@ -41,7 +41,7 @@ export function LocationMap({ currentLocation, onSelect, interactive = false }: 
       <CardContent className="p-0 relative">
         <div 
           className="relative w-full h-[250px] bg-cover bg-center"
-          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20)' }}
+          style={{ backgroundImage: 'url(/images/world-map.svg)' }}
         >
           {/* Location points */}
           {locationPoints.map((point) => (
