@@ -85,7 +85,7 @@ export function TravelOptions() {
       </Card>
       
       <Dialog open={showTravelDialog} onOpenChange={setShowTravelDialog}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] bg-white">
           <DialogHeader>
             <DialogTitle>Select Destination</DialogTitle>
             <DialogDescription>
