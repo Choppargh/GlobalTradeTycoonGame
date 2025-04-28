@@ -21,11 +21,14 @@ import { LocationMap } from './LocationMap';
 import { ArrowRightIcon, PlaneIcon } from 'lucide-react';
 
 export function TravelOptions() {
-  const { currentLocation, travel, daysRemaining, loanAmount } = useGameStore();
+  const { currentLocation, travel, daysRemaining, loanAmount, inventory, cash } = useGameStore();
   // Ensure currentLocation is treated as Location and not null
   if (!currentLocation) return null;
   const [showTravelDialog, setShowTravelDialog] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState<Location | null>(null);
+  // For game challenges
+  const [showChallengeResult, setShowChallengeResult] = useState(false);
+  const [challengeMessage, setChallengeMessage] = useState("");
   
   const handleTravelSelect = (location: Location) => {
     setSelectedDestination(location);
@@ -82,6 +85,9 @@ export function TravelOptions() {
             <p>• Each journey takes 1 day</p>
             <p>• Your loan of {formatCurrency(loanAmount)} will increase by 5% upon travel</p>
             <p>• Days remaining: {daysRemaining}</p>
+            <p className="mt-2 text-amber-600 font-medium">Travel Risks:</p>
+            <p className="text-amber-600">• 1% chance of losing up to 75% of your cash</p>
+            <p className="text-amber-600">• 0.5% chance of losing up to 80% of your inventory</p>
           </div>
         </CardContent>
       </Card>
@@ -91,7 +97,8 @@ export function TravelOptions() {
           <DialogHeader>
             <DialogTitle>Select Destination</DialogTitle>
             <DialogDescription>
-              Choose where to travel next. Each journey costs 1 day and increases your loan by 5%.
+              Choose where to travel next. Each journey costs 1 day and increases your loan by 5%. 
+              Travel involves risks such as theft and fire which could result in loss of cash or inventory.
             </DialogDescription>
           </DialogHeader>
           
