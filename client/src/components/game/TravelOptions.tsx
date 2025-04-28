@@ -22,6 +22,8 @@ import { ArrowRightIcon, PlaneIcon } from 'lucide-react';
 
 export function TravelOptions() {
   const { currentLocation, travel, daysRemaining, loanAmount } = useGameStore();
+  // Ensure currentLocation is treated as Location and not null
+  if (!currentLocation) return null;
   const [showTravelDialog, setShowTravelDialog] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState<Location | null>(null);
   
