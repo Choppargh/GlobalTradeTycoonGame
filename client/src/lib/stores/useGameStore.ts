@@ -94,6 +94,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Apply loan interest (5%)
     const newLoanAmount = Math.round(state.loanAmount * 1.05);
     
+    // Apply bank interest (3% per day)
+    const newBankBalance = Math.round(state.bankBalance * 1.03);
+    
     // Generate new market listings for the destination
     const newMarketListings = generateMarketListings(destination);
     
@@ -156,17 +159,16 @@ export const useGameStore = create<GameState>((set, get) => ({
       currentLocation: destination,
       daysRemaining: state.daysRemaining - 1,
       loanAmount: newLoanAmount,
+      bankBalance: newBankBalance,
       marketListings: newMarketListings,
       cash: updatedCash,
       inventory: updatedInventory
     });
     
-    // Higher chance for random events after travel (25% chance)
-    if (Math.random() < 0.25) {
-      setTimeout(() => {
-        get().triggerRandomEvent();
-      }, 1500); // Small delay after travel
-    }
+    // Always trigger a market event after travel
+    setTimeout(() => {
+      get().triggerRandomEvent();
+    }, 1000); // Short delay after travel
   },
   
   buyProduct: (productId, quantity, price) => {
@@ -319,13 +321,17 @@ export const useGameStore = create<GameState>((set, get) => ({
     const state = get();
     if (!state.username) return;
     
+    // For net worth calculation (for display)
     const inventoryValue = state.inventory.reduce(
       (total, item) => total + (item.quantity * item.purchasePrice),
       0
     );
     
+    // Net worth includes everything
     const netWorth = state.cash + state.bankBalance + inventoryValue - state.loanAmount;
-    const score = Math.max(0, Math.round(netWorth));
+    
+    // Score is based ONLY on banked cash
+    const score = Math.max(0, Math.round(state.bankBalance));
     
     try {
       // Submit score to leaderboard
