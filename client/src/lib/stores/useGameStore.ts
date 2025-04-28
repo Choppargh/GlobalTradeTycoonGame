@@ -1,0 +1,287 @@
+import { create } from "zustand";
+import { Location, PRODUCTS, ProductListing, InventoryItem, PRODUCT_NAMES } from "@shared/schema";
+import { apiRequest } from "../queryClient";
+import { generateMarketListings } from "../gameLogic";
+
+interface GameState {
+  // Player state
+  username: string | null;
+  currentLocation: Location | null;
+  cash: number;
+  bankBalance: number;
+  loanAmount: number;
+  daysRemaining: number;
+  inventory: InventoryItem[];
+  marketListings: ProductListing[];
+  
+  // Game phase
+  gamePhase: 'intro' | 'playing' | 'game-over';
+  
+  // Game actions
+  setUsername: (username: string) => void;
+  startGame: () => void;
+  travel: (destination: Location) => void;
+  buyProduct: (productId: number, quantity: number, price: number) => void;
+  sellProduct: (productId: number, quantity: number, price: number) => void;
+  handleBankAction: (action: 'deposit' | 'withdraw' | 'loan' | 'repay', amount: number) => void;
+  endGame: () => Promise<void>;
+  restartGame: () => void;
+  
+  // UI states
+  isBankModalOpen: boolean;
+  setBankModalOpen: (isOpen: boolean) => void;
+}
+
+export const useGameStore = create<GameState>((set, get) => ({
+  // Initial game state
+  username: null,
+  currentLocation: null,
+  cash: 0,
+  bankBalance: 0,
+  loanAmount: 2000, // Start with $2k loan
+  daysRemaining: 31,
+  inventory: [],
+  marketListings: [],
+  
+  gamePhase: 'intro',
+  isBankModalOpen: false,
+  
+  setUsername: (username) => {
+    set({ username });
+  },
+  
+  startGame: () => {
+    // Pick random location
+    const locations = Object.values(Location);
+    const randomIndex = Math.floor(Math.random() * locations.length);
+    const startLocation = locations[randomIndex];
+    
+    // Create initial market listings for this location
+    const marketListings = generateMarketListings(startLocation);
+    
+    set({
+      currentLocation: startLocation,
+      cash: 2000, // Start with $2k cash from initial loan
+      bankBalance: 0,
+      loanAmount: 2000,
+      daysRemaining: 31,
+      inventory: [],
+      marketListings,
+      gamePhase: 'playing'
+    });
+  },
+  
+  travel: (destination) => {
+    const state = get();
+    
+    if (state.daysRemaining <= 1) {
+      get().endGame();
+      return;
+    }
+    
+    // Apply loan interest (5%)
+    const newLoanAmount = Math.round(state.loanAmount * 1.05);
+    
+    // Generate new market listings for the destination
+    const newMarketListings = generateMarketListings(destination);
+    
+    set({
+      currentLocation: destination,
+      daysRemaining: state.daysRemaining - 1,
+      loanAmount: newLoanAmount,
+      marketListings: newMarketListings
+    });
+  },
+  
+  buyProduct: (productId, quantity, price) => {
+    const state = get();
+    const totalCost = quantity * price;
+    
+    if (state.cash < totalCost) {
+      alert("Not enough cash to complete this purchase!");
+      return;
+    }
+    
+    // Find the product in market listings
+    const productListing = state.marketListings.find(p => p.productId === productId);
+    if (!productListing || productListing.available < quantity) {
+      alert("Not enough quantity available!");
+      return;
+    }
+    
+    // Update inventory
+    const existingItem = state.inventory.find(item => item.productId === productId);
+    let newInventory;
+    
+    if (existingItem) {
+      // Update existing inventory item
+      const newQuantity = existingItem.quantity + quantity;
+      const newAvgPrice = ((existingItem.quantity * existingItem.purchasePrice) + (quantity * price)) / newQuantity;
+      
+      newInventory = state.inventory.map(item => 
+        item.productId === productId 
+          ? { ...item, quantity: newQuantity, purchasePrice: newAvgPrice } 
+          : item
+      );
+    } else {
+      // Add new inventory item
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+      
+      newInventory = [
+        ...state.inventory,
+        {
+          productId,
+          name: product.name,
+          quantity,
+          purchasePrice: price
+        }
+      ];
+    }
+    
+    // Update market listings
+    const newMarketListings = state.marketListings.map(listing => 
+      listing.productId === productId 
+        ? { ...listing, available: listing.available - quantity } 
+        : listing
+    );
+    
+    set({
+      cash: state.cash - totalCost,
+      inventory: newInventory,
+      marketListings: newMarketListings
+    });
+  },
+  
+  sellProduct: (productId, quantity, price) => {
+    const state = get();
+    
+    // Find the product in inventory
+    const inventoryItem = state.inventory.find(item => item.productId === productId);
+    if (!inventoryItem || inventoryItem.quantity < quantity) {
+      alert("Not enough quantity in inventory!");
+      return;
+    }
+    
+    const totalRevenue = quantity * price;
+    
+    // Update inventory
+    let newInventory;
+    if (inventoryItem.quantity === quantity) {
+      // Remove item if selling all
+      newInventory = state.inventory.filter(item => item.productId !== productId);
+    } else {
+      // Update quantity if selling partial
+      newInventory = state.inventory.map(item => 
+        item.productId === productId 
+          ? { ...item, quantity: item.quantity - quantity } 
+          : item
+      );
+    }
+    
+    set({
+      cash: state.cash + totalRevenue,
+      inventory: newInventory
+    });
+  },
+  
+  handleBankAction: (action, amount) => {
+    const state = get();
+    
+    switch (action) {
+      case 'deposit': 
+        if (amount > state.cash) {
+          alert("You don't have enough cash to deposit this amount.");
+          return;
+        }
+        set({
+          cash: state.cash - amount,
+          bankBalance: state.bankBalance + amount
+        });
+        break;
+        
+      case 'withdraw':
+        if (amount > state.bankBalance) {
+          alert("You don't have enough balance to withdraw this amount.");
+          return;
+        }
+        set({
+          cash: state.cash + amount,
+          bankBalance: state.bankBalance - amount
+        });
+        break;
+        
+      case 'loan':
+        if (state.loanAmount + amount > 10000) {
+          alert("Your total loan cannot exceed $10,000.");
+          return;
+        }
+        set({
+          cash: state.cash + amount,
+          loanAmount: state.loanAmount + amount
+        });
+        break;
+        
+      case 'repay':
+        if (amount > state.cash) {
+          alert("You don't have enough cash to repay this amount.");
+          return;
+        }
+        if (amount > state.loanAmount) {
+          alert("You can't repay more than you owe.");
+          return;
+        }
+        set({
+          cash: state.cash - amount,
+          loanAmount: state.loanAmount - amount
+        });
+        break;
+    }
+  },
+  
+  endGame: async () => {
+    const state = get();
+    if (!state.username) return;
+    
+    const inventoryValue = state.inventory.reduce(
+      (total, item) => total + (item.quantity * item.purchasePrice),
+      0
+    );
+    
+    const netWorth = state.cash + state.bankBalance + inventoryValue - state.loanAmount;
+    const score = Math.max(0, Math.round(netWorth));
+    
+    try {
+      // Submit score to leaderboard
+      await apiRequest('POST', '/api/scores', {
+        username: state.username,
+        score,
+        days: 31 - state.daysRemaining,
+        endNetWorth: netWorth
+      });
+      
+      set({ gamePhase: 'game-over' });
+    } catch (error) {
+      console.error("Failed to submit score:", error);
+      alert("Failed to submit your score. Please try again.");
+    }
+  },
+  
+  restartGame: () => {
+    set({
+      currentLocation: null,
+      cash: 0,
+      bankBalance: 0,
+      loanAmount: 0,
+      daysRemaining: 31,
+      inventory: [],
+      marketListings: [],
+      gamePhase: 'intro',
+      isBankModalOpen: false
+    });
+  },
+  
+  setBankModalOpen: (isOpen) => {
+    set({ isBankModalOpen: isOpen });
+  }
+}));
