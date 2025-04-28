@@ -14,7 +14,7 @@ export default function GamePage() {
   }
 
   return (
-    <div className="min-h-screen p-4 space-y-4 bg-background">
+    <div className="min-h-screen p-4 space-y-4 bg-background pb-8 overflow-y-auto">
       {/* Game Header with stats */}
       <GameHeader />
       
