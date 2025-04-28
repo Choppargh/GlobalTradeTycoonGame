@@ -18,11 +18,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { ProductListing } from '@shared/schema';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 export function ProductMarket() {
   const { marketListings, buyProduct, sellProduct, inventory, cash } = useGameStore();
   const [buyQuantities, setBuyQuantities] = useState<Record<number, number>>({});
   const [sellQuantities, setSellQuantities] = useState<Record<number, number>>({});
+  const [selectedProduct, setSelectedProduct] = useState<ProductListing | null>(null);
   
   const handleBuyInput = (productId: number, value: string) => {
     const quantity = parseInt(value) || 0;
@@ -85,111 +94,197 @@ export function ProductMarket() {
   };
 
   return (
-    <Card className="col-span-full lg:col-span-2 h-full overflow-hidden">
-      <CardHeader className="pb-3">
-        <CardTitle>Market</CardTitle>
-        <CardDescription>
-          Buy low and sell high! Available products: {marketListings.length}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-0 overflow-auto max-h-[450px]">
-        <Table>
-          <TableHeader className="sticky top-0 bg-card">
-            <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Market Price</TableHead>
-              <TableHead>Demand Price</TableHead>
-              <TableHead>Available</TableHead>
-              <TableHead>In Stock</TableHead>
-              <TableHead className="text-right">Buy</TableHead>
-              <TableHead className="text-right">Sell</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {marketListings.length > 0 ? (
-              marketListings.map((product) => {
-                const demandPrice = Math.round(product.marketPrice * product.demandMultiplier * 100) / 100;
-                const inventoryQty = getInventoryQuantity(product.productId);
-                
-                return (
-                  <TableRow key={product.productId}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>{formatCurrency(product.marketPrice)}</TableCell>
-                    <TableCell>{formatCurrency(demandPrice)}</TableCell>
-                    <TableCell>{product.available}</TableCell>
-                    <TableCell>{inventoryQty}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end space-x-2">
-                        <Input
-                          type="number"
-                          min="0"
-                          max={product.available}
-                          value={buyQuantities[product.productId] || ''}
-                          onChange={(e) => handleBuyInput(product.productId, e.target.value)}
-                          className="w-16 text-right"
-                        />
-                        <Button 
-                          size="sm" 
-                          onClick={() => handleBuy(product)}
-                          disabled={
-                            !buyQuantities[product.productId] || 
-                            buyQuantities[product.productId] <= 0 ||
-                            buyQuantities[product.productId] > product.available ||
-                            calculateBuyTotal(product) > cash
-                          }
-                        >
-                          Buy
-                        </Button>
-                      </div>
-                      {buyQuantities[product.productId] > 0 && (
-                        <div className="text-xs text-right mt-1">
-                          Total: {formatCurrency(calculateBuyTotal(product))}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end space-x-2">
-                        <Input
-                          type="number"
-                          min="0"
-                          max={inventoryQty}
-                          value={sellQuantities[product.productId] || ''}
-                          onChange={(e) => handleSellInput(product.productId, e.target.value)}
-                          className="w-16 text-right"
-                          disabled={inventoryQty === 0}
-                        />
-                        <Button 
-                          size="sm" 
-                          variant="secondary"
-                          onClick={() => handleSell(product)}
-                          disabled={
-                            !sellQuantities[product.productId] || 
-                            sellQuantities[product.productId] <= 0 ||
-                            sellQuantities[product.productId] > inventoryQty
-                          }
-                        >
-                          Sell
-                        </Button>
-                      </div>
-                      {sellQuantities[product.productId] > 0 && (
-                        <div className="text-xs text-right mt-1">
-                          Total: {formatCurrency(calculateSellTotal(product))}
-                        </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            ) : (
+    <>
+      <Card className="col-span-full lg:col-span-2 h-full overflow-hidden">
+        <CardHeader className="pb-3">
+          <CardTitle>Market</CardTitle>
+          <CardDescription>
+            Buy low and sell high! Available products: {marketListings.length}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-0 overflow-auto max-h-[450px]">
+          <Table>
+            <TableHeader className="sticky top-0 bg-card">
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-4">
-                  No products available at this location. Try traveling elsewhere!
-                </TableCell>
+                <TableHead>Product</TableHead>
+                <TableHead>Market Price</TableHead>
+                <TableHead>Demand Price</TableHead>
+                <TableHead>Available</TableHead>
+                <TableHead>In Stock</TableHead>
+                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-right">Info</TableHead>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+            </TableHeader>
+            <TableBody>
+              {marketListings.length > 0 ? (
+                marketListings.map((product) => {
+                  const demandPrice = Math.round(product.marketPrice * product.demandMultiplier * 100) / 100;
+                  const inventoryQty = getInventoryQuantity(product.productId);
+                  
+                  return (
+                    <TableRow 
+                      key={product.productId} 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => setSelectedProduct(product)}
+                    >
+                      <TableCell className="font-medium">{product.name}</TableCell>
+                      <TableCell>{formatCurrency(product.marketPrice)}</TableCell>
+                      <TableCell>{formatCurrency(demandPrice)}</TableCell>
+                      <TableCell>{product.available}</TableCell>
+                      <TableCell>{inventoryQty}</TableCell>
+                      <TableCell className="text-right">
+                        <Button 
+                          size="sm"
+                          variant="default"
+                          className="bg-blue-600 text-white hover:bg-blue-700"
+                        >
+                          Buy/Sell
+                        </Button>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {inventoryQty > 0 && (
+                          <div className="text-xs text-muted-foreground">
+                            Avg. Cost: {formatCurrency(inventory.find(i => i.productId === product.productId)?.purchasePrice || 0)}
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-4">
+                    No products available at this location. Try traveling elsewhere!
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Product Buy/Sell Dialog */}
+      <Dialog 
+        open={selectedProduct !== null}
+        onOpenChange={(open) => !open && setSelectedProduct(null)}
+      >
+        <DialogContent className="bg-white">
+          {selectedProduct && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{selectedProduct.name}</DialogTitle>
+                <DialogDescription>
+                  Market Price: {formatCurrency(selectedProduct.marketPrice)} | 
+                  Demand Price: {formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="grid grid-cols-2 gap-4 py-4">
+                {/* Buy Section */}
+                <div className="space-y-3 border-r pr-4">
+                  <h3 className="font-semibold text-base">Buy</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Available:</span>
+                      <span>{selectedProduct.available}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Price per unit:</span>
+                      <span>{formatCurrency(selectedProduct.marketPrice)}</span>
+                    </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <Input
+                        type="number"
+                        min="0"
+                        max={selectedProduct.available}
+                        value={buyQuantities[selectedProduct.productId] || ''}
+                        onChange={(e) => handleBuyInput(selectedProduct.productId, e.target.value)}
+                        className="w-20 text-right"
+                      />
+                      <span className="text-sm">units</span>
+                    </div>
+                    {buyQuantities[selectedProduct.productId] > 0 && (
+                      <div className="text-sm font-medium">
+                        Total: {formatCurrency(calculateBuyTotal(selectedProduct))}
+                      </div>
+                    )}
+                  </div>
+                  <Button 
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => {
+                      handleBuy(selectedProduct);
+                      setSelectedProduct(null);
+                    }}
+                    disabled={
+                      !buyQuantities[selectedProduct.productId] || 
+                      buyQuantities[selectedProduct.productId] <= 0 ||
+                      buyQuantities[selectedProduct.productId] > selectedProduct.available ||
+                      calculateBuyTotal(selectedProduct) > cash
+                    }
+                  >
+                    Buy
+                  </Button>
+                </div>
+                
+                {/* Sell Section */}
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-base">Sell</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>In Stock:</span>
+                      <span>{getInventoryQuantity(selectedProduct.productId)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Sell price per unit:</span>
+                      <span>{formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
+                    </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <Input
+                        type="number"
+                        min="0"
+                        max={getInventoryQuantity(selectedProduct.productId)}
+                        value={sellQuantities[selectedProduct.productId] || ''}
+                        onChange={(e) => handleSellInput(selectedProduct.productId, e.target.value)}
+                        className="w-20 text-right"
+                        disabled={getInventoryQuantity(selectedProduct.productId) === 0}
+                      />
+                      <span className="text-sm">units</span>
+                    </div>
+                    {sellQuantities[selectedProduct.productId] > 0 && (
+                      <div className="text-sm font-medium">
+                        Total: {formatCurrency(calculateSellTotal(selectedProduct))}
+                      </div>
+                    )}
+                  </div>
+                  <Button 
+                    className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+                    onClick={() => {
+                      handleSell(selectedProduct);
+                      setSelectedProduct(null);
+                    }}
+                    disabled={
+                      !sellQuantities[selectedProduct.productId] || 
+                      sellQuantities[selectedProduct.productId] <= 0 ||
+                      sellQuantities[selectedProduct.productId] > getInventoryQuantity(selectedProduct.productId)
+                    }
+                  >
+                    Sell
+                  </Button>
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setSelectedProduct(null)}
+                >
+                  Close
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
