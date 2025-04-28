@@ -68,7 +68,7 @@ export function BankInterface() {
 
   return (
     <Dialog open={isBankModalOpen} onOpenChange={setBankModalOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
           <DialogTitle>Global Trade Bank</DialogTitle>
           <DialogDescription>
