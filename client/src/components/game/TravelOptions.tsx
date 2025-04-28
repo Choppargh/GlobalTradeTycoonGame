@@ -63,8 +63,8 @@ export function TravelOptions() {
         <CardContent className="grid gap-2">
           <Button 
             onClick={() => setShowTravelDialog(true)} 
-            variant="outline" 
-            className="w-full justify-between"
+            variant="default" 
+            className="w-full justify-between bg-amber-500 hover:bg-amber-600 text-white"
             disabled={daysRemaining <= 1}
           >
             <span className="flex items-center">
@@ -85,9 +85,7 @@ export function TravelOptions() {
             <p>• Each journey takes 1 day</p>
             <p>• Your loan of {formatCurrency(loanAmount)} will increase by 5% upon travel</p>
             <p>• Days remaining: {daysRemaining}</p>
-            <p className="mt-2 text-amber-600 font-medium">Travel Risks:</p>
-            <p className="text-amber-600">• 1% chance of losing up to 75% of your cash</p>
-            <p className="text-amber-600">• 0.5% chance of losing up to 80% of your inventory</p>
+            <p>• Bank interest of 3% will be applied to your balance</p>
           </div>
         </CardContent>
       </Card>
@@ -128,6 +126,7 @@ export function TravelOptions() {
             </Button>
             <Button
               onClick={handleTravelConfirm}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
               disabled={!selectedDestination || selectedDestination === currentLocation}
             >
               Confirm Travel
