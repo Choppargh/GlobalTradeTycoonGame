@@ -85,11 +85,67 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Generate new market listings for the destination
     const newMarketListings = generateMarketListings(destination);
     
+    // Apply game challenges
+    let updatedCash = state.cash;
+    let updatedInventory = [...state.inventory];
+    let challengeMessage = "";
+    
+    // Challenge 1: Cash loss at airport (1 in 100 chance)
+    if (Math.random() < 0.01) {
+      const lossPercentage = Math.random() * 0.75; // Up to 75% loss
+      const lossAmount = Math.round(state.cash * lossPercentage);
+      updatedCash = state.cash - lossAmount;
+      
+      // Generate random reason for cash loss
+      const reasons = [
+        "You were robbed at the airport!",
+        "You lost your wallet in the taxi!",
+        "Someone stole your cash at the hotel!",
+        "You were mugged at knifepoint!"
+      ];
+      const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+      
+      challengeMessage = `${randomReason} You lost $${lossAmount.toLocaleString()}.`;
+      
+      // Show an alert
+      alert(challengeMessage);
+    }
+    
+    // Challenge 2: Inventory loss due to fire/theft (1 in 200 chance)
+    if (Math.random() < 0.005 && state.inventory.length > 0) {
+      const lossPercentage = Math.random() * 0.8; // Up to 80% loss
+      
+      // Create updated inventory with some items lost
+      updatedInventory = state.inventory.map(item => {
+        const lostQuantity = Math.round(item.quantity * lossPercentage);
+        return {
+          ...item,
+          quantity: item.quantity - lostQuantity
+        };
+      }).filter(item => item.quantity > 0); // Remove items with zero quantity
+      
+      // Generate random reason for inventory loss
+      const reasons = [
+        "A fire broke out in the warehouse where your goods were stored!",
+        "Your shipping container was broken into!",
+        "Customs officials seized some of your goods!",
+        "Your inventory was damaged during transportation!"
+      ];
+      const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+      
+      challengeMessage = `${randomReason} You lost a significant portion of your inventory.`;
+      
+      // Show an alert
+      alert(challengeMessage);
+    }
+    
     set({
       currentLocation: destination,
       daysRemaining: state.daysRemaining - 1,
       loanAmount: newLoanAmount,
-      marketListings: newMarketListings
+      marketListings: newMarketListings,
+      cash: updatedCash,
+      inventory: updatedInventory
     });
   },
   
