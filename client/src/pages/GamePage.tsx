@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { GameHeader } from '@/components/game/GameHeader';
 import { LocationMap } from '@/components/game/LocationMap';
@@ -5,9 +6,29 @@ import { ProductMarket } from '@/components/game/ProductMarket';
 import { Inventory } from '@/components/game/Inventory';
 import { TravelOptions } from '@/components/game/TravelOptions';
 import { BankInterface } from '@/components/game/BankInterface';
+import { EventNotification } from '@/components/game/EventNotification';
 
 export default function GamePage() {
-  const { currentLocation } = useGameStore();
+  const { 
+    currentLocation, 
+    currentEvent, 
+    clearCurrentEvent, 
+    triggerRandomEvent 
+  } = useGameStore();
+  
+  // Check for random events periodically
+  useEffect(() => {
+    if (!currentLocation) return;
+    
+    // Try to trigger a random event every 10-15 seconds (for testing)
+    const eventCheckInterval = setInterval(() => {
+      if (!currentEvent) {
+        triggerRandomEvent();
+      }
+    }, Math.random() * 5000 + 10000); // Between 10-15 seconds for testing
+    
+    return () => clearInterval(eventCheckInterval);
+  }, [currentLocation, currentEvent, triggerRandomEvent]);
   
   if (!currentLocation) {
     return <div>Loading game...</div>;
@@ -41,6 +62,12 @@ export default function GamePage() {
       
       {/* Bank Modal (shows when needed) */}
       <BankInterface />
+      
+      {/* Random Event Notification */}
+      <EventNotification 
+        event={currentEvent} 
+        onClose={clearCurrentEvent} 
+      />
     </div>
   );
 }
