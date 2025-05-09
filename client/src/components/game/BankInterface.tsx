@@ -219,41 +219,108 @@ export function BankInterface() {
           </TabsContent>
           
           <TabsContent value="borrow" className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
                 Borrow money from the bank. Remember that your loan increases by 5% every time you travel!
               </p>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="number"
-                  placeholder="Amount to borrow"
-                  value={loanRequestAmount}
-                  onChange={(e) => setLoanRequestAmount(e.target.value)}
-                  max={loanAvailable}
-                />
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Amount to borrow:</span>
+                    <span>{loanRequestAmount ? formatCurrency(Number(loanRequestAmount)) : '$0.00'}</span>
+                  </div>
+                  
+                  <Slider
+                    value={[Number(loanRequestAmount) || 0]}
+                    min={0}
+                    max={loanAvailable}
+                    step={1}
+                    onValueChange={(value) => setLoanRequestAmount(value[0].toString())}
+                    className="py-4"
+                  />
+                  
+                  <div className="flex justify-between text-xs">
+                    <span>$0</span>
+                    <span>{formatCurrency(loanAvailable)}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Custom amount"
+                    value={loanRequestAmount}
+                    onChange={(e) => setLoanRequestAmount(e.target.value)}
+                    max={loanAvailable}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setLoanRequestAmount(loanAvailable.toString())}
+                  >
+                    Max
+                  </Button>
+                </div>
+                
                 <Button 
                   onClick={handleRequestLoan}
                   disabled={!loanRequestAmount || Number(loanRequestAmount) <= 0 || Number(loanRequestAmount) > loanAvailable}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  Borrow
+                  Borrow {loanRequestAmount ? formatCurrency(Number(loanRequestAmount)) : '$0.00'}
                 </Button>
               </div>
             </div>
           </TabsContent>
           
           <TabsContent value="repay" className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
                 Repay your loan to reduce interest costs when traveling.
               </p>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="number"
-                  placeholder="Amount to repay"
-                  value={repayAmount}
-                  onChange={(e) => setRepayAmount(e.target.value)}
-                  max={Math.min(cash, loanAmount)}
-                />
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Amount to repay:</span>
+                    <span>{repayAmount ? formatCurrency(Number(repayAmount)) : '$0.00'}</span>
+                  </div>
+                  
+                  <Slider
+                    value={[Number(repayAmount) || 0]}
+                    min={0}
+                    max={Math.min(cash, loanAmount)}
+                    step={1}
+                    onValueChange={(value) => setRepayAmount(value[0].toString())}
+                    className="py-4"
+                  />
+                  
+                  <div className="flex justify-between text-xs">
+                    <span>$0</span>
+                    <span>{formatCurrency(Math.min(cash, loanAmount))}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Custom amount"
+                    value={repayAmount}
+                    onChange={(e) => setRepayAmount(e.target.value)}
+                    max={Math.min(cash, loanAmount)}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setRepayAmount(Math.min(cash, loanAmount).toString())}
+                  >
+                    Max
+                  </Button>
+                </div>
+                
                 <Button 
                   onClick={handleRepayLoan}
                   disabled={
@@ -262,8 +329,9 @@ export function BankInterface() {
                     Number(repayAmount) > cash || 
                     Number(repayAmount) > loanAmount
                   }
+                  className="w-full bg-amber-500 hover:bg-amber-600 text-white"
                 >
-                  Repay
+                  Repay {repayAmount ? formatCurrency(Number(repayAmount)) : '$0.00'}
                 </Button>
               </div>
             </div>
