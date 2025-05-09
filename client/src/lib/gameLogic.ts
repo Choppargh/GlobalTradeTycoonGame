@@ -266,7 +266,12 @@ export const GAME_EVENTS: GameEvent[] = [
 ];
 
 // Generate a random event
-export function generateRandomEvent(currentLocation: Location): GameEvent | null {
+export function generateRandomEvent(currentLocation: Location, daysRemaining: number = 0): GameEvent | null {
+  // No events on the last day
+  if (daysRemaining <= 1) {
+    return null;
+  }
+  
   // 30% chance of a random event happening (more frequent for testing)
   if (Math.random() > 0.3) return null;
   
