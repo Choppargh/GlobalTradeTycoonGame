@@ -81,13 +81,13 @@ export function ProductMarket() {
   
   const calculateBuyTotal = (product: ProductListing): number => {
     const quantity = buyQuantities[product.productId] || 0;
-    return quantity * product.marketPrice;
+    return Math.round(quantity * product.marketPrice * 100) / 100;
   };
   
   const calculateSellTotal = (product: ProductListing): number => {
     const quantity = sellQuantities[product.productId] || 0;
     const sellPrice = Math.round(product.marketPrice * product.demandMultiplier * 100) / 100;
-    return quantity * sellPrice;
+    return Math.round(quantity * sellPrice * 100) / 100;
   };
   
   const formatCurrency = (amount: number): string => {

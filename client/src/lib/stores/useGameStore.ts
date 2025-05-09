@@ -106,11 +106,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       return;
     }
     
-    // Apply loan interest (5%)
-    const newLoanAmount = Math.round(state.loanAmount * 1.05);
+    // Apply loan interest (5%) with proper rounding to nearest cent
+    const newLoanAmount = Math.round(state.loanAmount * 1.05 * 100) / 100;
     
-    // Apply bank interest (3% per day)
-    const newBankBalance = Math.round(state.bankBalance * 1.03);
+    // Apply bank interest (3% per day) with proper rounding to nearest cent
+    const newBankBalance = Math.round(state.bankBalance * 1.03 * 100) / 100;
     
     // Generate new market listings for the destination
     const newMarketListings = generateMarketListings(destination);
@@ -123,8 +123,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Challenge 1: Cash loss at airport (1 in 100 chance)
     if (Math.random() < 0.01) {
       const lossPercentage = Math.random() * 0.75; // Up to 75% loss
-      const lossAmount = Math.round(state.cash * lossPercentage);
-      updatedCash = state.cash - lossAmount;
+      const lossAmount = Math.round(state.cash * lossPercentage * 100) / 100;
+      updatedCash = Math.round((state.cash - lossAmount) * 100) / 100;
       
       // Generate random reason for cash loss
       const reasons = [
@@ -197,7 +197,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   buyProduct: (productId, quantity, price) => {
     const state = get();
-    const totalCost = quantity * price;
+    // Ensure price is properly rounded to the nearest cent
+    const roundedPrice = Math.round(price * 100) / 100;
+    const totalCost = Math.round(quantity * roundedPrice * 100) / 100;
     
     // Check if already sold this product today in this location
     if (state.soldProducts.has(productId)) {
@@ -282,7 +284,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       return;
     }
     
-    const totalRevenue = quantity * price;
+    // Ensure price is properly rounded to the nearest cent
+    const roundedPrice = Math.round(price * 100) / 100;
+    const totalRevenue = Math.round(quantity * roundedPrice * 100) / 100;
     
     // Update inventory
     let newInventory;
@@ -312,52 +316,55 @@ export const useGameStore = create<GameState>((set, get) => ({
   handleBankAction: (action, amount) => {
     const state = get();
     
+    // Ensure amount is properly rounded to the nearest cent
+    const roundedAmount = Math.round(amount * 100) / 100;
+    
     switch (action) {
       case 'deposit': 
-        if (amount > state.cash) {
+        if (roundedAmount > state.cash) {
           alert("You don't have enough cash to deposit this amount.");
           return;
         }
         set({
-          cash: state.cash - amount,
-          bankBalance: state.bankBalance + amount
+          cash: Math.round((state.cash - roundedAmount) * 100) / 100,
+          bankBalance: Math.round((state.bankBalance + roundedAmount) * 100) / 100
         });
         break;
         
       case 'withdraw':
-        if (amount > state.bankBalance) {
+        if (roundedAmount > state.bankBalance) {
           alert("You don't have enough balance to withdraw this amount.");
           return;
         }
         set({
-          cash: state.cash + amount,
-          bankBalance: state.bankBalance - amount
+          cash: Math.round((state.cash + roundedAmount) * 100) / 100,
+          bankBalance: Math.round((state.bankBalance - roundedAmount) * 100) / 100
         });
         break;
         
       case 'loan':
-        if (state.loanAmount + amount > 10000) {
+        if (state.loanAmount + roundedAmount > 10000) {
           alert("Your total loan cannot exceed $10,000.");
           return;
         }
         set({
-          cash: state.cash + amount,
-          loanAmount: state.loanAmount + amount
+          cash: Math.round((state.cash + roundedAmount) * 100) / 100,
+          loanAmount: Math.round((state.loanAmount + roundedAmount) * 100) / 100
         });
         break;
         
       case 'repay':
-        if (amount > state.cash) {
+        if (roundedAmount > state.cash) {
           alert("You don't have enough cash to repay this amount.");
           return;
         }
-        if (amount > state.loanAmount) {
+        if (roundedAmount > state.loanAmount) {
           alert("You can't repay more than you owe.");
           return;
         }
         set({
-          cash: state.cash - amount,
-          loanAmount: state.loanAmount - amount
+          cash: Math.round((state.cash - roundedAmount) * 100) / 100,
+          loanAmount: Math.round((state.loanAmount - roundedAmount) * 100) / 100
         });
         break;
     }
@@ -367,14 +374,14 @@ export const useGameStore = create<GameState>((set, get) => ({
     const state = get();
     if (!state.username) return;
     
-    // For net worth calculation (for display)
-    const inventoryValue = state.inventory.reduce(
+    // For net worth calculation (for display), properly rounded to the nearest cent
+    const inventoryValue = Math.round(state.inventory.reduce(
       (total, item) => total + (item.quantity * item.purchasePrice),
       0
-    );
+    ) * 100) / 100;
     
-    // Net worth includes everything
-    const netWorth = state.cash + state.bankBalance + inventoryValue - state.loanAmount;
+    // Net worth includes everything, properly rounded to the nearest cent
+    const netWorth = Math.round((state.cash + state.bankBalance + inventoryValue - state.loanAmount) * 100) / 100;
     
     // Score is based ONLY on banked cash
     const score = Math.max(0, Math.round(state.bankBalance));
@@ -450,7 +457,9 @@ export const useGameStore = create<GameState>((set, get) => ({
         
       case 'cash_bonus':
         if (event.cashAmount) {
-          updatedCash = state.cash + event.cashAmount;
+          // Ensure the cash bonus is properly rounded to the nearest cent
+          const roundedCashAmount = Math.round(event.cashAmount * 100) / 100;
+          updatedCash = Math.round((state.cash + roundedCashAmount) * 100) / 100;
         }
         break;
     }

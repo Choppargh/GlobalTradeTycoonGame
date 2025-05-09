@@ -75,7 +75,7 @@ const LOCATION_PRICE_MODIFIERS: Record<Location, Record<number, number>> = {
   }
 };
 
-// Generate a random price within a range
+// Generate a random price within a range, properly rounded to the nearest cent
 function getRandomPrice(min: number, max: number): number {
   return Math.round((Math.random() * (max - min) + min) * 100) / 100;
 }
