@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/dialog';
 
 export function ProductMarket() {
-  const { marketListings, buyProduct, sellProduct, inventory, cash, priceChanges, daysRemaining } = useGameStore();
+  const { marketListings, buyProduct, sellProduct, inventory, cash, priceChanges, daysRemaining, boughtProducts, soldProducts } = useGameStore();
   const [buyQuantities, setBuyQuantities] = useState<Record<number, number>>({});
   const [sellQuantities, setSellQuantities] = useState<Record<number, number>>({});
   const [selectedProduct, setSelectedProduct] = useState<ProductListing | null>(null);
@@ -205,6 +205,7 @@ export function ProductMarket() {
                         value={buyQuantities[selectedProduct.productId] || ''}
                         onChange={(e) => handleBuyInput(selectedProduct.productId, e.target.value)}
                         className="w-20 text-right"
+                        disabled={soldProducts.has(selectedProduct.productId)}
                       />
                       <span className="text-sm">units</span>
                       <Button 
@@ -220,7 +221,11 @@ export function ProductMarket() {
                           handleBuyInput(selectedProduct.productId, maxQuantity.toString());
                         }}
                         className="ml-2 text-xs h-8"
-                        disabled={cash < selectedProduct.marketPrice || selectedProduct.available <= 0}
+                        disabled={
+                          cash < selectedProduct.marketPrice || 
+                          selectedProduct.available <= 0 ||
+                          soldProducts.has(selectedProduct.productId)
+                        }
                       >
                         Max Buy
                       </Button>
@@ -241,7 +246,8 @@ export function ProductMarket() {
                       !buyQuantities[selectedProduct.productId] || 
                       buyQuantities[selectedProduct.productId] <= 0 ||
                       buyQuantities[selectedProduct.productId] > selectedProduct.available ||
-                      calculateBuyTotal(selectedProduct) > cash
+                      calculateBuyTotal(selectedProduct) > cash ||
+                      soldProducts.has(selectedProduct.productId)
                     }
                   >
                     Buy
@@ -268,7 +274,10 @@ export function ProductMarket() {
                         value={sellQuantities[selectedProduct.productId] || ''}
                         onChange={(e) => handleSellInput(selectedProduct.productId, e.target.value)}
                         className="w-20 text-right"
-                        disabled={getInventoryQuantity(selectedProduct.productId) === 0}
+                        disabled={
+                          getInventoryQuantity(selectedProduct.productId) === 0 ||
+                          boughtProducts.has(selectedProduct.productId)
+                        }
                       />
                       <span className="text-sm">units</span>
                       <Button 
@@ -281,7 +290,10 @@ export function ProductMarket() {
                           handleSellInput(selectedProduct.productId, maxSellable.toString());
                         }}
                         className="ml-2 text-xs h-8"
-                        disabled={getInventoryQuantity(selectedProduct.productId) === 0}
+                        disabled={
+                          getInventoryQuantity(selectedProduct.productId) === 0 ||
+                          boughtProducts.has(selectedProduct.productId)
+                        }
                       >
                         Max Sell
                       </Button>
@@ -301,7 +313,8 @@ export function ProductMarket() {
                     disabled={
                       !sellQuantities[selectedProduct.productId] || 
                       sellQuantities[selectedProduct.productId] <= 0 ||
-                      sellQuantities[selectedProduct.productId] > getInventoryQuantity(selectedProduct.productId)
+                      sellQuantities[selectedProduct.productId] > getInventoryQuantity(selectedProduct.productId) ||
+                      boughtProducts.has(selectedProduct.productId)
                     }
                   >
                     Sell
