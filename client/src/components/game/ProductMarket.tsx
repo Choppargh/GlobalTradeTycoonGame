@@ -220,6 +220,7 @@ export function ProductMarket() {
                           handleBuyInput(selectedProduct.productId, maxQuantity.toString());
                         }}
                         className="ml-2 text-xs h-8"
+                        disabled={cash < selectedProduct.marketPrice || selectedProduct.available <= 0}
                       >
                         Max Buy
                       </Button>
