@@ -21,7 +21,7 @@ import { LocationMap } from './LocationMap';
 import { ArrowRightIcon, PlaneIcon } from 'lucide-react';
 
 export function TravelOptions() {
-  const { currentLocation, travel, daysRemaining, loanAmount, inventory, cash } = useGameStore();
+  const { currentLocation, travel, daysRemaining, loanAmount, inventory, cash, endGame } = useGameStore();
   // Ensure currentLocation is treated as Location and not null
   if (!currentLocation) return null;
   const [showTravelDialog, setShowTravelDialog] = useState(false);
@@ -61,32 +61,47 @@ export function TravelOptions() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-2">
-          <Button 
-            onClick={() => setShowTravelDialog(true)} 
-            variant="default" 
-            className="w-full justify-between bg-amber-500 hover:bg-amber-600 text-white"
-            disabled={daysRemaining <= 1}
-          >
-            <span className="flex items-center">
-              <PlaneIcon className="mr-2 h-4 w-4" />
-              Open Travel Map
-            </span>
-            <ArrowRightIcon className="h-4 w-4" />
-          </Button>
-          
-          {daysRemaining <= 1 && (
-            <p className="text-sm text-amber-600 mt-2">
-              Not enough days remaining to travel!
-            </p>
+          {daysRemaining <= 1 ? (
+            // Show "I'm Finished" button on the last day
+            <>
+              <Button 
+                onClick={() => endGame()} 
+                variant="default" 
+                className="w-full justify-between bg-green-600 hover:bg-green-700 text-white"
+              >
+                <span className="flex items-center">
+                  I'm Finished
+                </span>
+                <ArrowRightIcon className="h-4 w-4" />
+              </Button>
+              <p className="text-sm text-green-600 mt-2">
+                Click to end the game and submit your score!
+              </p>
+            </>
+          ) : (
+            // Show travel options when not on the last day
+            <>
+              <Button 
+                onClick={() => setShowTravelDialog(true)} 
+                variant="default" 
+                className="w-full justify-between bg-amber-500 hover:bg-amber-600 text-white"
+              >
+                <span className="flex items-center">
+                  <PlaneIcon className="mr-2 h-4 w-4" />
+                  Open Travel Map
+                </span>
+                <ArrowRightIcon className="h-4 w-4" />
+              </Button>
+              
+              <div className="mt-4 p-3 bg-muted/50 rounded-md text-sm space-y-1">
+                <p className="font-medium">Travel Notice:</p>
+                <p>• Each journey takes 1 day</p>
+                <p>• Your loan of {formatCurrency(loanAmount)} will increase by 5% upon travel</p>
+                <p>• Days remaining: {daysRemaining}</p>
+                <p>• Bank interest of 3% will be applied to your balance</p>
+              </div>
+            </>
           )}
-          
-          <div className="mt-4 p-3 bg-muted/50 rounded-md text-sm space-y-1">
-            <p className="font-medium">Travel Notice:</p>
-            <p>• Each journey takes 1 day</p>
-            <p>• Your loan of {formatCurrency(loanAmount)} will increase by 5% upon travel</p>
-            <p>• Days remaining: {daysRemaining}</p>
-            <p>• Bank interest of 3% will be applied to your balance</p>
-          </div>
         </CardContent>
       </Card>
       
