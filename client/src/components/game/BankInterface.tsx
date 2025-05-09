@@ -309,18 +309,25 @@ export function BankInterface() {
                     <span>{repayAmount ? formatCurrency(Number(repayAmount)) : '$0.00'}</span>
                   </div>
                   
-                  <Slider
-                    value={[Number(repayAmount) || 0]}
-                    min={0}
-                    max={Math.min(cash, loanAmount)}
-                    step={1}
-                    onValueChange={(value) => setRepayAmount(value[0].toString())}
-                    className="py-4"
-                  />
-                  
-                  <div className="flex justify-between text-xs">
-                    <span>$0</span>
-                    <span>{formatCurrency(Math.min(cash, loanAmount))}</span>
+                  <div className="relative pt-5 pb-1">
+                    <Slider
+                      value={[Number(repayAmount) || 0]}
+                      min={0}
+                      max={Math.min(cash, loanAmount)}
+                      step={1}
+                      onValueChange={(value) => setRepayAmount(value[0].toString())}
+                      className="py-4"
+                    />
+                    
+                    <div className="absolute w-full flex justify-between text-xs text-tycoon-navy-light -mt-1">
+                      <span>0%</span>
+                      <span>100%</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                      <span>${(0).toFixed(2)}</span>
+                      <span>{formatCurrency(Math.min(cash, loanAmount))}</span>
+                    </div>
                   </div>
                 </div>
                 
