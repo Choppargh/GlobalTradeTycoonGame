@@ -9,6 +9,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { useGameStore } from '@/lib/stores/useGameStore';
 
 export function BankInterface() {
@@ -104,46 +105,114 @@ export function BankInterface() {
           </TabsList>
           
           <TabsContent value="deposit" className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
                 Deposit cash to your bank account. The money will be safe but can't be used for trading until withdrawn.
               </p>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="number"
-                  placeholder="Amount to deposit"
-                  value={depositAmount}
-                  onChange={(e) => setDepositAmount(e.target.value)}
-                  max={cash}
-                />
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Amount to deposit:</span>
+                    <span>{depositAmount ? formatCurrency(Number(depositAmount)) : '$0.00'}</span>
+                  </div>
+                  
+                  <Slider
+                    value={[Number(depositAmount) || 0]}
+                    min={0}
+                    max={cash}
+                    step={1}
+                    onValueChange={(value) => setDepositAmount(value[0].toString())}
+                    className="py-4"
+                  />
+                  
+                  <div className="flex justify-between text-xs">
+                    <span>$0</span>
+                    <span>{formatCurrency(cash)}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Custom amount"
+                    value={depositAmount}
+                    onChange={(e) => setDepositAmount(e.target.value)}
+                    max={cash}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setDepositAmount(cash.toString())}
+                  >
+                    Max
+                  </Button>
+                </div>
+                
                 <Button 
                   onClick={handleDeposit}
                   disabled={!depositAmount || Number(depositAmount) <= 0 || Number(depositAmount) > cash}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
                 >
-                  Deposit
+                  Deposit {depositAmount ? formatCurrency(Number(depositAmount)) : '$0.00'}
                 </Button>
               </div>
             </div>
           </TabsContent>
           
           <TabsContent value="withdraw" className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
                 Withdraw money from your bank account to use for trading.
               </p>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="number"
-                  placeholder="Amount to withdraw"
-                  value={withdrawAmount}
-                  onChange={(e) => setWithdrawAmount(e.target.value)}
-                  max={bankBalance}
-                />
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Amount to withdraw:</span>
+                    <span>{withdrawAmount ? formatCurrency(Number(withdrawAmount)) : '$0.00'}</span>
+                  </div>
+                  
+                  <Slider
+                    value={[Number(withdrawAmount) || 0]}
+                    min={0}
+                    max={bankBalance}
+                    step={1}
+                    onValueChange={(value) => setWithdrawAmount(value[0].toString())}
+                    className="py-4"
+                  />
+                  
+                  <div className="flex justify-between text-xs">
+                    <span>$0</span>
+                    <span>{formatCurrency(bankBalance)}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Custom amount"
+                    value={withdrawAmount}
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    max={bankBalance}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setWithdrawAmount(bankBalance.toString())}
+                  >
+                    Max
+                  </Button>
+                </div>
+                
                 <Button 
                   onClick={handleWithdraw}
                   disabled={!withdrawAmount || Number(withdrawAmount) <= 0 || Number(withdrawAmount) > bankBalance}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Withdraw
+                  Withdraw {withdrawAmount ? formatCurrency(Number(withdrawAmount)) : '$0.00'}
                 </Button>
               </div>
             </div>
