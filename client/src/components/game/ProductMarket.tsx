@@ -173,22 +173,24 @@ export function ProductMarket() {
         open={selectedProduct !== null}
         onOpenChange={(open) => !open && setSelectedProduct(null)}
       >
-        <DialogContent className="bg-white">
+        <DialogContent className="bg-white w-[95vw] max-w-[500px] sm:w-auto">
           {selectedProduct && (
             <>
               <DialogHeader>
                 <DialogTitle>{selectedProduct.name}</DialogTitle>
-                <DialogDescription>
-                  Market Price: {formatCurrency(selectedProduct.marketPrice)} | 
-                  Demand Price: {formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}
+                <DialogDescription className="flex flex-col sm:flex-row sm:space-x-4">
+                  <span>Market Price: {formatCurrency(selectedProduct.marketPrice)}</span>
+                  <span className="hidden sm:inline">|</span>
+                  <span>Demand Price: {formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
                 </DialogDescription>
               </DialogHeader>
               
-              <div className="grid grid-cols-2 gap-4 py-4">
+              {/* Mobile-optimized layout that stacks on small screens but goes side-by-side on larger ones */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-4">
                 {/* Buy Section */}
-                <div className="space-y-3 border-r pr-4">
-                  <h3 className="font-semibold text-base">Buy</h3>
-                  <div className="space-y-2">
+                <div className="space-y-3 sm:border-r sm:pr-4">
+                  <h3 className="font-semibold text-base text-center sm:text-left bg-green-50 p-2 rounded-md">Buy</h3>
+                  <div className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span>Available:</span>
                       <span>{selectedProduct.available}</span>
@@ -197,17 +199,20 @@ export function ProductMarket() {
                       <span>Price per unit:</span>
                       <span>{formatCurrency(selectedProduct.marketPrice)}</span>
                     </div>
-                    <div className="flex items-center gap-2 pt-2">
-                      <Input
-                        type="number"
-                        min="0"
-                        max={selectedProduct.available}
-                        value={buyQuantities[selectedProduct.productId] || ''}
-                        onChange={(e) => handleBuyInput(selectedProduct.productId, e.target.value)}
-                        className="w-20 text-right"
-                        disabled={soldProducts.has(selectedProduct.productId)}
-                      />
-                      <span className="text-sm">units</span>
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                      <div className="flex items-center">
+                        <Input
+                          type="number"
+                          inputMode="numeric"
+                          min="0"
+                          max={selectedProduct.available}
+                          value={buyQuantities[selectedProduct.productId] || ''}
+                          onChange={(e) => handleBuyInput(selectedProduct.productId, e.target.value)}
+                          className="w-full sm:w-20 text-right"
+                          disabled={soldProducts.has(selectedProduct.productId)}
+                        />
+                        <span className="text-sm ml-2">units</span>
+                      </div>
                       <Button 
                         type="button" 
                         size="sm" 
@@ -220,7 +225,7 @@ export function ProductMarket() {
                           );
                           handleBuyInput(selectedProduct.productId, maxQuantity.toString());
                         }}
-                        className="ml-2 text-xs h-8"
+                        className="w-full sm:w-auto text-xs h-8"
                         disabled={
                           cash < selectedProduct.marketPrice || 
                           selectedProduct.available <= 0 ||
@@ -231,7 +236,7 @@ export function ProductMarket() {
                       </Button>
                     </div>
                     {buyQuantities[selectedProduct.productId] > 0 && (
-                      <div className="text-sm font-medium">
+                      <div className="text-sm font-medium bg-gray-50 p-2 rounded-md">
                         Total: {formatCurrency(calculateBuyTotal(selectedProduct))}
                       </div>
                     )}
@@ -254,10 +259,13 @@ export function ProductMarket() {
                   </Button>
                 </div>
                 
+                {/* Divider for mobile only */}
+                <div className="border-t border-gray-200 my-2 sm:hidden"></div>
+                
                 {/* Sell Section */}
                 <div className="space-y-3">
-                  <h3 className="font-semibold text-base">Sell</h3>
-                  <div className="space-y-2">
+                  <h3 className="font-semibold text-base text-center sm:text-left bg-amber-50 p-2 rounded-md">Sell</h3>
+                  <div className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span>In Stock:</span>
                       <span>{getInventoryQuantity(selectedProduct.productId)}</span>
@@ -266,20 +274,23 @@ export function ProductMarket() {
                       <span>Sell price per unit:</span>
                       <span>{formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
                     </div>
-                    <div className="flex items-center gap-2 pt-2">
-                      <Input
-                        type="number"
-                        min="0"
-                        max={getInventoryQuantity(selectedProduct.productId)}
-                        value={sellQuantities[selectedProduct.productId] || ''}
-                        onChange={(e) => handleSellInput(selectedProduct.productId, e.target.value)}
-                        className="w-20 text-right"
-                        disabled={
-                          getInventoryQuantity(selectedProduct.productId) === 0 ||
-                          boughtProducts.has(selectedProduct.productId)
-                        }
-                      />
-                      <span className="text-sm">units</span>
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                      <div className="flex items-center">
+                        <Input
+                          type="number"
+                          inputMode="numeric"
+                          min="0"
+                          max={getInventoryQuantity(selectedProduct.productId)}
+                          value={sellQuantities[selectedProduct.productId] || ''}
+                          onChange={(e) => handleSellInput(selectedProduct.productId, e.target.value)}
+                          className="w-full sm:w-20 text-right"
+                          disabled={
+                            getInventoryQuantity(selectedProduct.productId) === 0 ||
+                            boughtProducts.has(selectedProduct.productId)
+                          }
+                        />
+                        <span className="text-sm ml-2">units</span>
+                      </div>
                       <Button 
                         type="button" 
                         size="sm" 
@@ -289,7 +300,7 @@ export function ProductMarket() {
                           const maxSellable = getInventoryQuantity(selectedProduct.productId);
                           handleSellInput(selectedProduct.productId, maxSellable.toString());
                         }}
-                        className="ml-2 text-xs h-8"
+                        className="w-full sm:w-auto text-xs h-8"
                         disabled={
                           getInventoryQuantity(selectedProduct.productId) === 0 ||
                           boughtProducts.has(selectedProduct.productId)
@@ -299,7 +310,7 @@ export function ProductMarket() {
                       </Button>
                     </div>
                     {sellQuantities[selectedProduct.productId] > 0 && (
-                      <div className="text-sm font-medium">
+                      <div className="text-sm font-medium bg-gray-50 p-2 rounded-md">
                         Total: {formatCurrency(calculateSellTotal(selectedProduct))}
                       </div>
                     )}
