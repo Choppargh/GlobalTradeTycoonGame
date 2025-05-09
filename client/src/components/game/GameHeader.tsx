@@ -77,18 +77,34 @@ export function GameHeader() {
           </div>
           
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="destructive" 
-              size="sm"
-              onClick={() => {
-                if (window.confirm("Are you sure you want to end the game now? Your final score will be calculated.")) {
-                  endGame();
-                }
-              }}
-            >
-              <Clock className="mr-1 h-4 w-4" />
-              End Game
-            </Button>
+            {daysRemaining <= 1 ? (
+              <Button 
+                variant="default" 
+                size="sm"
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => {
+                  if (window.confirm("Are you ready to finish the game and see your final score?")) {
+                    endGame();
+                  }
+                }}
+              >
+                <Clock className="mr-1 h-4 w-4" />
+                I'm Finished
+              </Button>
+            ) : (
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to end the game now? Your final score will be calculated.")) {
+                    endGame();
+                  }
+                }}
+              >
+                <Clock className="mr-1 h-4 w-4" />
+                End Game
+              </Button>
+            )}
           </div>
         </div>
       </div>

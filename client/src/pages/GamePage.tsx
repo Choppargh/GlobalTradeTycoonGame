@@ -41,7 +41,7 @@ export default function GamePage() {
       
       {/* Main Game Grid - On smaller screens everything stacks */}
       <div className="grid grid-cols-1 gap-4">
-        {/* Travel Options - Full Width */}
+        {/* Travel Options or Game Completion - Full Width */}
         <div className="w-full">
           <TravelOptions />
         </div>
