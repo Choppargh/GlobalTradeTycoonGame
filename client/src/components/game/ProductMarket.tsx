@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { ProductListing } from '@shared/schema';
+import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -28,7 +29,7 @@ import {
 } from '@/components/ui/dialog';
 
 export function ProductMarket() {
-  const { marketListings, buyProduct, sellProduct, inventory, cash } = useGameStore();
+  const { marketListings, buyProduct, sellProduct, inventory, cash, priceChanges, daysRemaining } = useGameStore();
   const [buyQuantities, setBuyQuantities] = useState<Record<number, number>>({});
   const [sellQuantities, setSellQuantities] = useState<Record<number, number>>({});
   const [selectedProduct, setSelectedProduct] = useState<ProductListing | null>(null);
@@ -124,7 +125,11 @@ export function ProductMarket() {
                   return (
                     <TableRow 
                       key={product.productId} 
-                      className="cursor-pointer hover:bg-muted/50"
+                      className={cn(
+                        "cursor-pointer hover:bg-muted/50",
+                        priceChanges[product.productId] === 'increase' && "bg-green-100 hover:bg-green-200/80",
+                        priceChanges[product.productId] === 'decrease' && "bg-red-100 hover:bg-red-200/80"
+                      )}
                       onClick={() => setSelectedProduct(product)}
                     >
                       <TableCell className="font-medium">{product.name}</TableCell>
@@ -202,6 +207,22 @@ export function ProductMarket() {
                         className="w-20 text-right"
                       />
                       <span className="text-sm">units</span>
+                      <Button 
+                        type="button" 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          // Calculate max affordable quantity
+                          const maxQuantity = Math.min(
+                            selectedProduct.available,
+                            Math.floor(cash / selectedProduct.marketPrice)
+                          );
+                          handleBuyInput(selectedProduct.productId, maxQuantity.toString());
+                        }}
+                        className="ml-2 text-xs h-8"
+                      >
+                        Max Buy
+                      </Button>
                     </div>
                     {buyQuantities[selectedProduct.productId] > 0 && (
                       <div className="text-sm font-medium">
@@ -249,6 +270,20 @@ export function ProductMarket() {
                         disabled={getInventoryQuantity(selectedProduct.productId) === 0}
                       />
                       <span className="text-sm">units</span>
+                      <Button 
+                        type="button" 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          // Set to max available in inventory
+                          const maxSellable = getInventoryQuantity(selectedProduct.productId);
+                          handleSellInput(selectedProduct.productId, maxSellable.toString());
+                        }}
+                        className="ml-2 text-xs h-8"
+                        disabled={getInventoryQuantity(selectedProduct.productId) === 0}
+                      >
+                        Max Sell
+                      </Button>
                     </div>
                     {sellQuantities[selectedProduct.productId] > 0 && (
                       <div className="text-sm font-medium">

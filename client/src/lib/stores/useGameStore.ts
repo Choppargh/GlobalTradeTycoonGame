@@ -20,6 +20,8 @@ interface GameState {
   inventory: InventoryItem[];
   marketListings: ProductListing[];
   priceChanges: Record<number, 'increase' | 'decrease' | null>;
+  boughtProducts: Set<number>; // Track products bought in current location/day
+  soldProducts: Set<number>;   // Track products sold in current location/day
   
   // Game phase
   gamePhase: 'intro' | 'playing' | 'game-over';
@@ -55,6 +57,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   inventory: [],
   marketListings: [],
   priceChanges: {},
+  boughtProducts: new Set<number>(),
+  soldProducts: new Set<number>(),
   
   gamePhase: 'intro',
   isBankModalOpen: false,
@@ -88,6 +92,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       inventory: [],
       marketListings,
       priceChanges: initialPriceChanges,
+      boughtProducts: new Set<number>(),
+      soldProducts: new Set<number>(),
       gamePhase: 'playing'
     });
   },
@@ -169,7 +175,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       initialPriceChanges[listing.productId] = null;
     });
     
-    // Set new game state
+    // Set new game state and reset bought/sold products since we're in a new location/day
     set({
       currentLocation: destination,
       daysRemaining: state.daysRemaining - 1,
@@ -178,7 +184,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       marketListings: newMarketListings,
       cash: updatedCash,
       inventory: updatedInventory,
-      priceChanges: initialPriceChanges
+      priceChanges: initialPriceChanges,
+      boughtProducts: new Set<number>(),
+      soldProducts: new Set<number>()
     });
     
     // Always trigger a market event after travel
@@ -190,6 +198,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   buyProduct: (productId, quantity, price) => {
     const state = get();
     const totalCost = quantity * price;
+    
+    // Check if already sold this product today in this location
+    if (state.soldProducts.has(productId)) {
+      alert("You cannot buy a product you've already sold today at this location!");
+      return;
+    }
     
     if (state.cash < totalCost) {
       alert("Not enough cash to complete this purchase!");
@@ -240,10 +254,15 @@ export const useGameStore = create<GameState>((set, get) => ({
         : listing
     );
     
+    // Create updated sets
+    const newBoughtProducts = new Set(state.boughtProducts);
+    newBoughtProducts.add(productId);
+    
     set({
       cash: state.cash - totalCost,
       inventory: newInventory,
-      marketListings: newMarketListings
+      marketListings: newMarketListings,
+      boughtProducts: newBoughtProducts
     });
   },
   
