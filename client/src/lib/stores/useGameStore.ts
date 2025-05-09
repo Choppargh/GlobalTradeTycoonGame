@@ -269,6 +269,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   sellProduct: (productId, quantity, price) => {
     const state = get();
     
+    // Check if already bought this product today in this location
+    if (state.boughtProducts.has(productId)) {
+      alert("You cannot sell a product you've already bought today at this location!");
+      return;
+    }
+    
     // Find the product in inventory
     const inventoryItem = state.inventory.find(item => item.productId === productId);
     if (!inventoryItem || inventoryItem.quantity < quantity) {
@@ -292,9 +298,14 @@ export const useGameStore = create<GameState>((set, get) => ({
       );
     }
     
+    // Create updated sets
+    const newSoldProducts = new Set(state.soldProducts);
+    newSoldProducts.add(productId);
+    
     set({
       cash: state.cash + totalRevenue,
-      inventory: newInventory
+      inventory: newInventory,
+      soldProducts: newSoldProducts
     });
   },
   
@@ -394,6 +405,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       inventory: [],
       marketListings: [],
       priceChanges: {},
+      boughtProducts: new Set<number>(),
+      soldProducts: new Set<number>(),
       gamePhase: 'intro',
       isBankModalOpen: false,
       currentEvent: null
