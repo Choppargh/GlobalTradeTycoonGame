@@ -19,6 +19,7 @@ interface GameState {
   daysRemaining: number;
   inventory: InventoryItem[];
   marketListings: ProductListing[];
+  priceChanges: Record<number, 'increase' | 'decrease' | null>;
   
   // Game phase
   gamePhase: 'intro' | 'playing' | 'game-over';
@@ -53,6 +54,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   daysRemaining: 31,
   inventory: [],
   marketListings: [],
+  priceChanges: {},
   
   gamePhase: 'intro',
   isBankModalOpen: false,
@@ -71,6 +73,12 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Create initial market listings for this location
     const marketListings = generateMarketListings(startLocation);
     
+    // Initialize price changes
+    const initialPriceChanges: Record<number, 'increase' | 'decrease' | null> = {};
+    marketListings.forEach(listing => {
+      initialPriceChanges[listing.productId] = null;
+    });
+    
     set({
       currentLocation: startLocation,
       cash: 2000, // Start with $2k cash from initial loan
@@ -79,6 +87,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       daysRemaining: 31,
       inventory: [],
       marketListings,
+      priceChanges: initialPriceChanges,
       gamePhase: 'playing'
     });
   },
@@ -154,6 +163,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       alert(challengeMessage);
     }
     
+    // Create empty price changes record for all new product IDs
+    const initialPriceChanges: Record<number, 'increase' | 'decrease' | null> = {};
+    newMarketListings.forEach(listing => {
+      initialPriceChanges[listing.productId] = null;
+    });
+    
     // Set new game state
     set({
       currentLocation: destination,
@@ -162,7 +177,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       bankBalance: newBankBalance,
       marketListings: newMarketListings,
       cash: updatedCash,
-      inventory: updatedInventory
+      inventory: updatedInventory,
+      priceChanges: initialPriceChanges
     });
     
     // Always trigger a market event after travel
@@ -358,8 +374,10 @@ export const useGameStore = create<GameState>((set, get) => ({
       daysRemaining: 31,
       inventory: [],
       marketListings: [],
+      priceChanges: {},
       gamePhase: 'intro',
-      isBankModalOpen: false
+      isBankModalOpen: false,
+      currentEvent: null
     });
   },
   
@@ -372,6 +390,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     const state = get();
     if (!state.currentLocation) return;
     
+    // Skip random events on last day
+    if (state.daysRemaining <= 1) return;
+    
     // Generate a random event based on current location
     const event = generateRandomEvent(state.currentLocation);
     if (!event) return; // No event generated
@@ -379,14 +400,19 @@ export const useGameStore = create<GameState>((set, get) => ({
     let updatedMarketListings = [...state.marketListings];
     let updatedInventory = [...state.inventory];
     let updatedCash = state.cash;
+    let updatedPriceChanges = {...state.priceChanges};
     
     // Apply event effects
     switch (event.type) {
       case 'price_change':
       case 'market_crash':
-      case 'market_boom':
-        updatedMarketListings = applyEventToMarket(event, state.marketListings);
+      case 'market_boom': {
+        // Apply market event with price tracking
+        const result = applyEventToMarket(event, state.marketListings, state.marketListings);
+        updatedMarketListings = result.listings;
+        updatedPriceChanges = result.priceChanges;
         break;
+      }
         
       case 'inventory_boost':
         updatedInventory = applyEventToInventory(event, state.inventory);
@@ -399,12 +425,36 @@ export const useGameStore = create<GameState>((set, get) => ({
         break;
     }
     
+    // Unexpected inventory event - give random products if no inventory
+    if (event.type === 'inventory_boost' && state.inventory.length === 0) {
+      // Get a random product from current market
+      if (state.marketListings.length > 0) {
+        const randomIndex = Math.floor(Math.random() * state.marketListings.length);
+        const randomProduct = state.marketListings[randomIndex];
+        // Give 1-10 random units
+        const randomQuantity = Math.floor(Math.random() * 10) + 1;
+        
+        updatedInventory = [
+          {
+            productId: randomProduct.productId,
+            name: randomProduct.name,
+            quantity: randomQuantity,
+            purchasePrice: randomProduct.marketPrice
+          }
+        ];
+        
+        // Show alert about surprise inventory
+        alert(`Surprise! You've received ${randomQuantity} units of ${randomProduct.name} for free.`);
+      }
+    }
+    
     // Update the state with event effects and the current event
     set({
       currentEvent: event,
       marketListings: updatedMarketListings,
       inventory: updatedInventory,
-      cash: updatedCash
+      cash: updatedCash,
+      priceChanges: updatedPriceChanges
     });
   },
   
