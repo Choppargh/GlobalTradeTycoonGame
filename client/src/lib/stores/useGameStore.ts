@@ -422,11 +422,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     const state = get();
     if (!state.currentLocation) return;
     
-    // Skip random events on last day
-    if (state.daysRemaining <= 1) return;
-    
-    // Generate a random event based on current location
-    const event = generateRandomEvent(state.currentLocation);
+    // Generate a random event based on current location and days remaining
+    // The function will internally skip events on the last day
+    const event = generateRandomEvent(state.currentLocation, state.daysRemaining);
     if (!event) return; // No event generated
     
     let updatedMarketListings = [...state.marketListings];
