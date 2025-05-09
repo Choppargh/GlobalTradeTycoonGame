@@ -61,6 +61,39 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Game theme colors from the loading image
+        tycoon: {
+          // Teal from the globe/sea
+          teal: {
+            DEFAULT: "#2B6D77",
+            light: "#3C8D99",
+            dark: "#1B5D67",
+          },
+          // Navy from the suit
+          navy: {
+            DEFAULT: "#1E3A5F",
+            light: "#2A4B75",
+            dark: "#122944",
+          },
+          // Orange from the shipping containers
+          orange: {
+            DEFAULT: "#D86D29",
+            light: "#E8813D",
+            dark: "#B85A1D",
+          },
+          // Golden cream from the title text
+          cream: {
+            DEFAULT: "#F5E7C1",
+            light: "#FFF8E0",
+            dark: "#E6D8B2",
+          },
+          // Background gradient colors
+          bg: {
+            top: "#42886A",    // Green at top
+            middle: "#BD9F67", // Gold in middle
+            bottom: "#C97C46", // Orange at bottom
+          },
+        },
       },
       keyframes: {
         "accordion-down": {
