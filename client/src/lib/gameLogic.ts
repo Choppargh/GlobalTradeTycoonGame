@@ -279,14 +279,37 @@ export function generateRandomEvent(currentLocation: Location): GameEvent | null
 }
 
 // Apply a random event to market listings
-export function applyEventToMarket(event: GameEvent, marketListings: ProductListing[]): ProductListing[] {
+export function applyEventToMarket(
+  event: GameEvent, 
+  marketListings: ProductListing[],
+  oldMarketListings?: ProductListing[]
+): { listings: ProductListing[], priceChanges: Record<number, 'increase' | 'decrease' | null> } {
   let updatedListings = [...marketListings];
+  let priceChanges: Record<number, 'increase' | 'decrease' | null> = {};
+  
+  // Initialize all products to null (no change)
+  marketListings.forEach(listing => {
+    priceChanges[listing.productId] = null;
+  });
   
   switch (event.type) {
     case 'price_change':
       if (event.affectedProducts && event.modifier) {
         updatedListings = updatedListings.map(listing => {
           if (event.affectedProducts?.includes(listing.productId)) {
+            // If we have old listings to compare with
+            if (oldMarketListings) {
+              const oldListing = oldMarketListings.find(old => old.productId === listing.productId);
+              if (oldListing) {
+                const oldPrice = oldListing.marketPrice;
+                const newPrice = Math.round(listing.marketPrice * event.modifier! * 100) / 100;
+                priceChanges[listing.productId] = newPrice > oldPrice ? 'increase' : 'decrease';
+              }
+            } else {
+              // If no old listings, just determine based on modifier
+              priceChanges[listing.productId] = event.modifier && event.modifier > 1 ? 'increase' : 'decrease';
+            }
+            
             return {
               ...listing,
               marketPrice: Math.round(listing.marketPrice * event.modifier! * 100) / 100
@@ -300,10 +323,24 @@ export function applyEventToMarket(event: GameEvent, marketListings: ProductList
     case 'market_crash':
     case 'market_boom':
       if (event.modifier) {
-        updatedListings = updatedListings.map(listing => ({
-          ...listing,
-          marketPrice: Math.round(listing.marketPrice * event.modifier! * 100) / 100
-        }));
+        updatedListings = updatedListings.map(listing => {
+          // Determine price change direction
+          if (oldMarketListings) {
+            const oldListing = oldMarketListings.find(old => old.productId === listing.productId);
+            if (oldListing) {
+              const oldPrice = oldListing.marketPrice;
+              const newPrice = Math.round(listing.marketPrice * event.modifier! * 100) / 100;
+              priceChanges[listing.productId] = newPrice > oldPrice ? 'increase' : 'decrease';
+            }
+          } else {
+            priceChanges[listing.productId] = event.type === 'market_boom' ? 'increase' : 'decrease';
+          }
+          
+          return {
+            ...listing,
+            marketPrice: Math.round(listing.marketPrice * event.modifier! * 100) / 100
+          };
+        });
       }
       break;
       
@@ -311,7 +348,7 @@ export function applyEventToMarket(event: GameEvent, marketListings: ProductList
       break;
   }
   
-  return updatedListings;
+  return { listings: updatedListings, priceChanges };
 }
 
 // Apply inventory boost event
