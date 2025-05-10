@@ -113,7 +113,6 @@ export function ProductMarket() {
                 <TableHead>Available</TableHead>
                 <TableHead>In Stock</TableHead>
                 <TableHead className="text-right">Action</TableHead>
-                <TableHead className="text-right">Info</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -146,19 +145,12 @@ export function ProductMarket() {
                           Buy/Sell
                         </Button>
                       </TableCell>
-                      <TableCell className="text-right">
-                        {inventoryQty > 0 && (
-                          <div className="text-xs text-muted-foreground">
-                            Avg. Cost: {formatCurrency(inventory.find(i => i.productId === product.productId)?.purchasePrice || 0)}
-                          </div>
-                        )}
-                      </TableCell>
                     </TableRow>
                   );
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-4">
+                  <TableCell colSpan={6} className="text-center py-4">
                     No products available at this location. Try traveling elsewhere!
                   </TableCell>
                 </TableRow>
