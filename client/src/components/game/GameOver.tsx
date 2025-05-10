@@ -46,7 +46,15 @@ export function GameOver() {
   const playerRank = leaderboard.findIndex(entry => entry.username === username) + 1;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4"
+      style={{
+        backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <Card className="w-full max-w-2xl">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Game Over</CardTitle>
