@@ -71,7 +71,7 @@ export function GameHeader() {
               </div>
               <div className="font-semibold">{formatCurrency(cash)}</div>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => setBankModalOpen(true)}>
+            <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => setBankModalOpen(true)}>
               Bank
             </Button>
           </div>

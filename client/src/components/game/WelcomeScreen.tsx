@@ -10,7 +10,7 @@ export function WelcomeScreen() {
   const [activeScreen, setActiveScreen] = useState<'welcome' | 'play' | 'leaderboard' | 'rules'>('welcome');
 
   const { data: leaderboardData = [] } = useQuery<LeaderboardEntry[]>({
-    queryKey: ['scores'],
+    queryKey: ['/scores'],
     queryFn: getQueryFn<LeaderboardEntry[]>({
       on401: 'returnNull',
     }),
