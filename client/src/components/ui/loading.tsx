@@ -10,19 +10,15 @@ export function Loading({ isLoading }: LoadingProps) {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden" 
          style={{
-           background: `linear-gradient(to bottom, 
-             #42886A 0%, 
-             #BD9F67 50%, 
-             #C97C46 100%)`
+           backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
+           backgroundSize: 'cover',
+           backgroundPosition: 'center',
+           backgroundRepeat: 'no-repeat'
          }}>
       <div className="text-center p-6 max-w-lg">
-        {/* Title */}
+        {/* Logo */}
         <div className="mb-10">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-2 text-tycoon-cream drop-shadow-[4px_4px_0_rgba(30,58,95,0.8)]">
-            GLOBAL<br />
-            TRADING<br />
-            TYCOON
-          </h1>
+          <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-80 mx-auto" />
         </div>
         
         {/* Loading animation */}
