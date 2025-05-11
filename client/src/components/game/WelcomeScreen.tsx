@@ -27,9 +27,13 @@ export function WelcomeScreen() {
 
 
       {activeScreen === 'welcome' && (
-        <div className="flex flex-col items-center justify-center max-w-xl mx-auto p-6 space-y-10">
-          <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-80 mx-auto" />
+        <div className="flex flex-col md:flex-row items-center justify-center md:justify-between max-w-5xl w-full mx-auto p-6 gap-8">
+          {/* Logo on the left on desktop, centered on mobile */}
+          <div className="flex justify-center md:justify-start">
+            <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-80" />
+          </div>
           
+          {/* Buttons on the right on desktop, centered below on mobile */}
           <div className="flex flex-col space-y-6 w-64">
             <button 
               onClick={() => setActiveScreen('play')} 

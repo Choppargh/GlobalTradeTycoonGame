@@ -93,11 +93,11 @@ export function TravelOptions() {
                 <ArrowRightIcon className="h-4 w-4" />
               </Button>
               
-              <div className="mt-4 p-3 bg-muted/50 rounded-md text-sm">
-                <p className="font-medium">Days remaining: {daysRemaining}</p>
-                <p className="hidden md:block">• Each journey takes 1 day</p>
-                <p className="hidden md:block">• Your loan of {formatCurrency(loanAmount)} will increase by 5% upon travel</p>
-                <p className="hidden md:block">• Bank interest of 3% will be applied to your balance</p>
+              <div className="mt-4 p-3 bg-muted/50 rounded-md text-sm hidden md:block">
+                <p className="font-medium">Travel Information:</p>
+                <p>• Each journey takes 1 day</p>
+                <p>• Your loan of {formatCurrency(loanAmount)} will increase by 5% upon travel</p>
+                <p>• Bank interest of 3% will be applied to your balance</p>
               </div>
             </>
           )}
