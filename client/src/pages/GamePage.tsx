@@ -65,24 +65,24 @@ export default function GamePage() {
           {/* Tabbed interface on mobile, hidden on desktop */}
           <div className="block lg:hidden w-full">
             <Tabs defaultValue="market" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-2 w-full mb-2 bg-amber-50">
+              <TabsList className="grid grid-cols-2 w-full bg-amber-50 border-b border-amber-200">
                 <TabsTrigger 
                   value="market" 
-                  className="text-base font-medium data-[state=active]:bg-amber-100 data-[state=active]:text-amber-800"
+                  className="text-base font-medium data-[state=active]:bg-amber-100 data-[state=active]:text-amber-800 rounded-b-none"
                 >
                   Market
                 </TabsTrigger>
                 <TabsTrigger 
                   value="inventory" 
-                  className="text-base font-medium data-[state=active]:bg-amber-100 data-[state=active]:text-amber-800"
+                  className="text-base font-medium data-[state=active]:bg-amber-100 data-[state=active]:text-amber-800 rounded-b-none"
                 >
                   Inventory
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="market" className="mt-0 pt-2">
+              <TabsContent value="market" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
                 <ProductMarket />
               </TabsContent>
-              <TabsContent value="inventory" className="mt-0 pt-2">
+              <TabsContent value="inventory" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
                 <Inventory />
               </TabsContent>
             </Tabs>
