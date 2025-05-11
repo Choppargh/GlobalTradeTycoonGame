@@ -14,7 +14,10 @@ export default function GamePage() {
     currentLocation, 
     currentEvent, 
     clearCurrentEvent, 
-    triggerRandomEvent 
+    triggerRandomEvent,
+    isTravelRiskDialogOpen,
+    travelRiskMessage,
+    clearTravelRiskDialog
   } = useGameStore();
   
   // Check for random events periodically
@@ -76,6 +79,13 @@ export default function GamePage() {
       <EventNotification 
         event={currentEvent} 
         onClose={clearCurrentEvent} 
+      />
+      
+      {/* Travel Risk Notification */}
+      <TravelRiskNotification
+        isOpen={isTravelRiskDialogOpen}
+        message={travelRiskMessage}
+        onClose={clearTravelRiskDialog}
       />
     </div>
   );
