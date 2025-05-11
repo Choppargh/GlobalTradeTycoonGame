@@ -7,6 +7,7 @@ import { Inventory } from '@/components/game/Inventory';
 import { TravelOptions } from '@/components/game/TravelOptions';
 import { BankInterface } from '@/components/game/BankInterface';
 import { EventNotification } from '@/components/game/EventNotification';
+import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
 
 export default function GamePage() {
   const { 
