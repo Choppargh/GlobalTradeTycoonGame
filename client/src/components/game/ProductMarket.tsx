@@ -141,8 +141,7 @@ export function ProductMarket() {
                         <Button 
                           size="sm"
                           variant="default"
-                          className="bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 active:scale-95 transition-transform"
-                          onClick={() => setSelectedProduct(product)}
+                          className="bg-blue-600 text-white hover:bg-blue-700"
                         >
                           Buy/Sell
                         </Button>
@@ -167,7 +166,13 @@ export function ProductMarket() {
         open={selectedProduct !== null}
         onOpenChange={(open) => !open && setSelectedProduct(null)}
       >
-        <DialogContent className="bg-white w-[95vw] max-w-[500px] sm:w-auto animate-in fade-in-50 zoom-in-95 duration-300">
+        <DialogContent className="bg-white w-[95vw] max-w-[500px] sm:w-auto" asChild>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+          >
             {selectedProduct && (
             <>
               <DialogHeader>
@@ -337,6 +342,7 @@ export function ProductMarket() {
               </DialogFooter>
             </>
           )}
+          </motion.div>
         </DialogContent>
       </Dialog>
     </>
