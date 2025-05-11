@@ -60,15 +60,39 @@ export default function GamePage() {
           <TravelOptions />
         </div>
         
-        {/* Market and Inventory (side by side on large screens) */}
+        {/* Market and Inventory - Tabbed on mobile, side-by-side on desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Product Market */}
-          <div className="col-span-1">
-            <ProductMarket />
+          {/* Tabbed interface on mobile, hidden on desktop */}
+          <div className="block lg:hidden w-full">
+            <Tabs defaultValue="market" value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid grid-cols-2 w-full mb-2">
+                <TabsTrigger 
+                  value="market" 
+                  className="text-base font-medium"
+                >
+                  Market
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="inventory" 
+                  className="text-base font-medium"
+                >
+                  Inventory
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="market" className="mt-0 pt-2">
+                <ProductMarket />
+              </TabsContent>
+              <TabsContent value="inventory" className="mt-0 pt-2">
+                <Inventory />
+              </TabsContent>
+            </Tabs>
           </div>
           
-          {/* Inventory */}
-          <div className="col-span-1">
+          {/* Desktop layout - side by side, hidden on mobile */}
+          <div className="hidden lg:block col-span-1">
+            <ProductMarket />
+          </div>
+          <div className="hidden lg:block col-span-1">
             <Inventory />
           </div>
         </div>

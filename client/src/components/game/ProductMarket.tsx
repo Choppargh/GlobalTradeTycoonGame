@@ -97,14 +97,14 @@ export function ProductMarket() {
 
   return (
     <>
-      <Card className="col-span-full lg:col-span-2 h-full overflow-hidden">
-        <CardHeader className="pb-3">
+      <Card className="shadow-none rounded-md h-full overflow-hidden">
+        <CardHeader className="pb-3 pt-2 px-3">
           <CardTitle>Market</CardTitle>
           <CardDescription>
             Buy low and sell high! Available products: {marketListings.length}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-0 overflow-auto max-h-[450px]">
+        <CardContent className="p-0 overflow-auto max-h-[350px] sm:max-h-[450px]">
           <Table>
             <TableHeader className="sticky top-0 bg-card">
               <TableRow>
