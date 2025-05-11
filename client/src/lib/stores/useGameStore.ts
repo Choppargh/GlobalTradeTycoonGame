@@ -411,7 +411,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ gamePhase: 'game-over' });
     } catch (error) {
       console.error("Failed to submit score:", error);
-      alert("Failed to submit your score. Please try again.");
+      
+      // Show travel risk dialog for failed score submission
+      set({
+        travelRiskMessage: "Failed to submit your score. Please try again.",
+        isTravelRiskDialogOpen: true
+      });
     }
   },
   
@@ -495,8 +500,11 @@ export const useGameStore = create<GameState>((set, get) => ({
           }
         ];
         
-        // Show alert about surprise inventory
-        alert(`Surprise! You've received ${randomQuantity} units of ${randomProduct.name} for free.`);
+        // Show travel risk dialog about surprise inventory
+        set({
+          travelRiskMessage: `Surprise! You've received ${randomQuantity} units of ${randomProduct.name} for free.`,
+          isTravelRiskDialogOpen: true
+        });
       }
     }
     
