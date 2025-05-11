@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { GameHeader } from '@/components/game/GameHeader';
 import { LocationMap } from '@/components/game/LocationMap';
@@ -8,8 +8,10 @@ import { TravelOptions } from '@/components/game/TravelOptions';
 import { BankInterface } from '@/components/game/BankInterface';
 import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
+  const [activeTab, setActiveTab] = useState("market");
   const { 
     currentLocation, 
     currentEvent, 
