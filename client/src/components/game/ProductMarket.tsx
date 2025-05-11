@@ -138,13 +138,18 @@ export function ProductMarket() {
                       <TableCell>{product.available}</TableCell>
                       <TableCell>{inventoryQty}</TableCell>
                       <TableCell className="text-right">
-                        <Button 
-                          size="sm"
-                          variant="default"
-                          className="bg-blue-600 text-white hover:bg-blue-700"
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                         >
-                          Buy/Sell
-                        </Button>
+                          <Button 
+                            size="sm"
+                            variant="default"
+                            className="bg-blue-600 text-white hover:bg-blue-700"
+                          >
+                            Buy/Sell
+                          </Button>
+                        </motion.div>
                       </TableCell>
                     </TableRow>
                   );
