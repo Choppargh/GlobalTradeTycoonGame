@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Logo } from '@/components/ui/logo';
 import { UsernameForm } from './UsernameForm';
 import { Leaderboard } from './Leaderboard';
 import { useQuery } from '@tanstack/react-query';
@@ -20,12 +19,13 @@ export function WelcomeScreen() {
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
       style={{
         backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundSize: 'contain',
+        backgroundPosition: 'center top',
+        backgroundRepeat: 'repeat-y',
+        backgroundAttachment: 'fixed',
+        backgroundColor: '#000'
       }}
     >
-      <Logo />
 
       {activeScreen === 'welcome' && (
         <div className="flex flex-col items-center justify-center max-w-xl mx-auto p-6 space-y-10">
