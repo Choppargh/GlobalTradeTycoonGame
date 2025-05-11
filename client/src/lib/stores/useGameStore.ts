@@ -68,6 +68,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   gamePhase: 'intro',
   isBankModalOpen: false,
   currentEvent: null,
+  travelRiskMessage: '',
+  isTravelRiskDialogOpen: false,
   
   setUsername: (username) => {
     set({ username });
@@ -142,8 +144,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       
       challengeMessage = `${randomReason} You lost $${lossAmount.toLocaleString()}.`;
       
-      // Show an alert
-      alert(challengeMessage);
+      // Show travel risk dialog
+      set({
+        travelRiskMessage: challengeMessage,
+        isTravelRiskDialogOpen: true
+      });
     }
     
     // Challenge 2: Inventory loss due to fire/theft (1 in 200 chance)
@@ -170,8 +175,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       
       challengeMessage = `${randomReason} You lost a significant portion of your inventory.`;
       
-      // Show an alert
-      alert(challengeMessage);
+      // Show travel risk dialog
+      set({
+        travelRiskMessage: challengeMessage,
+        isTravelRiskDialogOpen: true
+      });
     }
     
     // Create empty price changes record for all new product IDs
@@ -504,5 +512,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   clearCurrentEvent: () => {
     set({ currentEvent: null });
+  },
+  
+  clearTravelRiskDialog: () => {
+    set({ 
+      isTravelRiskDialogOpen: false,
+      travelRiskMessage: ''
+    });
   }
 }));
