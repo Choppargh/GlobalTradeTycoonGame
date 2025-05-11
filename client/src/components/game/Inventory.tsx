@@ -29,8 +29,8 @@ export function Inventory() {
   };
 
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-3">
+    <Card className="shadow-none rounded-md h-full overflow-hidden">
+      <CardHeader className="pb-3 pt-2 px-3">
         <div className="flex justify-between items-center">
           <div>
             <CardTitle>Inventory</CardTitle>
@@ -44,13 +44,13 @@ export function Inventory() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-0 overflow-auto max-h-[250px]">
+      <CardContent className="p-0 overflow-auto max-h-[350px] sm:max-h-[450px]">
         <Table>
           <TableHeader className="sticky top-0 bg-card">
             <TableRow>
               <TableHead>Product</TableHead>
-              <TableHead className="text-right">Quantity</TableHead>
-              <TableHead className="text-right">Bought At</TableHead>
+              <TableHead className="text-right">Qty</TableHead>
+              <TableHead className="text-right hidden xs:table-cell">Bought At</TableHead>
               <TableHead className="text-right">Value</TableHead>
             </TableRow>
           </TableHeader>
@@ -60,7 +60,7 @@ export function Inventory() {
                 <TableRow key={item.productId}>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell className="text-right">{item.quantity}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(item.purchasePrice)}</TableCell>
+                  <TableCell className="text-right hidden xs:table-cell">{formatCurrency(item.purchasePrice)}</TableCell>
                   <TableCell className="text-right">{formatCurrency(item.quantity * item.purchasePrice)}</TableCell>
                 </TableRow>
               ))
