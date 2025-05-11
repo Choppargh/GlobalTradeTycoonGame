@@ -11,11 +11,9 @@ export function Loading({ isLoading }: LoadingProps) {
     <div className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden" 
          style={{
            backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
-           backgroundSize: 'contain',
-           backgroundPosition: 'center top',
-           backgroundRepeat: 'repeat-y',
-           backgroundAttachment: 'fixed',
-           backgroundColor: '#000'
+           backgroundSize: 'cover',
+           backgroundPosition: 'center',
+           backgroundRepeat: 'no-repeat'
          }}>
       <div className="text-center p-6 max-w-lg">
         {/* Logo */}
