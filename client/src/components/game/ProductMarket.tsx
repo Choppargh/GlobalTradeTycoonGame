@@ -109,10 +109,10 @@ export function ProductMarket() {
             <TableHeader className="sticky top-0 bg-card">
               <TableRow>
                 <TableHead>Product</TableHead>
-                <TableHead>Market Price</TableHead>
-                <TableHead>Demand Price</TableHead>
-                <TableHead>Available</TableHead>
-                <TableHead>In Stock</TableHead>
+                <TableHead className="hidden xs:table-cell">Market</TableHead>
+                <TableHead>Demand</TableHead>
+                <TableHead className="hidden sm:table-cell">Avail</TableHead>
+                <TableHead className="hidden xs:table-cell">Stock</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -133,10 +133,10 @@ export function ProductMarket() {
                       onClick={() => setSelectedProduct(product)}
                     >
                       <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>{formatCurrency(product.marketPrice)}</TableCell>
+                      <TableCell className="hidden xs:table-cell">{formatCurrency(product.marketPrice)}</TableCell>
                       <TableCell>{formatCurrency(demandPrice)}</TableCell>
-                      <TableCell>{product.available}</TableCell>
-                      <TableCell>{inventoryQty}</TableCell>
+                      <TableCell className="hidden sm:table-cell">{product.available}</TableCell>
+                      <TableCell className="hidden xs:table-cell">{inventoryQty}</TableCell>
                       <TableCell className="text-right">
                         <Button 
                           size="sm"
