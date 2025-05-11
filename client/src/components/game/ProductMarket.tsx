@@ -133,34 +133,8 @@ export function ProductMarket() {
                       onClick={() => setSelectedProduct(product)}
                     >
                       <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>
-                        <motion.div
-                          animate={
-                            priceChanges[product.productId] === 'increase' 
-                              ? { color: ['#000', '#16a34a', '#000'] }
-                              : priceChanges[product.productId] === 'decrease'
-                                ? { color: ['#000', '#dc2626', '#000'] }
-                                : {}
-                          }
-                          transition={{ duration: 1 }}
-                        >
-                          {formatCurrency(product.marketPrice)}
-                        </motion.div>
-                      </TableCell>
-                      <TableCell>
-                        <motion.div
-                          animate={
-                            priceChanges[product.productId] === 'increase' 
-                              ? { color: ['#000', '#16a34a', '#000'] }
-                              : priceChanges[product.productId] === 'decrease'
-                                ? { color: ['#000', '#dc2626', '#000'] }
-                                : {}
-                          }
-                          transition={{ duration: 1 }}
-                        >
-                          {formatCurrency(demandPrice)}
-                        </motion.div>
-                      </TableCell>
+                      <TableCell>{formatCurrency(product.marketPrice)}</TableCell>
+                      <TableCell>{formatCurrency(demandPrice)}</TableCell>
                       <TableCell>{product.available}</TableCell>
                       <TableCell>{inventoryQty}</TableCell>
                       <TableCell className="text-right">
@@ -244,32 +218,27 @@ export function ProductMarket() {
                         />
                         <span className="text-sm ml-2">units</span>
                       </div>
-                      <motion.div
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.95 }}
+                      <Button 
+                        type="button" 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          // Calculate max affordable quantity
+                          const maxQuantity = Math.min(
+                            selectedProduct.available,
+                            Math.floor(cash / selectedProduct.marketPrice)
+                          );
+                          handleBuyInput(selectedProduct.productId, maxQuantity.toString());
+                        }}
+                        className="w-full sm:w-auto text-xs h-8"
+                        disabled={
+                          cash < selectedProduct.marketPrice || 
+                          selectedProduct.available <= 0 ||
+                          soldProducts.has(selectedProduct.productId)
+                        }
                       >
-                        <Button 
-                          type="button" 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => {
-                            // Calculate max affordable quantity
-                            const maxQuantity = Math.min(
-                              selectedProduct.available,
-                              Math.floor(cash / selectedProduct.marketPrice)
-                            );
-                            handleBuyInput(selectedProduct.productId, maxQuantity.toString());
-                          }}
-                          className="w-full sm:w-auto text-xs h-8"
-                          disabled={
-                            cash < selectedProduct.marketPrice || 
-                            selectedProduct.available <= 0 ||
-                            soldProducts.has(selectedProduct.productId)
-                          }
-                        >
-                          Max Buy
-                        </Button>
-                      </motion.div>
+                        Max Buy
+                      </Button>
                     </div>
                     {buyQuantities[selectedProduct.productId] > 0 && (
                       <div className="text-sm font-medium bg-gray-50 p-2 rounded-md">
@@ -277,28 +246,22 @@ export function ProductMarket() {
                       </div>
                     )}
                   </div>
-                  <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full"
+                  <Button 
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => {
+                      handleBuy(selectedProduct);
+                      setSelectedProduct(null);
+                    }}
+                    disabled={
+                      !buyQuantities[selectedProduct.productId] || 
+                      buyQuantities[selectedProduct.productId] <= 0 ||
+                      buyQuantities[selectedProduct.productId] > selectedProduct.available ||
+                      calculateBuyTotal(selectedProduct) > cash ||
+                      soldProducts.has(selectedProduct.productId)
+                    }
                   >
-                    <Button 
-                      className="w-full bg-green-600 hover:bg-green-700 text-white"
-                      onClick={() => {
-                        handleBuy(selectedProduct);
-                        setSelectedProduct(null);
-                      }}
-                      disabled={
-                        !buyQuantities[selectedProduct.productId] || 
-                        buyQuantities[selectedProduct.productId] <= 0 ||
-                        buyQuantities[selectedProduct.productId] > selectedProduct.available ||
-                        calculateBuyTotal(selectedProduct) > cash ||
-                        soldProducts.has(selectedProduct.productId)
-                      }
-                    >
-                      Buy
-                    </Button>
-                  </motion.div>
+                    Buy
+                  </Button>
                 </div>
                 
                 {/* Divider for mobile only */}
@@ -333,28 +296,23 @@ export function ProductMarket() {
                         />
                         <span className="text-sm ml-2">units</span>
                       </div>
-                      <motion.div
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.95 }}
+                      <Button 
+                        type="button" 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          // Set to max available in inventory
+                          const maxSellable = getInventoryQuantity(selectedProduct.productId);
+                          handleSellInput(selectedProduct.productId, maxSellable.toString());
+                        }}
+                        className="w-full sm:w-auto text-xs h-8"
+                        disabled={
+                          getInventoryQuantity(selectedProduct.productId) === 0 ||
+                          boughtProducts.has(selectedProduct.productId)
+                        }
                       >
-                        <Button 
-                          type="button" 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => {
-                            // Set to max available in inventory
-                            const maxSellable = getInventoryQuantity(selectedProduct.productId);
-                            handleSellInput(selectedProduct.productId, maxSellable.toString());
-                          }}
-                          className="w-full sm:w-auto text-xs h-8"
-                          disabled={
-                            getInventoryQuantity(selectedProduct.productId) === 0 ||
-                            boughtProducts.has(selectedProduct.productId)
-                          }
-                        >
-                          Max Sell
-                        </Button>
-                      </motion.div>
+                        Max Sell
+                      </Button>
                     </div>
                     {sellQuantities[selectedProduct.productId] > 0 && (
                       <div className="text-sm font-medium bg-gray-50 p-2 rounded-md">
