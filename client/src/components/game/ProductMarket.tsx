@@ -333,23 +333,28 @@ export function ProductMarket() {
                         />
                         <span className="text-sm ml-2">units</span>
                       </div>
-                      <Button 
-                        type="button" 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => {
-                          // Set to max available in inventory
-                          const maxSellable = getInventoryQuantity(selectedProduct.productId);
-                          handleSellInput(selectedProduct.productId, maxSellable.toString());
-                        }}
-                        className="w-full sm:w-auto text-xs h-8"
-                        disabled={
-                          getInventoryQuantity(selectedProduct.productId) === 0 ||
-                          boughtProducts.has(selectedProduct.productId)
-                        }
+                      <motion.div
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.95 }}
                       >
-                        Max Sell
-                      </Button>
+                        <Button 
+                          type="button" 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            // Set to max available in inventory
+                            const maxSellable = getInventoryQuantity(selectedProduct.productId);
+                            handleSellInput(selectedProduct.productId, maxSellable.toString());
+                          }}
+                          className="w-full sm:w-auto text-xs h-8"
+                          disabled={
+                            getInventoryQuantity(selectedProduct.productId) === 0 ||
+                            boughtProducts.has(selectedProduct.productId)
+                          }
+                        >
+                          Max Sell
+                        </Button>
+                      </motion.div>
                     </div>
                     {sellQuantities[selectedProduct.productId] > 0 && (
                       <div className="text-sm font-medium bg-gray-50 p-2 rounded-md">
