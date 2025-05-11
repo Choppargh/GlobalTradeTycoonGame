@@ -97,7 +97,7 @@ export function ProductMarket() {
 
   return (
     <>
-      <Card className="shadow-none rounded-md h-full overflow-hidden">
+      <Card className="shadow-none rounded-none border-0 h-full overflow-hidden">
         <CardHeader className="pb-3 pt-2 px-3">
           <CardTitle>Market</CardTitle>
           <CardDescription>
