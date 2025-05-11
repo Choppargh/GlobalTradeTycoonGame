@@ -387,12 +387,17 @@ export function ProductMarket() {
               </div>
               
               <DialogFooter>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setSelectedProduct(null)}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Close
-                </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setSelectedProduct(null)}
+                  >
+                    Close
+                  </Button>
+                </motion.div>
               </DialogFooter>
             </>
           )}
