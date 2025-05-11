@@ -31,6 +31,11 @@ interface GameState {
   triggerRandomEvent: () => void;
   clearCurrentEvent: () => void;
   
+  // Travel risks
+  travelRiskMessage: string;
+  isTravelRiskDialogOpen: boolean;
+  clearTravelRiskDialog: () => void;
+  
   // Game actions
   setUsername: (username: string) => void;
   startGame: () => void;
