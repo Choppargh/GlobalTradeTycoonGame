@@ -49,10 +49,11 @@ export function GameOver() {
     <div className="flex flex-col items-center justify-center min-h-screen p-4"
       style={{
         backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
+        backgroundSize: 'contain',
+        backgroundPosition: 'center top',
+        backgroundRepeat: 'repeat-y',
+        backgroundAttachment: 'fixed',
+        backgroundColor: '#000'
       }}
     >
       <Card className="w-full max-w-2xl">

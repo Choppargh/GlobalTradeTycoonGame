@@ -38,10 +38,11 @@ export default function GamePage() {
     <div className="min-h-screen p-4 space-y-4 pb-8 overflow-y-auto"
       style={{
         backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
+        backgroundSize: 'contain',
+        backgroundPosition: 'center top',
+        backgroundRepeat: 'repeat-y',
+        backgroundAttachment: 'fixed',
+        backgroundColor: '#000'
       }}
     >
       {/* Game Header with stats */}
