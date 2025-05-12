@@ -30,11 +30,11 @@ export function WelcomeScreen() {
         <div className="flex flex-col md:flex-row items-center justify-center md:justify-between max-w-5xl w-full mx-auto p-6 gap-8">
           {/* Logo on the left on desktop, centered on mobile */}
           <div className="flex justify-center md:justify-start">
-            <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-80" />
+            <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-40 sm:w-60 md:w-80" />
           </div>
           
           {/* Buttons on the right on desktop, centered below on mobile */}
-          <div className="flex flex-col space-y-6 w-64">
+          <div className="flex flex-col space-y-4 md:space-y-6 w-32 sm:w-48 md:w-64">
             <button 
               onClick={() => setActiveScreen('play')} 
               className="transition-transform hover:scale-105 focus:outline-none"
