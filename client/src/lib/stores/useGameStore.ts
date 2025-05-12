@@ -36,6 +36,10 @@ interface GameState {
   isTravelRiskDialogOpen: boolean;
   clearTravelRiskDialog: () => void;
   
+  // End game confirmation
+  isEndGameConfirmationOpen: boolean;
+  setEndGameConfirmationOpen: (isOpen: boolean) => void;
+  
   // Game actions
   setUsername: (username: string) => void;
   startGame: () => void;
@@ -49,6 +53,8 @@ interface GameState {
   // UI states
   isBankModalOpen: boolean;
   setBankModalOpen: (isOpen: boolean) => void;
+  isEndGameConfirmationOpen: boolean;
+  setEndGameConfirmationOpen: (isOpen: boolean) => void;
   
   // Game state persistence (for PWA offline support)
   saveGameState: () => void;
@@ -75,6 +81,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   currentEvent: null,
   travelRiskMessage: '',
   isTravelRiskDialogOpen: false,
+  isEndGameConfirmationOpen: false,
   
   setUsername: (username) => {
     set({ username });
@@ -461,6 +468,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   setBankModalOpen: (isOpen) => {
     set({ isBankModalOpen: isOpen });
+  },
+  
+  setEndGameConfirmationOpen: (isOpen) => {
+    set({ isEndGameConfirmationOpen: isOpen });
   },
   
   // Random event handlers
