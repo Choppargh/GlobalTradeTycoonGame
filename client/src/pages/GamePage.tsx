@@ -26,12 +26,12 @@ export default function GamePage() {
   useEffect(() => {
     if (!currentLocation) return;
     
-    // Try to trigger a random event every 10-15 seconds (for testing)
+    // Try to trigger a random event every 20-30 seconds (reduced frequency)
     const eventCheckInterval = setInterval(() => {
       if (!currentEvent) {
         triggerRandomEvent();
       }
-    }, Math.random() * 5000 + 10000); // Between 10-15 seconds for testing
+    }, Math.random() * 10000 + 20000); // Between 20-30 seconds
     
     return () => clearInterval(eventCheckInterval);
   }, [currentLocation, currentEvent, triggerRandomEvent]);
@@ -41,7 +41,7 @@ export default function GamePage() {
   }
 
   return (
-    <div className="min-h-screen p-4 space-y-4 pb-8 overflow-y-auto"
+    <div className="min-h-screen p-4 space-y-4 pb-8 overflow-x-hidden scrollbar-hide"
       style={{
         backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
         backgroundSize: 'cover',
