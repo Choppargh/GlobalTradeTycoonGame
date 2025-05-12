@@ -28,7 +28,7 @@ export function GameHeader() {
   };
 
   return (
-    <div className="bg-card shadow p-4 rounded-lg">
+    <div className="bg-card shadow-sm p-4 rounded-lg border border-black">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
           <div className="flex space-x-2">
@@ -64,14 +64,14 @@ export function GameHeader() {
             className="flex items-center justify-between p-3 bg-background rounded-md cursor-pointer hover:bg-muted/50"
             onClick={() => setBankModalOpen(true)}
           >
-            <div>
+            <div className="pr-4">
               <div className="text-sm font-medium">
                 <Banknote className="inline-block w-4 h-4 mr-1" />
                 Cash
               </div>
               <div className="font-semibold">{formatCurrency(cash)}</div>
             </div>
-            <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => setBankModalOpen(true)}>
+            <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white ml-2" onClick={() => setBankModalOpen(true)}>
               Bank
             </Button>
           </div>
