@@ -5,8 +5,20 @@ import {
   Banknote, 
   CalendarIcon, 
   CalculatorIcon,
-  Clock 
+  Clock,
+  AlertTriangle
 } from 'lucide-react';
+import { useState } from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export function GameHeader() {
   const { 
@@ -20,6 +32,8 @@ export function GameHeader() {
     setBankModalOpen,
     endGame 
   } = useGameStore();
+  
+  const [showEndGameConfirmation, setShowEndGameConfirmation] = useState(false);
   
   const netWorth = calculateNetWorth(cash, bankBalance, inventory, loanAmount);
   
@@ -82,11 +96,7 @@ export function GameHeader() {
                 variant="default" 
                 size="sm"
                 className="bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => {
-                  if (window.confirm("Are you ready to finish the game and see your final score?")) {
-                    endGame();
-                  }
-                }}
+                onClick={() => setShowEndGameConfirmation(true)}
               >
                 <Clock className="mr-1 h-4 w-4" />
                 I'm Finished
@@ -95,16 +105,37 @@ export function GameHeader() {
               <Button 
                 variant="destructive" 
                 size="sm"
-                onClick={() => {
-                  if (window.confirm("Are you sure you want to end the game now? Your final score will be calculated.")) {
-                    endGame();
-                  }
-                }}
+                onClick={() => setShowEndGameConfirmation(true)}
               >
                 <Clock className="mr-1 h-4 w-4" />
                 End Game
               </Button>
             )}
+            
+            <AlertDialog open={showEndGameConfirmation} onOpenChange={setShowEndGameConfirmation}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center">
+                    <AlertTriangle className="h-5 w-5 text-amber-500 mr-2" />
+                    End Game Confirmation
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {daysRemaining <= 1 
+                      ? "Are you ready to finish the game and see your final score?"
+                      : "Are you sure you want to end the game early? Your score will not be at its maximum potential if you end now."}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={endGame}
+                    className={daysRemaining <= 1 ? "bg-green-600 hover:bg-green-700" : "bg-destructive hover:bg-destructive/90"}
+                  >
+                    End Game
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
