@@ -62,8 +62,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   inventory: [],
   marketListings: [],
   priceChanges: {},
-  boughtProducts: new Set<number>(),
-  soldProducts: new Set<number>(),
+  boughtProducts: new Set<number>(), // Products bought in current location
+  soldProducts: new Set<number>(),   // Products sold in current location
   
   gamePhase: 'intro',
   isBankModalOpen: false,
@@ -210,22 +210,30 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   buyProduct: (productId, quantity, price) => {
     const state = get();
+    
     // Ensure price is properly rounded to the nearest cent
     const roundedPrice = Math.round(price * 100) / 100;
     const totalCost = Math.round(quantity * roundedPrice * 100) / 100;
     
-    // Check if already sold this product today in this location
-    if (state.soldProducts.has(productId)) {
-      alert("You cannot buy a product you've sold today at this location!");
+    // Trading rule: Can't buy a product you've already purchased at this location
+    if (state.boughtProducts.has(productId)) {
+      alert("You've already purchased this product at this location!");
       return;
     }
     
+    // Trading rule: Can't buy a product you've already sold at this location
+    if (state.soldProducts.has(productId)) {
+      alert("You cannot buy a product you've already sold at this location!");
+      return;
+    }
+    
+    // Check for available cash
     if (state.cash < totalCost) {
       alert("Not enough cash to complete this purchase!");
       return;
     }
     
-    // Find the product in market listings
+    // Check market availability
     const productListing = state.marketListings.find(p => p.productId === productId);
     if (!productListing || productListing.available < quantity) {
       alert("Not enough quantity available!");
@@ -243,7 +251,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       
       newInventory = state.inventory.map(item => 
         item.productId === productId 
-          ? { ...item, quantity: newQuantity, purchasePrice: newAvgPrice } 
+          ? { ...item, quantity: newQuantity, purchasePrice: Math.round(newAvgPrice * 100) / 100 } 
           : item
       );
     } else {
@@ -257,7 +265,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           productId,
           name: product.name,
           quantity,
-          purchasePrice: price
+          purchasePrice: roundedPrice
         }
       ];
     }
@@ -269,12 +277,12 @@ export const useGameStore = create<GameState>((set, get) => ({
         : listing
     );
     
-    // Create updated sets
+    // Record that we bought this product at this location
     const newBoughtProducts = new Set(state.boughtProducts);
     newBoughtProducts.add(productId);
     
     set({
-      cash: state.cash - totalCost,
+      cash: Math.round((state.cash - totalCost) * 100) / 100,
       inventory: newInventory,
       marketListings: newMarketListings,
       boughtProducts: newBoughtProducts
@@ -284,13 +292,19 @@ export const useGameStore = create<GameState>((set, get) => ({
   sellProduct: (productId, quantity, price) => {
     const state = get();
     
-    // Check if already bought this product today in this location
-    if (state.boughtProducts.has(productId)) {
-      alert("You cannot sell a product you've just bought today! You must travel to a new location first.");
+    // Trading rule: Can't sell a product you've already sold at this location
+    if (state.soldProducts.has(productId)) {
+      alert("You've already sold this product at this location!");
       return;
     }
     
-    // Find the product in inventory
+    // Trading rule: Can't sell a product you've just bought at the same location
+    if (state.boughtProducts.has(productId)) {
+      alert("You must travel to a new location before selling a product you just purchased!");
+      return;
+    }
+    
+    // Check inventory
     const inventoryItem = state.inventory.find(item => item.productId === productId);
     if (!inventoryItem || inventoryItem.quantity < quantity) {
       alert("Not enough quantity in inventory!");
@@ -315,12 +329,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       );
     }
     
-    // Create updated sets
+    // Record that we sold this product at this location
     const newSoldProducts = new Set(state.soldProducts);
     newSoldProducts.add(productId);
     
     set({
-      cash: state.cash + totalRevenue,
+      cash: Math.round((state.cash + totalRevenue) * 100) / 100,
       inventory: newInventory,
       soldProducts: newSoldProducts
     });
