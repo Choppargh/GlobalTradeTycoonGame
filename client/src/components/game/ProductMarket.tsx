@@ -254,10 +254,7 @@ export function ProductMarket() {
                         min={0}
                         max={Math.min(selectedProduct.available, Math.floor(cash / selectedProduct.marketPrice))}
                         className="w-20"
-                        disabled={selectedProduct.available === 0 || 
-                                  cash < selectedProduct.marketPrice || 
-                                  isDisabled || 
-                                  boughtProducts.has(selectedProduct.productId)}
+                        disabled={!canBuyProduct(selectedProduct.productId, selectedProduct.marketPrice)}
                         placeholder="Qty"
                       />
                       <Button 
@@ -326,9 +323,7 @@ export function ProductMarket() {
                         variant="secondary"
                         size="sm"
                         onClick={() => handleMaxSell(selectedProduct)}
-                        disabled={getInventoryQuantity(selectedProduct.productId) === 0 || 
-                                  isDisabled || 
-                                  soldProducts.has(selectedProduct.productId)}
+                        disabled={!canSellProduct(selectedProduct.productId)}
                         className="whitespace-nowrap"
                       >
                         Max
@@ -339,8 +334,7 @@ export function ProductMarket() {
                         onClick={() => handleSell(selectedProduct)}
                         disabled={!sellQuantities[selectedProduct.productId] || 
                                   sellQuantities[selectedProduct.productId] <= 0 ||
-                                  isDisabled || 
-                                  soldProducts.has(selectedProduct.productId)}
+                                  !canSellProduct(selectedProduct.productId)}
                         className="bg-green-600 hover:bg-green-700"
                       >
                         Sell
@@ -349,10 +343,13 @@ export function ProductMarket() {
                     
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateSellTotal(selectedProduct))}</div>
                     {soldProducts.has(selectedProduct.productId) && (
-                      <p className="text-xs text-red-500 mt-1">You've already sold this product at this location</p>
+                      <p className="text-xs text-red-500 mt-1">You've already sold this product today</p>
                     )}
                     {boughtProducts.has(selectedProduct.productId) && (
-                      <p className="text-xs text-red-500 mt-1">Travel to a new location before selling this product</p>
+                      <p className="text-xs text-red-500 mt-1">You can't sell products bought at this location today</p>
+                    )}
+                    {getInventoryQuantity(selectedProduct.productId) === 0 && !soldProducts.has(selectedProduct.productId) && !boughtProducts.has(selectedProduct.productId) && (
+                      <p className="text-xs text-amber-500 mt-1">You don't have any of this product in inventory</p>
                     )}
                   </div>
                 </div>
