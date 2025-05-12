@@ -215,12 +215,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     const roundedPrice = Math.round(price * 100) / 100;
     const totalCost = Math.round(quantity * roundedPrice * 100) / 100;
     
-    // Trading rule: Can't buy a product you've already purchased at this location
-    if (state.boughtProducts.has(productId)) {
-      alert("You've already purchased this product today!");
-      return;
-    }
-    
     // Trading rule: Can't buy a product you've already sold at this location
     if (state.soldProducts.has(productId)) {
       alert("You can't buy products you've already sold today!");
