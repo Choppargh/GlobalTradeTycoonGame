@@ -188,24 +188,38 @@ export const useGameStore = create<GameState>((set, get) => ({
       initialPriceChanges[listing.productId] = null;
     });
     
+    // Check for a random event upon arrival (just once)
+    const event = generateRandomEvent(destination, state.daysRemaining - 1);
+    let updatedMarketListings = [...newMarketListings];
+    let updatedPriceChanges = {...initialPriceChanges};
+    
+    // If there's an event, apply it immediately
+    if (event) {
+      if (event.type === 'price_change' || event.type === 'market_crash' || event.type === 'market_boom') {
+        const result = applyEventToMarket(event, newMarketListings, newMarketListings);
+        updatedMarketListings = result.listings;
+        updatedPriceChanges = result.priceChanges;
+      } else if (event.type === 'inventory_boost') {
+        updatedInventory = applyEventToInventory(event, updatedInventory);
+      } else if (event.type === 'cash_bonus' && event.cashAmount) {
+        updatedCash = Math.round((updatedCash + event.cashAmount) * 100) / 100;
+      }
+    }
+    
     // Set new game state and reset bought/sold products since we're in a new location/day
     set({
       currentLocation: destination,
       daysRemaining: state.daysRemaining - 1,
       loanAmount: newLoanAmount,
       bankBalance: newBankBalance,
-      marketListings: newMarketListings,
+      marketListings: updatedMarketListings,
       cash: updatedCash,
       inventory: updatedInventory,
-      priceChanges: initialPriceChanges,
+      priceChanges: updatedPriceChanges,
       boughtProducts: new Set<number>(),
-      soldProducts: new Set<number>()
+      soldProducts: new Set<number>(),
+      currentEvent: event
     });
-    
-    // Always trigger a market event after travel
-    setTimeout(() => {
-      get().triggerRandomEvent();
-    }, 1000); // Short delay after travel
   },
   
   buyProduct: (productId, quantity, price) => {
@@ -285,12 +299,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   sellProduct: (productId, quantity, price) => {
     const state = get();
-    
-    // Trading rule: Can't sell a product you've already sold at this location
-    if (state.soldProducts.has(productId)) {
-      alert("You've already sold this product today!");
-      return;
-    }
     
     // Trading rule: Can't sell a product you've just bought at the same location
     if (state.boughtProducts.has(productId)) {
