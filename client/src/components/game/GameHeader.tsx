@@ -20,10 +20,10 @@ export function GameHeader() {
     inventory,
     currentLocation,
     setBankModalOpen,
-    endGame 
+    endGame,
+    isEndGameConfirmationOpen,
+    setEndGameConfirmationOpen
   } = useGameStore();
-  
-  const [showEndGameConfirmation, setShowEndGameConfirmation] = useState(false);
   
   const netWorth = calculateNetWorth(cash, bankBalance, inventory, loanAmount);
   
