@@ -35,6 +35,23 @@ export function ProductMarket() {
   const [selectedProduct, setSelectedProduct] = useState<ProductListing | null>(null);
   const [isDisabled, setIsDisabled] = useState(false);
   
+  // Helper function to check if a product can be sold
+  const canSellProduct = (productId: number): boolean => {
+    return !soldProducts.has(productId) && !boughtProducts.has(productId) && 
+           getInventoryQuantity(productId) > 0 && !isDisabled;
+  };
+  
+  // Helper function to check if a product can be bought
+  const canBuyProduct = (productId: number, price: number): boolean => {
+    const productListing = marketListings.find(p => p.productId === productId);
+    return !boughtProducts.has(productId) && 
+           !soldProducts.has(productId) && 
+           !!productListing && 
+           productListing.available > 0 && 
+           cash >= price && 
+           !isDisabled;
+  };
+  
   // Reset quantities when product list changes (e.g. changing location)
   useEffect(() => {
     setBuyQuantities({});
@@ -302,9 +319,7 @@ export function ProductMarket() {
                         min={0}
                         max={getInventoryQuantity(selectedProduct.productId)}
                         className="w-20"
-                        disabled={getInventoryQuantity(selectedProduct.productId) === 0 || 
-                                  isDisabled || 
-                                  soldProducts.has(selectedProduct.productId)}
+                        disabled={!canSellProduct(selectedProduct.productId)}
                         placeholder="Qty"
                       />
                       <Button 
