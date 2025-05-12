@@ -53,7 +53,7 @@ export function TravelOptions() {
 
   return (
     <>
-      <Card className="h-full">
+      <Card className="h-full shadow-sm rounded-lg border border-black">
         <CardHeader className="pb-3">
           <CardTitle>Departures</CardTitle>
           <CardDescription>
