@@ -118,21 +118,35 @@ export function BankInterface() {
                   </div>
                   
                   <div className="relative pt-5 pb-1">
-                    <Slider
-                      value={[Number(depositAmount) || 0]}
-                      min={0}
-                      max={cash}
-                      step={1}
-                      onValueChange={(value) => setDepositAmount(value[0].toString())}
-                      className="py-4"
-                    />
-                    
-                    <div className="absolute w-full flex justify-between text-xs text-tycoon-navy-light -mt-1">
-                      <span>0%</span>
-                      <span>100%</span>
+                    <div className="relative">
+                      <Slider
+                        value={[Number(depositAmount) || 0]}
+                        min={0}
+                        max={cash}
+                        step={1}
+                        onValueChange={(value) => setDepositAmount(value[0].toString())}
+                        className="py-4"
+                      />
+                      
+                      {depositAmount && Number(depositAmount) > 0 && (
+                        <div 
+                          className="absolute text-xs font-medium bg-indigo-600 text-white px-2 py-0.5 rounded-md -translate-x-1/2"
+                          style={{ 
+                            left: `${(Number(depositAmount) / cash) * 100}%`, 
+                            top: '110%' 
+                          }}
+                        >
+                          ${Number(depositAmount).toFixed(0)}
+                        </div>
+                      )}
                     </div>
                     
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <div className="absolute w-full flex justify-between text-xs text-gray-500 -mt-1">
+                      <span>0</span>
+                      <span>{Math.floor(cash)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-xs text-muted-foreground mt-6">
                       <span>${(0).toFixed(2)}</span>
                       <span>{formatCurrency(cash)}</span>
                     </div>
@@ -182,21 +196,35 @@ export function BankInterface() {
                   </div>
                   
                   <div className="relative pt-5 pb-1">
-                    <Slider
-                      value={[Number(withdrawAmount) || 0]}
-                      min={0}
-                      max={bankBalance}
-                      step={1}
-                      onValueChange={(value) => setWithdrawAmount(value[0].toString())}
-                      className="py-4"
-                    />
-                    
-                    <div className="absolute w-full flex justify-between text-xs text-tycoon-navy-light -mt-1">
-                      <span>0%</span>
-                      <span>100%</span>
+                    <div className="relative">
+                      <Slider
+                        value={[Number(withdrawAmount) || 0]}
+                        min={0}
+                        max={bankBalance}
+                        step={1}
+                        onValueChange={(value) => setWithdrawAmount(value[0].toString())}
+                        className="py-4"
+                      />
+                      
+                      {withdrawAmount && Number(withdrawAmount) > 0 && (
+                        <div 
+                          className="absolute text-xs font-medium bg-indigo-600 text-white px-2 py-0.5 rounded-md -translate-x-1/2"
+                          style={{ 
+                            left: `${(Number(withdrawAmount) / bankBalance) * 100}%`, 
+                            top: '110%' 
+                          }}
+                        >
+                          ${Number(withdrawAmount).toFixed(0)}
+                        </div>
+                      )}
                     </div>
                     
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <div className="absolute w-full flex justify-between text-xs text-gray-500 -mt-1">
+                      <span>0</span>
+                      <span>{Math.floor(bankBalance)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-xs text-muted-foreground mt-6">
                       <span>${(0).toFixed(2)}</span>
                       <span>{formatCurrency(bankBalance)}</span>
                     </div>
@@ -246,21 +274,35 @@ export function BankInterface() {
                   </div>
                   
                   <div className="relative pt-5 pb-1">
-                    <Slider
-                      value={[Number(loanRequestAmount) || 0]}
-                      min={0}
-                      max={loanAvailable}
-                      step={1}
-                      onValueChange={(value) => setLoanRequestAmount(value[0].toString())}
-                      className="py-4"
-                    />
-                    
-                    <div className="absolute w-full flex justify-between text-xs text-tycoon-navy-light -mt-1">
-                      <span>0%</span>
-                      <span>100%</span>
+                    <div className="relative">
+                      <Slider
+                        value={[Number(loanRequestAmount) || 0]}
+                        min={0}
+                        max={loanAvailable}
+                        step={1}
+                        onValueChange={(value) => setLoanRequestAmount(value[0].toString())}
+                        className="py-4"
+                      />
+                      
+                      {loanRequestAmount && Number(loanRequestAmount) > 0 && (
+                        <div 
+                          className="absolute text-xs font-medium bg-indigo-600 text-white px-2 py-0.5 rounded-md -translate-x-1/2"
+                          style={{ 
+                            left: `${(Number(loanRequestAmount) / loanAvailable) * 100}%`, 
+                            top: '110%' 
+                          }}
+                        >
+                          ${Number(loanRequestAmount).toFixed(0)}
+                        </div>
+                      )}
                     </div>
                     
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <div className="absolute w-full flex justify-between text-xs text-gray-500 -mt-1">
+                      <span>0</span>
+                      <span>{Math.floor(loanAvailable)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-xs text-muted-foreground mt-6">
                       <span>${(0).toFixed(2)}</span>
                       <span>{formatCurrency(loanAvailable)}</span>
                     </div>
@@ -310,21 +352,35 @@ export function BankInterface() {
                   </div>
                   
                   <div className="relative pt-5 pb-1">
-                    <Slider
-                      value={[Number(repayAmount) || 0]}
-                      min={0}
-                      max={Math.min(cash, loanAmount)}
-                      step={1}
-                      onValueChange={(value) => setRepayAmount(value[0].toString())}
-                      className="py-4"
-                    />
-                    
-                    <div className="absolute w-full flex justify-between text-xs text-tycoon-navy-light -mt-1">
-                      <span>0%</span>
-                      <span>100%</span>
+                    <div className="relative">
+                      <Slider
+                        value={[Number(repayAmount) || 0]}
+                        min={0}
+                        max={Math.min(cash, loanAmount)}
+                        step={1}
+                        onValueChange={(value) => setRepayAmount(value[0].toString())}
+                        className="py-4"
+                      />
+                      
+                      {repayAmount && Number(repayAmount) > 0 && (
+                        <div 
+                          className="absolute text-xs font-medium bg-indigo-600 text-white px-2 py-0.5 rounded-md -translate-x-1/2"
+                          style={{ 
+                            left: `${(Number(repayAmount) / Math.min(cash, loanAmount)) * 100}%`, 
+                            top: '110%' 
+                          }}
+                        >
+                          ${Number(repayAmount).toFixed(0)}
+                        </div>
+                      )}
                     </div>
                     
-                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <div className="absolute w-full flex justify-between text-xs text-gray-500 -mt-1">
+                      <span>0</span>
+                      <span>{Math.floor(Math.min(cash, loanAmount))}</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-xs text-muted-foreground mt-6">
                       <span>${(0).toFixed(2)}</span>
                       <span>{formatCurrency(Math.min(cash, loanAmount))}</span>
                     </div>
