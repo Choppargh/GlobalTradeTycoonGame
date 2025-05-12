@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './button';
 import { 
   Dialog,
@@ -9,33 +9,83 @@ import {
   DialogFooter 
 } from './dialog';
 
+// Define the interface for the BeforeInstallPromptEvent
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
+// Declare global for TypeScript
+declare global {
+  interface WindowEventMap {
+    beforeinstallprompt: BeforeInstallPromptEvent;
+  }
+}
+
 export function InstallPrompt() {
+  // Only show on mobile devices
+  const [isMobile, setIsMobile] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isAlreadyInstalled, setIsAlreadyInstalled] = useState(false);
 
+  // Check if the user is on a mobile device
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e: Event) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
-      e.preventDefault();
-      // Stash the event so it can be triggered later
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      // Show the prompt to user after a short delay
-      setTimeout(() => {
-        setShowPrompt(true);
-      }, 3000);
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      setIsMobile(
+        /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent)
+      );
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
+    checkMobile();
   }, []);
+
+  // Check if the app is already installed
+  useEffect(() => {
+    // Check if app is running in standalone mode (installed PWA)
+    if (window.matchMedia('(display-mode: standalone)').matches || 
+        (window.navigator as any).standalone === true) {
+      setIsAlreadyInstalled(true);
+    }
+  }, []);
+
+  // Handle the beforeinstallprompt event
+  useEffect(() => {
+    // Don't capture install prompt if already installed or not on mobile
+    if (isAlreadyInstalled) return;
+
+    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
+      // Prevent Chrome from automatically showing the prompt
+      e.preventDefault();
+      
+      // Save the event for later use
+      setDeferredPrompt(e);
+      
+      // Only show for mobile users after a delay
+      if (isMobile) {
+        setTimeout(() => {
+          setShowPrompt(true);
+        }, 5000); // 5 second delay
+      }
+    };
+
+    // Add event listener
+    try {
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    } catch (err) {
+      console.error('Error setting up install prompt listener:', err);
+    }
+
+    // Cleanup
+    return () => {
+      try {
+        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      } catch (err) {
+        console.error('Error removing install prompt listener:', err);
+      }
+    };
+  }, [isMobile, isAlreadyInstalled]);
 
   // Handle installing the PWA
   const handleInstallClick = async () => {
@@ -44,24 +94,30 @@ export function InstallPrompt() {
       return;
     }
 
-    // Show the install prompt
-    deferredPrompt.prompt();
+    try {
+      // Show the install prompt
+      await deferredPrompt.prompt();
 
-    // Wait for the user to respond to the prompt
-    const choiceResult = await deferredPrompt.userChoice;
-    if (choiceResult.outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    } else {
-      console.log('User dismissed the install prompt');
+      // Wait for the user to respond
+      const choiceResult = await deferredPrompt.userChoice;
+      
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+        setIsAlreadyInstalled(true);
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+    } catch (err) {
+      console.error('Error during installation:', err);
     }
 
-    // Clear the saved prompt since it can't be used again
+    // Reset the deferred prompt - it can only be used once
     setDeferredPrompt(null);
     setShowPrompt(false);
   };
 
-  // Don't render anything if there's no prompt to show
-  if (!showPrompt) {
+  // Don't render anything if already installed or no prompt to show
+  if (isAlreadyInstalled || !showPrompt) {
     return null;
   }
 

@@ -4,8 +4,8 @@
   "description": "Build your trading empire across the globe in this economic trading game.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#4c9aff",
-  "theme_color": "#4c9aff",
+  "background_color": "#b45309",
+  "theme_color": "#b45309",
   "orientation": "portrait-primary",
   "icons": [
     {
