@@ -300,7 +300,7 @@ export function ProductMarket() {
                       className="w-24"
                       disabled={getInventoryQuantity(selectedProduct.productId) === 0 || 
                                 isDisabled || 
-                                soldProducts.includes(selectedProduct.productId)}
+                                soldProducts.has(selectedProduct.productId)}
                       placeholder="Qty"
                     />
                     <Button 
@@ -309,7 +309,7 @@ export function ProductMarket() {
                       onClick={() => handleMaxSell(selectedProduct)}
                       disabled={getInventoryQuantity(selectedProduct.productId) === 0 || 
                                 isDisabled || 
-                                soldProducts.includes(selectedProduct.productId)}
+                                soldProducts.has(selectedProduct.productId)}
                       className="whitespace-nowrap"
                     >
                       Max
@@ -325,12 +325,12 @@ export function ProductMarket() {
                       disabled={!sellQuantities[selectedProduct.productId] || 
                                 sellQuantities[selectedProduct.productId] <= 0 ||
                                 isDisabled || 
-                                soldProducts.includes(selectedProduct.productId)}
+                                soldProducts.has(selectedProduct.productId)}
                       className="mt-1 bg-green-600 hover:bg-green-700"
                     >
                       Sell
                     </Button>
-                    {soldProducts.includes(selectedProduct.productId) && (
+                    {soldProducts.has(selectedProduct.productId) && (
                       <p className="text-xs text-red-500 mt-1">You've already sold this product today</p>
                     )}
                   </div>
