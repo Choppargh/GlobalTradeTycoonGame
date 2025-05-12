@@ -1,12 +1,12 @@
 {
-  "name": "Global Trading Tycoon",
-  "short_name": "Trading Tycoon",
-  "description": "Master markets in this strategic trading simulation game",
+  "name": "Global Trade Tycoon",
+  "short_name": "Trade Tycoon",
+  "description": "Build your trading empire across the globe in this economic trading game.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#4c9aff",
   "theme_color": "#4c9aff",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -20,5 +20,21 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["games", "entertainment", "simulation"],
+  "screenshots": [
+    {
+      "src": "/images/GTC_Background.png",
+      "sizes": "1080x1920",
+      "type": "image/png"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.globaltycoon.app",
+      "id": "com.globaltycoon.app"
+    }
+  ],
+  "prefer_related_applications": false
 }
