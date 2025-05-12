@@ -215,36 +215,42 @@ export function ProductMarket() {
         open={selectedProduct !== null}
         onOpenChange={(open) => !open && setSelectedProduct(null)}
       >
-        <DialogContent className="bg-white w-[95vw] max-w-[500px] sm:w-auto animate-in fade-in-50 zoom-in-95 duration-300">
+        <DialogContent className="bg-white w-[95vw] max-w-[500px] sm:w-auto animate-in fade-in-50 zoom-in-95 duration-300 p-6">
           {selectedProduct && (
           <>
-            <DialogHeader>
-              <DialogTitle>{selectedProduct.name}</DialogTitle>
-              <DialogDescription className="flex flex-col sm:flex-row sm:space-x-4">
-                <span>Market Price: {formatCurrency(selectedProduct.marketPrice)}</span>
-                <span>Demand Price: {formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
+            <DialogHeader className="mb-4">
+              <DialogTitle className="text-xl font-bold text-center">{selectedProduct.name}</DialogTitle>
+              <DialogDescription className="flex flex-col sm:flex-row sm:justify-center sm:space-x-8 text-center mt-2">
+                <div>
+                  <span className="font-medium">Market Price:</span> 
+                  <span className="ml-1 text-blue-600">{formatCurrency(selectedProduct.marketPrice)}</span>
+                </div>
+                <div>
+                  <span className="font-medium">Demand Price:</span> 
+                  <span className="ml-1 text-green-600">{formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
+                </div>
               </DialogDescription>
             </DialogHeader>
-                
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4">
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-2">
               {/* Buy Section */}
-              <div className="space-y-3">
-                <h3 className="font-semibold">Buy</h3>
+              <div className="border rounded-lg p-4 bg-blue-50">
+                <h3 className="font-bold text-lg text-blue-800 mb-3">Buy</h3>
                 <div className="flex flex-col space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Available:</span>
-                    <span>{selectedProduct.available}</span>
+                    <span className="text-gray-600">Available:</span>
+                    <span className="font-medium">{selectedProduct.available}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>Your Cash:</span>
-                    <span>{formatCurrency(cash)}</span>
+                    <span className="text-gray-600">Your Cash:</span>
+                    <span className="font-medium">{formatCurrency(cash)}</span>
                   </div>
                   <div className="flex justify-between font-medium text-sm">
-                    <span>At Market Price:</span>
-                    <span>{formatCurrency(selectedProduct.marketPrice)}</span>
+                    <span className="text-gray-600">At Market Price:</span>
+                    <span className="text-blue-700">{formatCurrency(selectedProduct.marketPrice)}</span>
                   </div>
                   
-                  <div className="flex flex-col space-y-2 mt-2">
+                  <div className="flex flex-col space-y-2 mt-4">
                     <div className="flex items-center space-x-2">
                       <Input
                         type="number"
@@ -252,7 +258,7 @@ export function ProductMarket() {
                         onChange={(e) => handleBuyInputChange(selectedProduct.productId, e.target.value)}
                         min={0}
                         max={Math.min(selectedProduct.available, Math.floor(cash / selectedProduct.marketPrice))}
-                        className="w-20"
+                        className="w-20 bg-white"
                         disabled={!canBuyProduct(selectedProduct.productId, selectedProduct.marketPrice)}
                         placeholder="Qty"
                       />
@@ -278,7 +284,7 @@ export function ProductMarket() {
                       </Button>
                     </div>
                     
-                    <div className="text-sm font-medium">Total: {formatCurrency(calculateBuyTotal(selectedProduct))}</div>
+                    <div className="text-sm font-semibold mt-2">Total: {formatCurrency(calculateBuyTotal(selectedProduct))}</div>
                     {soldProducts.has(selectedProduct.productId) ? (
                       <p className="text-xs text-red-500 mt-1">You can't buy products you've already sold today</p>
                     ) : selectedProduct.available === 0 ? (
@@ -291,19 +297,19 @@ export function ProductMarket() {
               </div>
               
               {/* Sell Section */}
-              <div className="space-y-3">
-                <h3 className="font-semibold">Sell</h3>
+              <div className="border rounded-lg p-4 bg-green-50">
+                <h3 className="font-bold text-lg text-green-800 mb-3">Sell</h3>
                 <div className="flex flex-col space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>In Your Inventory:</span>
-                    <span>{getInventoryQuantity(selectedProduct.productId)}</span>
+                    <span className="text-gray-600">In Your Inventory:</span>
+                    <span className="font-medium">{getInventoryQuantity(selectedProduct.productId)}</span>
                   </div>
                   <div className="flex justify-between font-medium text-sm">
-                    <span>At Demand Price:</span>
-                    <span>{formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
+                    <span className="text-gray-600">At Demand Price:</span>
+                    <span className="text-green-700">{formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
                   </div>
                   
-                  <div className="flex flex-col space-y-2 mt-2">
+                  <div className="flex flex-col space-y-2 mt-4">
                     <div className="flex items-center space-x-2">
                       <Input
                         type="number"
@@ -311,7 +317,7 @@ export function ProductMarket() {
                         onChange={(e) => handleSellInputChange(selectedProduct.productId, e.target.value)}
                         min={0}
                         max={getInventoryQuantity(selectedProduct.productId)}
-                        className="w-20"
+                        className="w-20 bg-white"
                         disabled={!canSellProduct(selectedProduct.productId)}
                         placeholder="Qty"
                       />
@@ -337,7 +343,7 @@ export function ProductMarket() {
                       </Button>
                     </div>
                     
-                    <div className="text-sm font-medium">Total: {formatCurrency(calculateSellTotal(selectedProduct))}</div>
+                    <div className="text-sm font-semibold mt-2">Total: {formatCurrency(calculateSellTotal(selectedProduct))}</div>
                     {boughtProducts.has(selectedProduct.productId) ? (
                       <p className="text-xs text-red-500 mt-1">You can't sell products bought at this location today</p>
                     ) : getInventoryQuantity(selectedProduct.productId) === 0 ? (
@@ -348,10 +354,11 @@ export function ProductMarket() {
               </div>
             </div>
                 
-            <DialogFooter>
+            <DialogFooter className="mt-6">
               <Button 
                 variant="outline" 
                 onClick={() => setSelectedProduct(null)}
+                className="w-full sm:w-auto"
               >
                 Close
               </Button>
