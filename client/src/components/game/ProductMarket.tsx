@@ -270,6 +270,9 @@ export function ProductMarket() {
                     </div>
                     
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateBuyTotal(selectedProduct))}</div>
+                    {soldProducts.has(selectedProduct.productId) && (
+                      <p className="text-xs text-red-500 mt-1">You've already sold this product today</p>
+                    )}
                     {boughtProducts.has(selectedProduct.productId) && (
                       <p className="text-xs text-red-500 mt-1">You've already purchased this product today</p>
                     )}
@@ -332,6 +335,9 @@ export function ProductMarket() {
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateSellTotal(selectedProduct))}</div>
                     {soldProducts.has(selectedProduct.productId) && (
                       <p className="text-xs text-red-500 mt-1">You've already sold this product today</p>
+                    )}
+                    {boughtProducts.has(selectedProduct.productId) && (
+                      <p className="text-xs text-red-500 mt-1">You cannot sell products you've just purchased at this location</p>
                     )}
                   </div>
                 </div>
