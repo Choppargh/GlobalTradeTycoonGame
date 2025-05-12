@@ -22,19 +22,8 @@ export default function GamePage() {
     clearTravelRiskDialog
   } = useGameStore();
   
-  // Check for random events periodically
-  useEffect(() => {
-    if (!currentLocation) return;
-    
-    // Try to trigger a random event every 20-30 seconds (reduced frequency)
-    const eventCheckInterval = setInterval(() => {
-      if (!currentEvent) {
-        triggerRandomEvent();
-      }
-    }, Math.random() * 10000 + 20000); // Between 20-30 seconds
-    
-    return () => clearInterval(eventCheckInterval);
-  }, [currentLocation, currentEvent, triggerRandomEvent]);
+  // Random events now happen only when traveling to a new location
+  // No need for periodic checks anymore
   
   if (!currentLocation) {
     return <div>Loading game...</div>;
