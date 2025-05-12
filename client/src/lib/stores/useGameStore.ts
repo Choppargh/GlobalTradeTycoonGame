@@ -214,14 +214,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     const roundedPrice = Math.round(price * 100) / 100;
     const totalCost = Math.round(quantity * roundedPrice * 100) / 100;
     
-    // Check if already sold or bought this product today in this location
+    // Check if already sold this product today in this location
     if (state.soldProducts.has(productId)) {
-      alert("You cannot buy a product you've already sold today at this location!");
-      return;
-    }
-    
-    if (state.boughtProducts.has(productId)) {
-      alert("You've already purchased this product today in this location!");
+      alert("You cannot buy a product you've sold today at this location!");
       return;
     }
     
@@ -289,9 +284,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   sellProduct: (productId, quantity, price) => {
     const state = get();
     
-    // Check if already sold this product today in this location
-    if (state.soldProducts.has(productId)) {
-      alert("You've already sold this product today in this location!");
+    // Check if already bought this product today in this location
+    if (state.boughtProducts.has(productId)) {
+      alert("You cannot sell a product you've just bought today! You must travel to a new location first.");
       return;
     }
     
