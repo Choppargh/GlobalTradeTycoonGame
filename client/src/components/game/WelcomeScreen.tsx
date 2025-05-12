@@ -1,12 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UsernameForm } from './UsernameForm';
 import { Leaderboard } from './Leaderboard';
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
+import { useGameStore } from '@/lib/stores/useGameStore';
+import { toast } from 'sonner';
 
 export function WelcomeScreen() {
   const [activeScreen, setActiveScreen] = useState<'welcome' | 'play' | 'leaderboard' | 'rules'>('welcome');
+  const [hasSavedGame, setHasSavedGame] = useState(false);
+  const [savedGameInfo, setSavedGameInfo] = useState<{username: string, days: number, cash: number} | null>(null);
+  
+  const { loadGameState, clearSavedGameState } = useGameStore();
+
+  // Check for saved games on component mount
+  useEffect(() => {
+    try {
+      const savedGame = localStorage.getItem('globalTradeTycoon_savedGame');
+      if (savedGame) {
+        const gameData = JSON.parse(savedGame);
+        if (gameData && gameData.username && gameData.daysRemaining) {
+          setHasSavedGame(true);
+          setSavedGameInfo({
+            username: gameData.username,
+            days: 31 - gameData.daysRemaining,
+            cash: gameData.cash + gameData.bankBalance
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Error checking for saved games:', err);
+    }
+  }, []);
 
   const { data: leaderboardData = [] } = useQuery<LeaderboardEntry[]>({
     queryKey: ['/scores'],
@@ -14,6 +40,22 @@ export function WelcomeScreen() {
       on401: 'returnNull',
     }),
   });
+  
+  const handleLoadGame = () => {
+    const success = loadGameState();
+    if (success) {
+      toast.success('Game loaded successfully!');
+    } else {
+      toast.error('Failed to load saved game.');
+    }
+  };
+  
+  const handleClearSavedGame = () => {
+    clearSavedGameState();
+    setHasSavedGame(false);
+    setSavedGameInfo(null);
+    toast.success('Saved game cleared.');
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
