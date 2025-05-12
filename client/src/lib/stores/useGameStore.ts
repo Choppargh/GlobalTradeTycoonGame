@@ -217,13 +217,13 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     // Trading rule: Can't buy a product you've already purchased at this location
     if (state.boughtProducts.has(productId)) {
-      alert("You've already purchased this product at this location!");
+      alert("You've already purchased this product today!");
       return;
     }
     
     // Trading rule: Can't buy a product you've already sold at this location
     if (state.soldProducts.has(productId)) {
-      alert("You cannot buy a product you've already sold at this location!");
+      alert("You can't buy products you've already sold today!");
       return;
     }
     
@@ -294,13 +294,13 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     // Trading rule: Can't sell a product you've already sold at this location
     if (state.soldProducts.has(productId)) {
-      alert("You've already sold this product at this location!");
+      alert("You've already sold this product today!");
       return;
     }
     
     // Trading rule: Can't sell a product you've just bought at the same location
     if (state.boughtProducts.has(productId)) {
-      alert("You must travel to a new location before selling a product you just purchased!");
+      alert("You can't sell products bought at this location today!");
       return;
     }
     
