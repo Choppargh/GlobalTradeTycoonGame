@@ -261,10 +261,7 @@ export function ProductMarket() {
                         variant="secondary"
                         size="sm"
                         onClick={() => handleMaxBuy(selectedProduct)}
-                        disabled={selectedProduct.available === 0 || 
-                                  cash < selectedProduct.marketPrice ||
-                                  isDisabled || 
-                                  boughtProducts.has(selectedProduct.productId)}
+                        disabled={!canBuyProduct(selectedProduct.productId, selectedProduct.marketPrice)}
                         className="whitespace-nowrap"
                       >
                         Max
@@ -275,8 +272,7 @@ export function ProductMarket() {
                         onClick={() => handleBuy(selectedProduct)}
                         disabled={!buyQuantities[selectedProduct.productId] || 
                                   buyQuantities[selectedProduct.productId] <= 0 ||
-                                  isDisabled || 
-                                  boughtProducts.has(selectedProduct.productId)}
+                                  !canBuyProduct(selectedProduct.productId, selectedProduct.marketPrice)}
                         className="bg-blue-600 hover:bg-blue-700"
                       >
                         Buy
@@ -285,10 +281,16 @@ export function ProductMarket() {
                     
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateBuyTotal(selectedProduct))}</div>
                     {soldProducts.has(selectedProduct.productId) && (
-                      <p className="text-xs text-red-500 mt-1">You've already sold this product at this location</p>
+                      <p className="text-xs text-red-500 mt-1">You can't buy products you've already sold today</p>
                     )}
                     {boughtProducts.has(selectedProduct.productId) && (
-                      <p className="text-xs text-red-500 mt-1">You've already purchased this product at this location</p>
+                      <p className="text-xs text-red-500 mt-1">You've already purchased this product today</p>
+                    )}
+                    {selectedProduct.available === 0 && !soldProducts.has(selectedProduct.productId) && !boughtProducts.has(selectedProduct.productId) && (
+                      <p className="text-xs text-amber-500 mt-1">This product is out of stock</p>
+                    )}
+                    {selectedProduct.available > 0 && cash < selectedProduct.marketPrice && !soldProducts.has(selectedProduct.productId) && !boughtProducts.has(selectedProduct.productId) && (
+                      <p className="text-xs text-amber-500 mt-1">You don't have enough cash to buy this product</p>
                     )}
                   </div>
                 </div>
