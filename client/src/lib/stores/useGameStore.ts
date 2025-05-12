@@ -49,6 +49,11 @@ interface GameState {
   // UI states
   isBankModalOpen: boolean;
   setBankModalOpen: (isOpen: boolean) => void;
+  
+  // Game state persistence (for PWA offline support)
+  saveGameState: () => void;
+  loadGameState: () => boolean;
+  clearSavedGameState: () => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -543,5 +548,131 @@ export const useGameStore = create<GameState>((set, get) => ({
       isTravelRiskDialogOpen: false,
       travelRiskMessage: ''
     });
+  },
+  
+  // Game state persistence methods for PWA
+  saveGameState: () => {
+    const state = get();
+    
+    // Skip saving if game isn't actively playing
+    if (state.gamePhase !== 'playing' || !state.username || !state.currentLocation) {
+      return;
+    }
+    
+    try {
+      // Create a serializable version of the state
+      // We need to convert Sets to arrays for JSON serialization
+      const serializableState = {
+        username: state.username,
+        currentLocation: state.currentLocation,
+        cash: state.cash,
+        bankBalance: state.bankBalance,
+        loanAmount: state.loanAmount,
+        daysRemaining: state.daysRemaining,
+        inventory: state.inventory,
+        marketListings: state.marketListings,
+        priceChanges: state.priceChanges,
+        boughtProducts: Array.from(state.boughtProducts),
+        soldProducts: Array.from(state.soldProducts),
+        gamePhase: state.gamePhase,
+        savedAt: new Date().toISOString(),
+      };
+      
+      // Save to local storage
+      localStorage.setItem('globalTradeTycoon_savedGame', JSON.stringify(serializableState));
+      localStorage.setItem('globalTradeTycoon_savedGameVersion', '1.0');
+      
+      console.log('Game state saved successfully');
+      return true;
+    } catch (err) {
+      console.error('Failed to save game state:', err);
+      return false;
+    }
+  },
+  
+  loadGameState: () => {
+    try {
+      // Check if we have a saved game
+      const savedGame = localStorage.getItem('globalTradeTycoon_savedGame');
+      const savedVersion = localStorage.getItem('globalTradeTycoon_savedGameVersion');
+      
+      if (!savedGame || !savedVersion) {
+        console.log('No saved game found');
+        return false;
+      }
+      
+      // Parse the saved state
+      const savedState = JSON.parse(savedGame);
+      
+      // Convert arrays back to Sets, ensuring they're number arrays
+      const boughtProducts = new Set<number>(savedState.boughtProducts as number[]);
+      const soldProducts = new Set<number>(savedState.soldProducts as number[]);
+      
+      // Validate essential properties
+      if (
+        !savedState.username || 
+        !savedState.currentLocation || 
+        typeof savedState.cash !== 'number' ||
+        typeof savedState.daysRemaining !== 'number'
+      ) {
+        console.error('Saved game data is corrupt or incomplete');
+        return false;
+      }
+      
+      // Calculate how long ago the game was saved
+      const savedAt = new Date(savedState.savedAt || Date.now());
+      const now = new Date();
+      const hoursSinceSaved = (now.getTime() - savedAt.getTime()) / (1000 * 60 * 60);
+      
+      // Expire saved games after 7 days
+      if (hoursSinceSaved > 168) { // 7 days * 24 hours
+        console.log('Saved game is too old (more than 7 days)');
+        localStorage.removeItem('globalTradeTycoon_savedGame');
+        return false;
+      }
+      
+      // Set the saved state
+      set({
+        username: savedState.username,
+        currentLocation: savedState.currentLocation,
+        cash: savedState.cash,
+        bankBalance: savedState.bankBalance,
+        loanAmount: savedState.loanAmount,
+        daysRemaining: savedState.daysRemaining,
+        inventory: savedState.inventory,
+        marketListings: savedState.marketListings,
+        priceChanges: savedState.priceChanges || {},
+        boughtProducts: new Set<number>(),  // Initialize empty sets first
+        soldProducts: new Set<number>(),
+        gamePhase: 'playing',
+        currentEvent: null,
+        isTravelRiskDialogOpen: false,
+        travelRiskMessage: '',
+        isBankModalOpen: false
+      });
+      
+      // Then manually add items to the sets
+      const state = get();
+      savedState.boughtProducts.forEach((id: number) => state.boughtProducts.add(id));
+      savedState.soldProducts.forEach((id: number) => state.soldProducts.add(id));
+      
+      console.log('Game loaded successfully from saved state');
+      return true;
+    } catch (err) {
+      console.error('Failed to load game state:', err);
+      return false;
+    }
+  },
+  
+  clearSavedGameState: () => {
+    try {
+      localStorage.removeItem('globalTradeTycoon_savedGame');
+      localStorage.removeItem('globalTradeTycoon_savedGameVersion');
+      console.log('Saved game cleared successfully');
+      return true;
+    } catch (err) {
+      console.error('Failed to clear saved game:', err);
+      return false;
+    }
   }
 }));
