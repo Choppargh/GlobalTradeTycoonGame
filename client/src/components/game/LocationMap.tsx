@@ -22,7 +22,7 @@ export function LocationMap({ currentLocation, onSelect, interactive = false }: 
   // Define the position of each location on the map
   const locationPoints: LocationPoint[] = [
     { location: Location.Africa, x: "50%", y: "60%", className: "bg-yellow-600" },
-    { location: Location.Antarctica, x: "50%", y: "90%", className: "bg-blue-200" },
+    { location: Location.Antarctica, x: "50%", y: "85%", className: "bg-blue-200" },
     { location: Location.Asia, x: "70%", y: "40%", className: "bg-red-600" },
     { location: Location.Europe, x: "48%", y: "30%", className: "bg-blue-600" },
     { location: Location.NorthAmerica, x: "20%", y: "35%", className: "bg-green-600" },
@@ -48,7 +48,7 @@ export function LocationMap({ currentLocation, onSelect, interactive = false }: 
             <div
               key={point.location}
               className={cn(
-                "absolute w-4 h-4 rounded-full transform -translate-x-1/2 -translate-y-1/2",
+                "absolute w-5 h-5 rounded-full transform -translate-x-1/2 -translate-y-1/2",
                 point.className,
                 currentLocation === point.location && "ring-2 ring-white ring-offset-1",
                 interactive && point.location !== currentLocation && "cursor-pointer hover:ring-2 hover:ring-white",

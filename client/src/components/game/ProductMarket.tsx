@@ -228,48 +228,48 @@ export function ProductMarket() {
                     <span>{formatCurrency(selectedProduct.marketPrice)}</span>
                   </div>
                   
-                  <div className="flex items-center space-x-2 mt-2">
-                    <Input
-                      type="number"
-                      value={buyQuantities[selectedProduct.productId] || ''}
-                      onChange={(e) => handleBuyInputChange(selectedProduct.productId, e.target.value)}
-                      min={0}
-                      max={Math.min(selectedProduct.available, Math.floor(cash / selectedProduct.marketPrice))}
-                      className="w-24"
-                      disabled={selectedProduct.available === 0 || 
-                                cash < selectedProduct.marketPrice || 
-                                isDisabled || 
-                                boughtProducts.has(selectedProduct.productId)}
-                      placeholder="Qty"
-                    />
-                    <Button 
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => handleMaxBuy(selectedProduct)}
-                      disabled={selectedProduct.available === 0 || 
-                                cash < selectedProduct.marketPrice ||
-                                isDisabled || 
-                                boughtProducts.has(selectedProduct.productId)}
-                      className="whitespace-nowrap"
-                    >
-                      Max
-                    </Button>
-                  </div>
-                  
-                  <div className="mt-2 flex flex-col">
+                  <div className="flex flex-col space-y-2 mt-2">
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        type="number"
+                        value={buyQuantities[selectedProduct.productId] || ''}
+                        onChange={(e) => handleBuyInputChange(selectedProduct.productId, e.target.value)}
+                        min={0}
+                        max={Math.min(selectedProduct.available, Math.floor(cash / selectedProduct.marketPrice))}
+                        className="w-20"
+                        disabled={selectedProduct.available === 0 || 
+                                  cash < selectedProduct.marketPrice || 
+                                  isDisabled || 
+                                  boughtProducts.has(selectedProduct.productId)}
+                        placeholder="Qty"
+                      />
+                      <Button 
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleMaxBuy(selectedProduct)}
+                        disabled={selectedProduct.available === 0 || 
+                                  cash < selectedProduct.marketPrice ||
+                                  isDisabled || 
+                                  boughtProducts.has(selectedProduct.productId)}
+                        className="whitespace-nowrap"
+                      >
+                        Max
+                      </Button>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => handleBuy(selectedProduct)}
+                        disabled={!buyQuantities[selectedProduct.productId] || 
+                                  buyQuantities[selectedProduct.productId] <= 0 ||
+                                  isDisabled || 
+                                  boughtProducts.has(selectedProduct.productId)}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        Buy
+                      </Button>
+                    </div>
+                    
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateBuyTotal(selectedProduct))}</div>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={() => handleBuy(selectedProduct)}
-                      disabled={!buyQuantities[selectedProduct.productId] || 
-                                buyQuantities[selectedProduct.productId] <= 0 ||
-                                isDisabled || 
-                                boughtProducts.has(selectedProduct.productId)}
-                      className="mt-1 bg-blue-600 hover:bg-blue-700"
-                    >
-                      Buy
-                    </Button>
                     {boughtProducts.has(selectedProduct.productId) && (
                       <p className="text-xs text-red-500 mt-1">You've already purchased this product today</p>
                     )}
@@ -290,46 +290,46 @@ export function ProductMarket() {
                     <span>{formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
                   </div>
                   
-                  <div className="flex items-center space-x-2 mt-2">
-                    <Input
-                      type="number"
-                      value={sellQuantities[selectedProduct.productId] || ''}
-                      onChange={(e) => handleSellInputChange(selectedProduct.productId, e.target.value)}
-                      min={0}
-                      max={getInventoryQuantity(selectedProduct.productId)}
-                      className="w-24"
-                      disabled={getInventoryQuantity(selectedProduct.productId) === 0 || 
-                                isDisabled || 
-                                soldProducts.has(selectedProduct.productId)}
-                      placeholder="Qty"
-                    />
-                    <Button 
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => handleMaxSell(selectedProduct)}
-                      disabled={getInventoryQuantity(selectedProduct.productId) === 0 || 
-                                isDisabled || 
-                                soldProducts.has(selectedProduct.productId)}
-                      className="whitespace-nowrap"
-                    >
-                      Max
-                    </Button>
-                  </div>
-                  
-                  <div className="mt-2 flex flex-col">
+                  <div className="flex flex-col space-y-2 mt-2">
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        type="number"
+                        value={sellQuantities[selectedProduct.productId] || ''}
+                        onChange={(e) => handleSellInputChange(selectedProduct.productId, e.target.value)}
+                        min={0}
+                        max={getInventoryQuantity(selectedProduct.productId)}
+                        className="w-20"
+                        disabled={getInventoryQuantity(selectedProduct.productId) === 0 || 
+                                  isDisabled || 
+                                  soldProducts.has(selectedProduct.productId)}
+                        placeholder="Qty"
+                      />
+                      <Button 
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleMaxSell(selectedProduct)}
+                        disabled={getInventoryQuantity(selectedProduct.productId) === 0 || 
+                                  isDisabled || 
+                                  soldProducts.has(selectedProduct.productId)}
+                        className="whitespace-nowrap"
+                      >
+                        Max
+                      </Button>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => handleSell(selectedProduct)}
+                        disabled={!sellQuantities[selectedProduct.productId] || 
+                                  sellQuantities[selectedProduct.productId] <= 0 ||
+                                  isDisabled || 
+                                  soldProducts.has(selectedProduct.productId)}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        Sell
+                      </Button>
+                    </div>
+                    
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateSellTotal(selectedProduct))}</div>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={() => handleSell(selectedProduct)}
-                      disabled={!sellQuantities[selectedProduct.productId] || 
-                                sellQuantities[selectedProduct.productId] <= 0 ||
-                                isDisabled || 
-                                soldProducts.has(selectedProduct.productId)}
-                      className="mt-1 bg-green-600 hover:bg-green-700"
-                    >
-                      Sell
-                    </Button>
                     {soldProducts.has(selectedProduct.productId) && (
                       <p className="text-xs text-red-500 mt-1">You've already sold this product today</p>
                     )}
