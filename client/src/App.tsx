@@ -5,6 +5,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import NotFound from "./pages/not-found";
 import { Loading } from "./components/ui/loading";
+import { InstallPrompt } from "./components/ui/InstallPrompt";
+import { Toaster } from "./components/ui/sonner";
 import "@fontsource/inter";
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Loading isLoading={isLoading} />
+      <InstallPrompt />
+      <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
