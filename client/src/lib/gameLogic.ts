@@ -272,8 +272,9 @@ export function generateRandomEvent(currentLocation: Location, daysRemaining: nu
     return null;
   }
   
-  // 10% chance of a random event happening (reduced frequency)
-  if (Math.random() > 0.1) return null;
+  // 10-20% chance of a random event happening (randomized frequency)
+  const eventChance = Math.random() * 0.1 + 0.1; // Between 0.1 (10%) and 0.2 (20%)
+  if (Math.random() > eventChance) return null;
   
   // Filter events by location if needed
   const eligibleEvents = GAME_EVENTS.filter(event => !event.location || event.location === currentLocation);

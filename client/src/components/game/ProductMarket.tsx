@@ -37,7 +37,7 @@ export function ProductMarket() {
   
   // Helper function to check if a product can be sold
   const canSellProduct = (productId: number): boolean => {
-    return !soldProducts.has(productId) && !boughtProducts.has(productId) && 
+    return !boughtProducts.has(productId) && 
            getInventoryQuantity(productId) > 0 && !isDisabled;
   };
   
@@ -338,9 +338,7 @@ export function ProductMarket() {
                     </div>
                     
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateSellTotal(selectedProduct))}</div>
-                    {soldProducts.has(selectedProduct.productId) ? (
-                      <p className="text-xs text-red-500 mt-1">You've already sold this product today</p>
-                    ) : boughtProducts.has(selectedProduct.productId) ? (
+                    {boughtProducts.has(selectedProduct.productId) ? (
                       <p className="text-xs text-red-500 mt-1">You can't sell products bought at this location today</p>
                     ) : getInventoryQuantity(selectedProduct.productId) === 0 ? (
                       <p className="text-xs text-amber-500 mt-1">You don't have any of this product in inventory</p>
