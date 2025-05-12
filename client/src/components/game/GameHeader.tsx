@@ -8,7 +8,7 @@ import {
   Clock
 } from 'lucide-react';
 import { useState } from 'react';
-import { EndGameConfirmation } from './EndGameConfirmation';
+import { BasicConfirmationDialog } from './BasicConfirmationDialog';
 
 export function GameHeader() {
   const { 
@@ -102,11 +102,17 @@ export function GameHeader() {
               </Button>
             )}
             
-            <EndGameConfirmation
+            <BasicConfirmationDialog
               isOpen={showEndGameConfirmation}
-              onClose={() => setShowEndGameConfirmation(false)}
+              title="End Game Confirmation"
+              message={daysRemaining <= 1 
+                ? "Are you ready to finish the game and see your final score?"
+                : "Are you sure you want to end the game early? Your score will not be at its maximum potential if you end now."}
+              confirmText="End Game"
+              cancelText="Cancel"
               onConfirm={endGame}
-              daysRemaining={daysRemaining}
+              onCancel={() => setShowEndGameConfirmation(false)}
+              confirmButtonClass={daysRemaining <= 1 ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
             />
           </div>
         </div>
