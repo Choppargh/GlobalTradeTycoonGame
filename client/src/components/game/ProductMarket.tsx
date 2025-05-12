@@ -44,8 +44,7 @@ export function ProductMarket() {
   // Helper function to check if a product can be bought
   const canBuyProduct = (productId: number, price: number): boolean => {
     const productListing = marketListings.find(p => p.productId === productId);
-    return !boughtProducts.has(productId) && 
-           !soldProducts.has(productId) && 
+    return !soldProducts.has(productId) && 
            !!productListing && 
            productListing.available > 0 && 
            cash >= price && 
@@ -282,8 +281,6 @@ export function ProductMarket() {
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateBuyTotal(selectedProduct))}</div>
                     {soldProducts.has(selectedProduct.productId) ? (
                       <p className="text-xs text-red-500 mt-1">You can't buy products you've already sold today</p>
-                    ) : boughtProducts.has(selectedProduct.productId) ? (
-                      <p className="text-xs text-red-500 mt-1">You've already purchased this product today</p>
                     ) : selectedProduct.available === 0 ? (
                       <p className="text-xs text-amber-500 mt-1">This product is out of stock</p>
                     ) : cash < selectedProduct.marketPrice ? (
