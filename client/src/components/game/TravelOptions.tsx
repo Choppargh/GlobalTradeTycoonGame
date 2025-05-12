@@ -105,21 +105,23 @@ export function TravelOptions() {
       </Card>
       
       <Dialog open={showTravelDialog} onOpenChange={setShowTravelDialog}>
-        <DialogContent className="sm:max-w-[600px] bg-white">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-white">
           <DialogHeader>
             <DialogTitle>Select Destination</DialogTitle>
             <DialogDescription>
               Choose where to travel next. Each journey costs 1 day and increases your loan by 5%. 
-              Travel involves risks such as theft and fire which could result in loss of cash or inventory.
+              Travel involves risks which could result in loss of cash or inventory.
             </DialogDescription>
           </DialogHeader>
           
           <div className="py-4">
-            <LocationMap 
-              currentLocation={currentLocation} 
-              onSelect={handleTravelSelect}
-              interactive={true}
-            />
+            <div className="max-w-full overflow-x-hidden">
+              <LocationMap 
+                currentLocation={currentLocation} 
+                onSelect={handleTravelSelect}
+                interactive={true}
+              />
+            </div>
             
             {selectedDestination && (
               <div className="mt-4 p-3 bg-muted rounded-md">

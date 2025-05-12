@@ -33,7 +33,7 @@ export function Leaderboard({ scores, currentUsername }: LeaderboardProps) {
             <TableHead className="w-12">Rank</TableHead>
             <TableHead>Trader</TableHead>
             <TableHead className="text-right">Days</TableHead>
-            <TableHead className="text-right">Net Worth</TableHead>
+            <TableHead className="text-right">Bank Balance</TableHead>
             <TableHead className="text-right hidden sm:table-cell">Date</TableHead>
           </TableRow>
         </TableHeader>
@@ -58,7 +58,7 @@ export function Leaderboard({ scores, currentUsername }: LeaderboardProps) {
               </TableCell>
               <TableCell>{entry.username}</TableCell>
               <TableCell className="text-right">{entry.days}</TableCell>
-              <TableCell className="text-right font-medium">{formatCurrency(entry.endNetWorth)}</TableCell>
+              <TableCell className="text-right font-medium">{formatCurrency(entry.score)}</TableCell>
               <TableCell className="text-right text-muted-foreground hidden sm:table-cell">
                 {formatDate(entry.createdAt)}
               </TableCell>
