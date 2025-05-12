@@ -280,18 +280,15 @@ export function ProductMarket() {
                     </div>
                     
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateBuyTotal(selectedProduct))}</div>
-                    {soldProducts.has(selectedProduct.productId) && (
+                    {soldProducts.has(selectedProduct.productId) ? (
                       <p className="text-xs text-red-500 mt-1">You can't buy products you've already sold today</p>
-                    )}
-                    {boughtProducts.has(selectedProduct.productId) && (
+                    ) : boughtProducts.has(selectedProduct.productId) ? (
                       <p className="text-xs text-red-500 mt-1">You've already purchased this product today</p>
-                    )}
-                    {selectedProduct.available === 0 && !soldProducts.has(selectedProduct.productId) && !boughtProducts.has(selectedProduct.productId) && (
+                    ) : selectedProduct.available === 0 ? (
                       <p className="text-xs text-amber-500 mt-1">This product is out of stock</p>
-                    )}
-                    {selectedProduct.available > 0 && cash < selectedProduct.marketPrice && !soldProducts.has(selectedProduct.productId) && !boughtProducts.has(selectedProduct.productId) && (
+                    ) : cash < selectedProduct.marketPrice ? (
                       <p className="text-xs text-amber-500 mt-1">You don't have enough cash to buy this product</p>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -344,15 +341,13 @@ export function ProductMarket() {
                     </div>
                     
                     <div className="text-sm font-medium">Total: {formatCurrency(calculateSellTotal(selectedProduct))}</div>
-                    {soldProducts.has(selectedProduct.productId) && (
+                    {soldProducts.has(selectedProduct.productId) ? (
                       <p className="text-xs text-red-500 mt-1">You've already sold this product today</p>
-                    )}
-                    {boughtProducts.has(selectedProduct.productId) && (
+                    ) : boughtProducts.has(selectedProduct.productId) ? (
                       <p className="text-xs text-red-500 mt-1">You can't sell products bought at this location today</p>
-                    )}
-                    {getInventoryQuantity(selectedProduct.productId) === 0 && !soldProducts.has(selectedProduct.productId) && !boughtProducts.has(selectedProduct.productId) && (
+                    ) : getInventoryQuantity(selectedProduct.productId) === 0 ? (
                       <p className="text-xs text-amber-500 mt-1">You don't have any of this product in inventory</p>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
