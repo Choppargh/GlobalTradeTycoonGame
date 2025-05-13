@@ -232,7 +232,7 @@ export function ProductMarket() {
               </DialogDescription>
             </DialogHeader>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-2">
+            <div className="grid grid-cols-1 gap-6 py-2">
               {/* Buy Section */}
               <div className="border rounded-lg p-4 bg-blue-50">
                 <h3 className="font-bold text-lg text-blue-800 mb-3">Buy</h3>
