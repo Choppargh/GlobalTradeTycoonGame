@@ -52,8 +52,8 @@ export function EndGameConfirmation({ isOpen, onClose, onConfirm, daysRemaining 
             className={isLastDay ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
             onClick={() => {
               console.log("Confirm button clicked in EndGameConfirmation");
+              // Just call onConfirm, the store will handle closing the dialog
               onConfirm();
-              onClose();
             }}
           >
             {isLastDay ? "Submit Score" : "End Game"}
