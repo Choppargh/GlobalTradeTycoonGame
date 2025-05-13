@@ -18,6 +18,9 @@ interface EndGameConfirmationProps {
 
 export function EndGameConfirmation({ isOpen, onClose, onConfirm, daysRemaining }: EndGameConfirmationProps) {
   const isLastDay = daysRemaining <= 1;
+
+  // Log when component renders with its open state
+  console.log("EndGameConfirmation rendered. isOpen:", isOpen, "daysRemaining:", daysRemaining);
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -37,7 +40,10 @@ export function EndGameConfirmation({ isOpen, onClose, onConfirm, daysRemaining 
         <DialogFooter className="mt-4">
           <Button
             variant="outline"
-            onClick={onClose}
+            onClick={() => {
+              console.log("Cancel button clicked in EndGameConfirmation");
+              onClose();
+            }}
             className="mr-2"
           >
             Cancel
@@ -45,6 +51,7 @@ export function EndGameConfirmation({ isOpen, onClose, onConfirm, daysRemaining 
           <Button
             className={isLastDay ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
             onClick={() => {
+              console.log("Confirm button clicked in EndGameConfirmation");
               onConfirm();
               onClose();
             }}
