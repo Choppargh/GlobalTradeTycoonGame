@@ -220,14 +220,16 @@ export function ProductMarket() {
           <>
             <DialogHeader className="mb-4">
               <DialogTitle className="text-xl font-bold text-center">{selectedProduct.name}</DialogTitle>
-              <DialogDescription className="flex flex-col justify-center space-y-2 text-center mt-2">
-                <div>
-                  <span className="font-medium">Market Price:</span> 
-                  <span className="ml-1 text-blue-600">{formatCurrency(selectedProduct.marketPrice)}</span>
-                </div>
-                <div>
-                  <span className="font-medium">Demand Price:</span> 
-                  <span className="ml-1 text-green-600">{formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
+              <DialogDescription className="space-y-2 text-center mt-2">
+                <div className="grid grid-cols-1 gap-2">
+                  <div>
+                    <span className="font-medium">Market Price:</span> 
+                    <span className="ml-1 text-blue-600">{formatCurrency(selectedProduct.marketPrice)}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium">Demand Price:</span> 
+                    <span className="ml-1 text-green-600">{formatCurrency(selectedProduct.marketPrice * selectedProduct.demandMultiplier)}</span>
+                  </div>
                 </div>
               </DialogDescription>
             </DialogHeader>

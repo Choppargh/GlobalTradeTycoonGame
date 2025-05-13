@@ -411,16 +411,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     const state = get();
     if (!state.username) return;
     
-    // Only proceed if confirmation dialog is open
-    if (!state.isEndGameConfirmationOpen) {
-      console.log("Setting end game confirmation dialog to open");
-      set({ isEndGameConfirmationOpen: true });
-      return; // Exit early to show the dialog first
-    }
-    
-    // Close the confirmation dialog
-    set({ isEndGameConfirmationOpen: false });
-    
     // For net worth calculation (for display), properly rounded to the nearest cent
     const inventoryValue = Math.round(state.inventory.reduce(
       (total, item) => total + (item.quantity * item.purchasePrice),
