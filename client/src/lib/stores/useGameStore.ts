@@ -359,7 +359,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     switch (action) {
       case 'deposit': 
         if (roundedAmount > state.cash) {
-          alert("You don't have enough cash to deposit this amount.");
+          set({ 
+            travelRiskMessage: "You don't have enough cash to deposit this amount.",
+            isTravelRiskDialogOpen: true 
+          });
           return;
         }
         set({
@@ -370,7 +373,10 @@ export const useGameStore = create<GameState>((set, get) => ({
         
       case 'withdraw':
         if (roundedAmount > state.bankBalance) {
-          alert("You don't have enough balance to withdraw this amount.");
+          set({ 
+            travelRiskMessage: "You don't have enough balance to withdraw this amount.",
+            isTravelRiskDialogOpen: true 
+          });
           return;
         }
         set({
@@ -381,7 +387,10 @@ export const useGameStore = create<GameState>((set, get) => ({
         
       case 'loan':
         if (state.loanAmount + roundedAmount > 10000) {
-          alert("Your total loan cannot exceed $10,000.");
+          set({ 
+            travelRiskMessage: "Your total loan cannot exceed $10,000.",
+            isTravelRiskDialogOpen: true 
+          });
           return;
         }
         set({
@@ -392,11 +401,17 @@ export const useGameStore = create<GameState>((set, get) => ({
         
       case 'repay':
         if (roundedAmount > state.cash) {
-          alert("You don't have enough cash to repay this amount.");
+          set({ 
+            travelRiskMessage: "You don't have enough cash to repay this amount.",
+            isTravelRiskDialogOpen: true 
+          });
           return;
         }
         if (roundedAmount > state.loanAmount) {
-          alert("You can't repay more than you owe.");
+          set({ 
+            travelRiskMessage: "You can't repay more than you owe.",
+            isTravelRiskDialogOpen: true 
+          });
           return;
         }
         set({
