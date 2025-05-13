@@ -220,7 +220,7 @@ export function ProductMarket() {
           <>
             <DialogHeader className="mb-4">
               <DialogTitle className="text-xl font-bold text-center">{selectedProduct.name}</DialogTitle>
-              <DialogDescription className="flex flex-col sm:flex-row sm:justify-center sm:space-x-8 text-center mt-2">
+              <DialogDescription className="flex flex-col justify-center space-y-2 text-center mt-2">
                 <div>
                   <span className="font-medium">Market Price:</span> 
                   <span className="ml-1 text-blue-600">{formatCurrency(selectedProduct.marketPrice)}</span>
