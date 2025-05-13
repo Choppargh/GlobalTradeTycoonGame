@@ -7,6 +7,7 @@ import { TravelOptions } from '@/components/game/TravelOptions';
 import { BankInterface } from '@/components/game/BankInterface';
 import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
+import { EndGameConfirmation } from '@/components/game/EndGameConfirmation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Simplified version to resolve hook errors
@@ -19,7 +20,11 @@ export default function GamePage() {
     clearCurrentEvent, 
     isTravelRiskDialogOpen,
     travelRiskMessage,
-    clearTravelRiskDialog
+    clearTravelRiskDialog,
+    isEndGameConfirmationOpen,
+    setEndGameConfirmationOpen,
+    endGame,
+    daysRemaining
   } = useGameStore();
   
   // Basic game state loading
@@ -106,6 +111,20 @@ export default function GamePage() {
         isOpen={isTravelRiskDialogOpen}
         message={travelRiskMessage}
         onClose={clearTravelRiskDialog}
+      />
+      
+      {/* Add End Game Confirmation at the global level */}
+      <EndGameConfirmation
+        isOpen={isEndGameConfirmationOpen}
+        onClose={() => {
+          console.log("Closing end game dialog from GamePage");
+          setEndGameConfirmationOpen(false);
+        }}
+        onConfirm={() => {
+          console.log("Confirming end game from GamePage");
+          endGame();
+        }}
+        daysRemaining={daysRemaining}
       />
     </div>
   );
