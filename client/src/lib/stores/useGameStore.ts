@@ -467,7 +467,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   
   setEndGameConfirmationOpen: (isOpen) => {
+    console.log("setEndGameConfirmationOpen called with:", isOpen);
     set({ isEndGameConfirmationOpen: isOpen });
+    console.log("isEndGameConfirmationOpen set to:", isOpen);
   },
   
   // Random event handlers
