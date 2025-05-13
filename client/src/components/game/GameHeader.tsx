@@ -102,9 +102,15 @@ export function GameHeader() {
             )}
             
             <EndGameConfirmation
-              isOpen={isEndGameConfirmationOpen}
-              onClose={() => setEndGameConfirmationOpen(false)}
-              onConfirm={endGame}
+              isOpen={isEndGameConfirmationOpen} 
+              onClose={() => {
+                console.log("Closing end game confirmation");
+                setEndGameConfirmationOpen(false);
+              }}
+              onConfirm={() => {
+                console.log("End game confirmed");
+                endGame();
+              }}
               daysRemaining={daysRemaining}
             />
           </div>
