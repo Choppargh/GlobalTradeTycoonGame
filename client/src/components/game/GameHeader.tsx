@@ -85,7 +85,10 @@ export function GameHeader() {
                 variant="default" 
                 size="sm"
                 className="bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => setEndGameConfirmationOpen(true)}
+                onClick={() => {
+                  console.log("I'm Finished button clicked in GameHeader");
+                  setEndGameConfirmationOpen(true);
+                }}
               >
                 <Clock className="mr-1 h-4 w-4" />
                 I'm Finished
@@ -94,7 +97,10 @@ export function GameHeader() {
               <Button 
                 variant="destructive" 
                 size="sm"
-                onClick={() => setEndGameConfirmationOpen(true)}
+                onClick={() => {
+                  console.log("End Game button clicked in GameHeader");
+                  setEndGameConfirmationOpen(true);
+                }}
               >
                 <Clock className="mr-1 h-4 w-4" />
                 End Game
