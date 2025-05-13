@@ -7,7 +7,7 @@ import {
   CalculatorIcon,
   Clock
 } from 'lucide-react';
-import { EndGameConfirmation } from './EndGameConfirmation';
+
 
 export function GameHeader() {
   const { 
