@@ -86,8 +86,10 @@ export function GameHeader() {
                 size="sm"
                 className="bg-green-600 hover:bg-green-700 text-white"
                 onClick={() => {
-                  console.log("I'm Finished button clicked in GameHeader");
-                  setEndGameConfirmationOpen(true);
+                  // Use window.confirm directly with custom text
+                  if (window.confirm("Are you ready to finish the game and see your final score?")) {
+                    endGame();
+                  }
                 }}
               >
                 <Clock className="mr-1 h-4 w-4" />
@@ -98,8 +100,10 @@ export function GameHeader() {
                 variant="destructive" 
                 size="sm"
                 onClick={() => {
-                  console.log("End Game button clicked in GameHeader");
-                  setEndGameConfirmationOpen(true);
+                  // Use window.confirm directly with custom text
+                  if (window.confirm("Are you sure you want to end the game early? Your score will not be at its maximum potential if you end now.")) {
+                    endGame();
+                  }
                 }}
               >
                 <Clock className="mr-1 h-4 w-4" />

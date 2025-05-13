@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -15,25 +15,15 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { ProductListing } from '@shared/schema';
 import { cn } from '@/lib/utils';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog';
+import { ProductDetailDialog } from './ProductDetailDialog';
 
 export function ProductMarket() {
-  const { marketListings, buyProduct, sellProduct, inventory, cash, priceChanges, daysRemaining, boughtProducts, soldProducts } = useGameStore();
-  const [buyQuantities, setBuyQuantities] = useState<Record<number, number>>({});
-  const [sellQuantities, setSellQuantities] = useState<Record<number, number>>({});
+  const { marketListings, priceChanges } = useGameStore();
   const [selectedProduct, setSelectedProduct] = useState<ProductListing | null>(null);
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   // Helper function to check if a product can be sold
   const canSellProduct = (productId: number): boolean => {
