@@ -117,7 +117,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     const state = get();
     
     if (state.daysRemaining <= 1) {
-      get().endGame();
+      // On the last day, don't directly call endGame - open confirmation dialog
+      set({ isEndGameConfirmationOpen: true });
       return;
     }
     
