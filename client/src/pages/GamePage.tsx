@@ -122,6 +122,7 @@ export default function GamePage() {
         }}
         onConfirm={() => {
           console.log("Confirming end game from GamePage");
+          // Setting isEndGameConfirmationOpen is already true, so endGame() will proceed
           endGame();
         }}
         daysRemaining={daysRemaining}

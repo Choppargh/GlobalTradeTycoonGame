@@ -408,8 +408,19 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   
   endGame: async () => {
+    console.log("endGame function called");
     const state = get();
     if (!state.username) return;
+    
+    // If not confirmed yet, open confirmation dialog instead of proceeding
+    if (!state.isEndGameConfirmationOpen) {
+      console.log("Opening end game confirmation dialog first");
+      set({ isEndGameConfirmationOpen: true });
+      return; // Exit early
+    }
+    
+    // Continue with end game process
+    console.log("Proceeding with end game (dialog was confirmed)");
     
     // For net worth calculation (for display), properly rounded to the nearest cent
     const inventoryValue = Math.round(state.inventory.reduce(
@@ -432,7 +443,11 @@ export const useGameStore = create<GameState>((set, get) => ({
         endNetWorth: netWorth
       });
       
-      set({ gamePhase: 'game-over' });
+      // Close the dialog and move to game-over phase
+      set({ 
+        isEndGameConfirmationOpen: false,
+        gamePhase: 'game-over'
+      });
     } catch (error) {
       console.error("Failed to submit score:", error);
       
