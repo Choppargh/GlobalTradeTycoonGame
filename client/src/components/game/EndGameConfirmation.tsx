@@ -23,8 +23,8 @@ export function EndGameConfirmation({ isOpen, onClose, onConfirm, daysRemaining 
   console.log("EndGameConfirmation rendered. isOpen:", isOpen, "daysRemaining:", daysRemaining);
   
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white">
+    <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
+      <DialogContent className="sm:max-w-md bg-white" forceMount>
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             {isLastDay ? "Finish Game" : "End Game Early?"}
