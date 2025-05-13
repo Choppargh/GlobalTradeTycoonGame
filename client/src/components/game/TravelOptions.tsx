@@ -76,7 +76,10 @@ export function TravelOptions() {
             // Show "I'm Finished" button on the last day
             <>
               <Button 
-                onClick={() => setEndGameConfirmationOpen(true)} 
+                onClick={() => {
+                  console.log("Setting end game confirmation dialog to open");
+                  setEndGameConfirmationOpen(true);
+                }} 
                 variant="default" 
                 className="w-full justify-between bg-green-600 hover:bg-green-700 text-white"
               >
