@@ -21,7 +21,18 @@ import { LocationMap } from './LocationMap';
 import { ArrowRightIcon, PlaneIcon } from 'lucide-react';
 
 export function TravelOptions() {
-  const { currentLocation, travel, daysRemaining, loanAmount, inventory, cash, endGame } = useGameStore();
+  const { 
+    currentLocation, 
+    travel, 
+    daysRemaining, 
+    loanAmount, 
+    inventory, 
+    cash, 
+    endGame,
+    isEndGameConfirmationOpen,
+    setEndGameConfirmationOpen 
+  } = useGameStore();
+  
   // Ensure currentLocation is treated as Location and not null
   if (!currentLocation) return null;
   const [showTravelDialog, setShowTravelDialog] = useState(false);
@@ -65,7 +76,7 @@ export function TravelOptions() {
             // Show "I'm Finished" button on the last day
             <>
               <Button 
-                onClick={() => endGame()} 
+                onClick={() => setEndGameConfirmationOpen(true)} 
                 variant="default" 
                 className="w-full justify-between bg-green-600 hover:bg-green-700 text-white"
               >

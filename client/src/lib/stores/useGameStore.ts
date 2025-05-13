@@ -36,10 +36,6 @@ interface GameState {
   isTravelRiskDialogOpen: boolean;
   clearTravelRiskDialog: () => void;
   
-  // End game confirmation
-  isEndGameConfirmationOpen: boolean;
-  setEndGameConfirmationOpen: (isOpen: boolean) => void;
-  
   // Game actions
   setUsername: (username: string) => void;
   startGame: () => void;
