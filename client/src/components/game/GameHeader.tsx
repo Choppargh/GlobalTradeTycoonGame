@@ -7,8 +7,7 @@ import {
   CalculatorIcon,
   Clock
 } from 'lucide-react';
-import { useState } from 'react';
-import { BasicConfirmationDialog } from './BasicConfirmationDialog';
+import { EndGameConfirmation } from './EndGameConfirmation';
 
 export function GameHeader() {
   const { 
@@ -86,7 +85,7 @@ export function GameHeader() {
                 variant="default" 
                 size="sm"
                 className="bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => setShowEndGameConfirmation(true)}
+                onClick={() => setEndGameConfirmationOpen(true)}
               >
                 <Clock className="mr-1 h-4 w-4" />
                 I'm Finished
@@ -95,24 +94,18 @@ export function GameHeader() {
               <Button 
                 variant="destructive" 
                 size="sm"
-                onClick={() => setShowEndGameConfirmation(true)}
+                onClick={() => setEndGameConfirmationOpen(true)}
               >
                 <Clock className="mr-1 h-4 w-4" />
                 End Game
               </Button>
             )}
             
-            <BasicConfirmationDialog
-              isOpen={showEndGameConfirmation}
-              title="End Game Confirmation"
-              message={daysRemaining <= 1 
-                ? "Are you ready to finish the game and see your final score?"
-                : "Are you sure you want to end the game early? Your score will not be at its maximum potential if you end now."}
-              confirmText="End Game"
-              cancelText="Cancel"
+            <EndGameConfirmation
+              isOpen={isEndGameConfirmationOpen}
+              onClose={() => setEndGameConfirmationOpen(false)}
               onConfirm={endGame}
-              onCancel={() => setShowEndGameConfirmation(false)}
-              confirmButtonClass={daysRemaining <= 1 ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
+              daysRemaining={daysRemaining}
             />
           </div>
         </div>
