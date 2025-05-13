@@ -239,20 +239,29 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     // Trading rule: Can't buy a product you've already sold at this location
     if (state.soldProducts.has(productId)) {
-      alert("You can't buy products you've already sold today!");
+      set({ 
+        travelRiskMessage: "You can't buy products you've already sold today!",
+        isTravelRiskDialogOpen: true 
+      });
       return;
     }
     
     // Check for available cash
     if (state.cash < totalCost) {
-      alert("Not enough cash to complete this purchase!");
+      set({ 
+        travelRiskMessage: "Not enough cash to complete this purchase!",
+        isTravelRiskDialogOpen: true 
+      });
       return;
     }
     
     // Check market availability
     const productListing = state.marketListings.find(p => p.productId === productId);
     if (!productListing || productListing.available < quantity) {
-      alert("Not enough quantity available!");
+      set({ 
+        travelRiskMessage: "Not enough quantity available!",
+        isTravelRiskDialogOpen: true 
+      });
       return;
     }
     
@@ -310,14 +319,20 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     // Trading rule: Can't sell a product you've just bought at the same location
     if (state.boughtProducts.has(productId)) {
-      alert("You can't sell products bought at this location today!");
+      set({ 
+        travelRiskMessage: "You can't sell products bought at this location today!",
+        isTravelRiskDialogOpen: true 
+      });
       return;
     }
     
     // Check inventory
     const inventoryItem = state.inventory.find(item => item.productId === productId);
     if (!inventoryItem || inventoryItem.quantity < quantity) {
-      alert("Not enough quantity in inventory!");
+      set({ 
+        travelRiskMessage: "Not enough quantity in inventory!",
+        isTravelRiskDialogOpen: true 
+      });
       return;
     }
     
