@@ -101,18 +101,7 @@ export function GameHeader() {
               </Button>
             )}
             
-            <EndGameConfirmation
-              isOpen={isEndGameConfirmationOpen} 
-              onClose={() => {
-                console.log("Closing end game confirmation");
-                setEndGameConfirmationOpen(false);
-              }}
-              onConfirm={() => {
-                console.log("End game confirmed");
-                endGame();
-              }}
-              daysRemaining={daysRemaining}
-            />
+            {/* EndGameConfirmation is now handled at the root level in GamePage */}
           </div>
         </div>
       </div>
