@@ -1,18 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { GameHeader } from '@/components/game/GameHeader';
-import { ProductMarket } from '@/components/game/ProductMarket';
-import { Inventory } from '@/components/game/Inventory';
+import { BuyTab } from '@/components/game/BuyTab';
+import { SellTab } from '@/components/game/SellTab';
 import { TravelOptions } from '@/components/game/TravelOptions';
 import { BankInterface } from '@/components/game/BankInterface';
 import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Simplified version to resolve hook errors
 export default function GamePage() {
-  const [activeTab, setActiveTab] = useState("market");
+  const [activeTab, setActiveTab] = useState("buy");
   
   const { 
     currentLocation, 
@@ -21,10 +19,6 @@ export default function GamePage() {
     isTravelRiskDialogOpen,
     travelRiskMessage,
     clearTravelRiskDialog,
-    isEndGameConfirmationOpen,
-    setEndGameConfirmationOpen,
-    endGame,
-    daysRemaining
   } = useGameStore();
   
   // Basic game state loading
@@ -59,40 +53,40 @@ export default function GamePage() {
           <TravelOptions />
         </div>
         
-        {/* Market and Inventory - Tabbed on mobile, side-by-side on desktop */}
+        {/* Buy and Sell Tabs - Tabbed on mobile, side-by-side on desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
           {/* Tabbed interface on mobile, hidden on desktop */}
           <div className="block lg:hidden w-full">
-            <Tabs defaultValue="market" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs defaultValue="buy" value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid grid-cols-2 w-full bg-amber-50 border-b border-amber-200">
                 <TabsTrigger 
-                  value="market" 
-                  className="text-base font-medium data-[state=active]:bg-amber-100 data-[state=active]:text-amber-800 rounded-b-none"
+                  value="buy" 
+                  className="text-base font-medium data-[state=active]:bg-blue-100 data-[state=active]:text-blue-800 rounded-b-none"
                 >
-                  Market
+                  Buy
                 </TabsTrigger>
                 <TabsTrigger 
-                  value="inventory" 
-                  className="text-base font-medium data-[state=active]:bg-amber-100 data-[state=active]:text-amber-800 rounded-b-none"
+                  value="sell" 
+                  className="text-base font-medium data-[state=active]:bg-green-100 data-[state=active]:text-green-800 rounded-b-none"
                 >
-                  Inventory
+                  Sell
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="market" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
-                <ProductMarket />
+              <TabsContent value="buy" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
+                <BuyTab />
               </TabsContent>
-              <TabsContent value="inventory" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
-                <Inventory />
+              <TabsContent value="sell" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
+                <SellTab />
               </TabsContent>
             </Tabs>
           </div>
           
           {/* Desktop layout - side by side, hidden on mobile */}
           <div className="hidden lg:block col-span-1">
-            <ProductMarket />
+            <BuyTab />
           </div>
           <div className="hidden lg:block col-span-1">
-            <Inventory />
+            <SellTab />
           </div>
         </div>
       </div>
@@ -112,8 +106,6 @@ export default function GamePage() {
         message={travelRiskMessage}
         onClose={clearTravelRiskDialog}
       />
-      
-      {/* End Game confirmation is now handled directly with window.confirm */}
     </div>
   );
 }
