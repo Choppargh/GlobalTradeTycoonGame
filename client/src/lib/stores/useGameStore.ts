@@ -310,12 +310,21 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newBoughtProducts = new Set(state.boughtProducts);
     newBoughtProducts.add(productId);
     
-    set({
+    const newState = {
       cash: Math.round((state.cash - totalCost) * 100) / 100,
       inventory: newInventory,
       marketListings: newMarketListings,
       boughtProducts: newBoughtProducts
-    });
+    };
+    
+    set(newState);
+    
+    // Auto-save after buying products
+    setTimeout(() => {
+      if (get().autoSaveEnabled) {
+        get().saveGameState();
+      }
+    }, 100);
   },
   
   sellProduct: (productId, quantity, price) => {
@@ -362,11 +371,20 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newSoldProducts = new Set(state.soldProducts);
     newSoldProducts.add(productId);
     
-    set({
+    const newState = {
       cash: Math.round((state.cash + totalRevenue) * 100) / 100,
       inventory: newInventory,
       soldProducts: newSoldProducts
-    });
+    };
+    
+    set(newState);
+    
+    // Auto-save after selling products
+    setTimeout(() => {
+      if (get().autoSaveEnabled) {
+        get().saveGameState();
+      }
+    }, 100);
   },
   
   handleBankAction: (action, amount) => {
@@ -384,10 +402,19 @@ export const useGameStore = create<GameState>((set, get) => ({
           });
           return;
         }
-        set({
+        const depositState = {
           cash: Math.round((state.cash - roundedAmount) * 100) / 100,
           bankBalance: Math.round((state.bankBalance + roundedAmount) * 100) / 100
-        });
+        };
+        
+        set(newState);
+        
+        // Auto-save after bank deposit
+        setTimeout(() => {
+          if (get().autoSaveEnabled) {
+            get().saveGameState();
+          }
+        }, 100);
         break;
         
       case 'withdraw':
@@ -398,10 +425,19 @@ export const useGameStore = create<GameState>((set, get) => ({
           });
           return;
         }
-        set({
+        const newState = {
           cash: Math.round((state.cash + roundedAmount) * 100) / 100,
           bankBalance: Math.round((state.bankBalance - roundedAmount) * 100) / 100
-        });
+        };
+        
+        set(newState);
+        
+        // Auto-save after bank withdrawal
+        setTimeout(() => {
+          if (get().autoSaveEnabled) {
+            get().saveGameState();
+          }
+        }, 100);
         break;
         
       case 'loan':
@@ -412,10 +448,19 @@ export const useGameStore = create<GameState>((set, get) => ({
           });
           return;
         }
-        set({
+        const newState = {
           cash: Math.round((state.cash + roundedAmount) * 100) / 100,
           loanAmount: Math.round((state.loanAmount + roundedAmount) * 100) / 100
-        });
+        };
+        
+        set(newState);
+        
+        // Auto-save after taking a loan
+        setTimeout(() => {
+          if (get().autoSaveEnabled) {
+            get().saveGameState();
+          }
+        }, 100);
         break;
         
       case 'repay':
