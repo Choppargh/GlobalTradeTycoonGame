@@ -402,19 +402,15 @@ export const useGameStore = create<GameState>((set, get) => ({
           });
           return;
         }
-        const depositState = {
+        set({
           cash: Math.round((state.cash - roundedAmount) * 100) / 100,
           bankBalance: Math.round((state.bankBalance + roundedAmount) * 100) / 100
-        };
-        
-        set(newState);
+        });
         
         // Auto-save after bank deposit
-        setTimeout(() => {
-          if (get().autoSaveEnabled) {
-            get().saveGameState();
-          }
-        }, 100);
+        if (get().autoSaveEnabled) {
+          get().saveGameState();
+        }
         break;
         
       case 'withdraw':
@@ -425,19 +421,15 @@ export const useGameStore = create<GameState>((set, get) => ({
           });
           return;
         }
-        const newState = {
+        set({
           cash: Math.round((state.cash + roundedAmount) * 100) / 100,
           bankBalance: Math.round((state.bankBalance - roundedAmount) * 100) / 100
-        };
-        
-        set(newState);
+        });
         
         // Auto-save after bank withdrawal
-        setTimeout(() => {
-          if (get().autoSaveEnabled) {
-            get().saveGameState();
-          }
-        }, 100);
+        if (get().autoSaveEnabled) {
+          get().saveGameState();
+        }
         break;
         
       case 'loan':
@@ -448,19 +440,15 @@ export const useGameStore = create<GameState>((set, get) => ({
           });
           return;
         }
-        const newState = {
+        set({
           cash: Math.round((state.cash + roundedAmount) * 100) / 100,
           loanAmount: Math.round((state.loanAmount + roundedAmount) * 100) / 100
-        };
-        
-        set(newState);
+        });
         
         // Auto-save after taking a loan
-        setTimeout(() => {
-          if (get().autoSaveEnabled) {
-            get().saveGameState();
-          }
-        }, 100);
+        if (get().autoSaveEnabled) {
+          get().saveGameState();
+        }
         break;
         
       case 'repay':
@@ -482,6 +470,11 @@ export const useGameStore = create<GameState>((set, get) => ({
           cash: Math.round((state.cash - roundedAmount) * 100) / 100,
           loanAmount: Math.round((state.loanAmount - roundedAmount) * 100) / 100
         });
+        
+        // Auto-save after loan repayment
+        if (get().autoSaveEnabled) {
+          get().saveGameState();
+        }
         break;
     }
   },
@@ -780,4 +773,4 @@ export const useGameStore = create<GameState>((set, get) => ({
       return false;
     }
   }
-}));
+})));
