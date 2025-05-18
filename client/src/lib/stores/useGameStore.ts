@@ -52,10 +52,12 @@ interface GameState {
   isEndGameConfirmationOpen: boolean;
   setEndGameConfirmationOpen: (isOpen: boolean) => void;
   
-  // Game state persistence (for PWA offline support)
+  // Game state persistence (for PWA offline support and refresh recovery)
   saveGameState: () => void;
   loadGameState: () => boolean;
   clearSavedGameState: () => void;
+  autoSaveEnabled: boolean;
+  setAutoSaveEnabled: (enabled: boolean) => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -78,6 +80,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   travelRiskMessage: '',
   isTravelRiskDialogOpen: false,
   isEndGameConfirmationOpen: false,
+  autoSaveEnabled: true, // Default to auto-save enabled
   
   setUsername: (username) => {
     set({ username });
@@ -602,12 +605,17 @@ export const useGameStore = create<GameState>((set, get) => ({
     });
   },
   
+  // Control auto-save feature
+  setAutoSaveEnabled: (enabled) => {
+    set({ autoSaveEnabled: enabled });
+  },
+  
   // Game state persistence methods for PWA
   saveGameState: () => {
     const state = get();
     
-    // Skip saving if game isn't actively playing
-    if (state.gamePhase !== 'playing' || !state.username || !state.currentLocation) {
+    // Skip saving if game isn't actively playing or auto-save is disabled
+    if (state.gamePhase !== 'playing' || !state.username || !state.currentLocation || !state.autoSaveEnabled) {
       return;
     }
     
