@@ -97,11 +97,31 @@ export function BankInterface() {
         </div>
         
         <Tabs defaultValue="deposit" className="w-full">
-          <TabsList className="grid grid-cols-4 mb-4">
-            <TabsTrigger value="deposit">Deposit</TabsTrigger>
-            <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
-            <TabsTrigger value="borrow">Borrow</TabsTrigger>
-            <TabsTrigger value="repay">Repay</TabsTrigger>
+          <TabsList className="grid grid-cols-4 mb-4 bg-gray-100 p-1 rounded-md shadow-sm">
+            <TabsTrigger 
+              value="deposit" 
+              className="font-medium text-green-700 data-[state=active]:bg-green-100 data-[state=active]:text-green-800 data-[state=active]:shadow-md transition-all hover:bg-gray-200 hover:text-green-700"
+            >
+              Deposit
+            </TabsTrigger>
+            <TabsTrigger 
+              value="withdraw" 
+              className="font-medium text-blue-700 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-800 data-[state=active]:shadow-md transition-all hover:bg-gray-200 hover:text-blue-700"
+            >
+              Withdraw
+            </TabsTrigger>
+            <TabsTrigger 
+              value="borrow" 
+              className="font-medium text-purple-700 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-800 data-[state=active]:shadow-md transition-all hover:bg-gray-200 hover:text-purple-700"
+            >
+              Borrow
+            </TabsTrigger>
+            <TabsTrigger 
+              value="repay" 
+              className="font-medium text-red-700 data-[state=active]:bg-red-100 data-[state=active]:text-red-800 data-[state=active]:shadow-md transition-all hover:bg-gray-200 hover:text-red-700"
+            >
+              Repay
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="deposit" className="space-y-4">
