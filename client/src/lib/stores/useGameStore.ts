@@ -8,6 +8,7 @@ import {
   applyEventToInventory, 
   GameEvent 
 } from "../gameLogic";
+import { saveGameState, loadGameState, clearSavedGameState } from "../autoSave";
 
 interface GameState {
   // Player state
