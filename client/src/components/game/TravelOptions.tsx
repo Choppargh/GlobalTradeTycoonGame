@@ -173,9 +173,10 @@ export function TravelOptions() {
         isOpen={isEndGameDialogOpen}
         isLastDay={daysRemaining <= 1}
         onClose={() => setIsEndGameDialogOpen(false)}
-        onConfirm={() => {
-          endGame();
-          setIsEndGameDialogOpen(false);
+        onConfirm={async () => {
+          await endGame();
+          // Don't manually close the dialog here as the endGame function
+          // will handle the game state changes when successful
         }}
       />
     </>

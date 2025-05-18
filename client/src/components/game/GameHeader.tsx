@@ -39,9 +39,9 @@ export function GameHeader() {
   };
   
   // Handle end game confirmation
-  const handleEndGameConfirm = () => {
-    endGame();
-    setIsEndGameDialogOpen(false);
+  const handleEndGameConfirm = async () => {
+    await endGame();
+    // Dialog will be closed by the endGame function when successful
   };
   
   // Handle end game cancellation
