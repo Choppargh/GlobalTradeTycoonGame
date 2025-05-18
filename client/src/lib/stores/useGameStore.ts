@@ -114,6 +114,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       soldProducts: new Set<number>(),
       gamePhase: 'playing'
     });
+    
+    // Auto-save when starting a new game
+    if (get().autoSaveEnabled) {
+      setTimeout(() => get().saveGameState(), 100);
+    }
   },
   
   travel: (destination) => {
@@ -232,6 +237,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       soldProducts: new Set<number>(),
       currentEvent: event
     });
+    
+    // Auto-save after traveling
+    if (get().autoSaveEnabled) {
+      get().saveGameState();
+    }
   },
   
   buyProduct: (productId, quantity, price) => {
@@ -310,21 +320,17 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newBoughtProducts = new Set(state.boughtProducts);
     newBoughtProducts.add(productId);
     
-    const newState = {
+    set({
       cash: Math.round((state.cash - totalCost) * 100) / 100,
       inventory: newInventory,
       marketListings: newMarketListings,
       boughtProducts: newBoughtProducts
-    };
-    
-    set(newState);
+    });
     
     // Auto-save after buying products
-    setTimeout(() => {
-      if (get().autoSaveEnabled) {
-        get().saveGameState();
-      }
-    }, 100);
+    if (get().autoSaveEnabled) {
+      get().saveGameState();
+    }
   },
   
   sellProduct: (productId, quantity, price) => {
@@ -371,20 +377,16 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newSoldProducts = new Set(state.soldProducts);
     newSoldProducts.add(productId);
     
-    const newState = {
+    set({
       cash: Math.round((state.cash + totalRevenue) * 100) / 100,
       inventory: newInventory,
       soldProducts: newSoldProducts
-    };
-    
-    set(newState);
+    });
     
     // Auto-save after selling products
-    setTimeout(() => {
-      if (get().autoSaveEnabled) {
-        get().saveGameState();
-      }
-    }, 100);
+    if (get().autoSaveEnabled) {
+      get().saveGameState();
+    }
   },
   
   handleBankAction: (action, amount) => {
