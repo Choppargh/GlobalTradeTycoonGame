@@ -8,7 +8,7 @@ export function Loading({ isLoading }: LoadingProps) {
   if (!isLoading) return null;
   
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden" 
+    <div className="fixed inset-0 flex items-center justify-center z-[9999] overflow-hidden bg-tycoon-navy" 
          style={{
            backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
            backgroundSize: 'cover',
