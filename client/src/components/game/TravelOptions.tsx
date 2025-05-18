@@ -19,6 +19,7 @@ import { useGameStore } from '@/lib/stores/useGameStore';
 import { Location } from '@shared/schema';
 import { LocationMap } from './LocationMap';
 import { ArrowRightIcon, PlaneIcon } from 'lucide-react';
+import { CustomEndGameDialog } from './CustomEndGameDialog';
 
 export function TravelOptions() {
   const { 
@@ -40,6 +41,8 @@ export function TravelOptions() {
   // For game challenges
   const [showChallengeResult, setShowChallengeResult] = useState(false);
   const [challengeMessage, setChallengeMessage] = useState("");
+  // For end game dialog
+  const [isEndGameDialogOpen, setIsEndGameDialogOpen] = useState(false);
   
   const handleTravelSelect = (location: Location) => {
     setSelectedDestination(location);
@@ -77,8 +80,8 @@ export function TravelOptions() {
             <>
               <Button 
                 onClick={() => {
-                  console.log("Setting end game confirmation dialog to open");
-                  setEndGameConfirmationOpen(true);
+                  console.log("Opening end game dialog");
+                  setIsEndGameDialogOpen(true);
                 }} 
                 variant="default" 
                 className="w-full justify-between bg-green-600 hover:bg-green-700 text-white"
@@ -164,6 +167,17 @@ export function TravelOptions() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      {/* Custom End Game Dialog */}
+      <CustomEndGameDialog
+        isOpen={isEndGameDialogOpen}
+        isLastDay={daysRemaining <= 1}
+        onClose={() => setIsEndGameDialogOpen(false)}
+        onConfirm={() => {
+          endGame();
+          setIsEndGameDialogOpen(false);
+        }}
+      />
     </>
   );
 }
