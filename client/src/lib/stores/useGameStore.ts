@@ -443,9 +443,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     const state = get();
     if (!state.username) return;
     
-    // We're not using the isEndGameConfirmationOpen check anymore
-    // since we have separate CustomEndGameDialog components that handle this
-    // Remove the early return to ensure score submission always proceeds
+    // Skip the confirmation check entirely since we're handling it in the UI components
+    // Reset this value to ensure we don't get in a confirmation loop
+    set({ isEndGameConfirmationOpen: false });
     
     // Continue with end game process
     console.log("Proceeding with end game (dialog was confirmed)");
