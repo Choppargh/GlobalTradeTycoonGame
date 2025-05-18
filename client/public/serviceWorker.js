@@ -1,5 +1,5 @@
 // Service Worker for Global Trading Tycoon PWA
-const CACHE_NAME = 'global-trading-tycoon-v2'; // Updated cache version
+const CACHE_NAME = 'global-trading-tycoon-v3'; // Incremented version to force cache refresh
 const urlsToCache = [
   '/',
   '/index.html',

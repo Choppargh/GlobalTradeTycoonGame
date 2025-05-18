@@ -16,14 +16,13 @@
     <meta name="mobile-web-app-capable" content="yes">
     <style>
       html, body {
-        overscroll-behavior: none;
-        overscroll-behavior-y: none;
+        overscroll-behavior: contain;
         height: 100%;
-        overflow: hidden;
       }
       #root {
         height: 100%;
-        overflow: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
     </style>
   </head>

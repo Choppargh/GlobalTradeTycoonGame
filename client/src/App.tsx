@@ -7,10 +7,14 @@ import NotFound from "./pages/not-found";
 import { Loading } from "./components/ui/loading";
 import { InstallPrompt } from "./components/ui/InstallPrompt";
 import { Toaster } from "./components/ui/sonner";
+import { useRefreshRecovery } from "./hooks/useRefreshRecovery";
 import "@fontsource/inter";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Use the refresh recovery hook to handle unexpected refreshes
+  useRefreshRecovery();
 
   useEffect(() => {
     // Simulate loading assets/data
