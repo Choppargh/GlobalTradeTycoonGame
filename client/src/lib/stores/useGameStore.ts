@@ -515,11 +515,14 @@ export const useGameStore = create<GameState>((set, get) => ({
         endNetWorth: netWorth
       });
       
-      // Close the dialog and move to game-over phase
+      // Close the dialog, move to game-over phase, and clear saved game
       set({ 
         isEndGameConfirmationOpen: false,
         gamePhase: 'game-over'
       });
+      
+      // Clear saved game state so player can't resume a finished game
+      get().clearSavedGameState();
     } catch (error) {
       console.error("Failed to submit score:", error);
       
