@@ -63,7 +63,8 @@ export function WelcomeScreen() {
         backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        zIndex: 1
       }}
     >
 
