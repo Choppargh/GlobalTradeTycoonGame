@@ -54,9 +54,9 @@ export function BuyTab() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40%]">Product</TableHead>
-                <TableHead className="text-right">Market Price</TableHead>
-                <TableHead className="text-right">Available</TableHead>
-                <TableHead className="text-center">Action</TableHead>
+                <TableHead className="text-right w-[25%]">Market Price</TableHead>
+                <TableHead className="text-right w-[15%]">Available</TableHead>
+                <TableHead className="text-center w-[20%]">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -80,14 +80,16 @@ export function BuyTab() {
                       {product.available}
                     </TableCell>
                     <TableCell className="text-center">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="bg-blue-100 hover:bg-blue-200 text-blue-800"
-                        onClick={() => handleBuyClick(product)}
-                      >
-                        Buy
-                      </Button>
+                      <div className="flex justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="bg-blue-100 hover:bg-blue-200 text-blue-800 w-16"
+                          onClick={() => handleBuyClick(product)}
+                        >
+                          Buy
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
