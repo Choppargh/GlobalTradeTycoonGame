@@ -64,7 +64,7 @@ export function SellTab() {
             <p className="mt-2">Purchase products to build your inventory.</p>
           </div>
         ) : (
-          <div className="relative overflow-x-auto">
+          <div className="relative overflow-x-hidden">
             <Table>
               <TableHeader>
                 <TableRow>
