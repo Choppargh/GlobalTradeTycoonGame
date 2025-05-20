@@ -52,9 +52,12 @@ export function CustomInstallPrompt() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-80 flex items-center justify-center p-4">
+    <div className="fixed top-0 left-0 z-50 w-full h-full bg-black bg-opacity-80 flex items-center justify-center p-4" data-state={isVisible ? "open" : "closed"}>
       <div className="bg-neutral-900 border-2 border-amber-600 rounded-lg p-6 max-w-md w-full shadow-xl">
-        <h3 className="text-amber-500 text-xl font-bold mb-2">Install Global Trading Tycoon</h3>
+        <div className="flex flex-col items-center mb-4">
+          <img src="/images/GTC_Logo.png" alt="Global Trade Tycoon" className="w-36 h-auto" />
+        </div>
+        <h3 className="text-amber-500 text-xl font-bold mb-2 text-center">Install Global Trading Tycoon</h3>
         <p className="text-gray-200 mb-6">
           Install this game on your device to play offline and get a better experience. The game will be added to your home screen.
         </p>
