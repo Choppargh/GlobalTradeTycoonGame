@@ -103,7 +103,7 @@ export function WelcomeScreen() {
       )}
 
       {activeScreen === 'play' && (
-        <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4">
+        <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
           <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Enter Your Trading Name</h2>
           
           {/* Show saved game option if available */}
@@ -149,7 +149,7 @@ export function WelcomeScreen() {
       )}
 
       {activeScreen === 'leaderboard' && (
-        <div className="bg-white/90 rounded-lg p-6 max-w-xl w-full mx-4">
+        <div className="bg-white/90 rounded-lg p-6 max-w-xl w-full mx-4 z-10 relative">
           <h2 className="text-2xl font-bold text-tycoon-navy mb-4 text-center">Leaderboard</h2>
           <div className="overflow-y-auto max-h-[60vh]">
             <Leaderboard scores={leaderboardData} />
@@ -164,7 +164,7 @@ export function WelcomeScreen() {
       )}
 
       {activeScreen === 'rules' && (
-        <div className="bg-white/90 rounded-lg p-6 max-w-xl w-full mx-4">
+        <div className="bg-white/90 rounded-lg p-6 max-w-xl w-full mx-4 z-10 relative">
           <h2 className="text-2xl font-bold text-tycoon-navy mb-4 text-center">Game Rules</h2>
           <div className="overflow-y-auto max-h-[60vh] text-tycoon-navy space-y-4">
             <p>Welcome to Global Trading Tycoon, the trading simulation where your goal is to build wealth through strategic buying and selling!</p>
