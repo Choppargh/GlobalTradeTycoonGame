@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import NotFound from "./pages/not-found";
 import { Loading } from "./components/ui/loading";
-import { InstallPrompt } from "./components/ui/InstallPrompt";
+// Removed InstallPrompt import as we're using CustomInstallPrompt instead
 import { Toaster } from "./components/ui/sonner";
 import { useRefreshRecovery } from "./hooks/useRefreshRecovery";
 import "@fontsource/inter";
@@ -28,7 +28,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Loading isLoading={isLoading} />
-      <InstallPrompt />
+      {/* Custom install prompt is already included in HomePage */}
       <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
