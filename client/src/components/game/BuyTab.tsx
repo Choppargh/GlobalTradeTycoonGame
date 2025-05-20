@@ -19,11 +19,13 @@ import { useGameStore } from '@/lib/stores/useGameStore';
 import { ProductListing } from '@shared/schema';
 import { cn } from '@/lib/utils';
 import { BuyProductDialog } from './BuyProductDialog';
+import { useIsMobile } from '@/hooks/use-is-mobile';
 
 export function BuyTab() {
   const { marketListings, priceChanges } = useGameStore();
   const [selectedProduct, setSelectedProduct] = useState<ProductListing | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isMobile = useIsMobile();
   
   // Format currency
   const formatCurrency = (amount: number): string => {
@@ -42,6 +44,101 @@ export function BuyTab() {
     setSelectedProduct(null);
   };
 
+  // Render a mobile-friendly card layout instead of a table
+  const renderMobileLayout = () => {
+    return (
+      <div className="space-y-4">
+        {marketListings.map((product) => {
+          const priceChange = priceChanges[product.productId];
+          const marketPriceClass = priceChange === 'increase' 
+            ? 'text-green-600 font-semibold' 
+            : priceChange === 'decrease' 
+              ? 'text-red-600 font-semibold' 
+              : '';
+              
+          return (
+            <div 
+              key={product.productId}
+              className="p-3 border rounded-md bg-white shadow-sm"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-medium text-base">{product.name}</h3>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-blue-100 hover:bg-blue-200 text-blue-800 min-w-[60px]"
+                  onClick={() => handleBuyClick(product)}
+                >
+                  Buy
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-1 text-sm">
+                <div className="text-gray-600">Price:</div>
+                <div className={marketPriceClass}>{formatCurrency(product.marketPrice)}</div>
+                <div className="text-gray-600">Available:</div>
+                <div>{product.available}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // Render the desktop table layout
+  const renderDesktopLayout = () => {
+    return (
+      <div className="relative overflow-x-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[40%]">Product</TableHead>
+              <TableHead className="text-right w-[25%]">Market Price</TableHead>
+              <TableHead className="text-right w-[15%]">Available</TableHead>
+              <TableHead className="text-center w-[20%]">Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {marketListings.map((product) => {
+              const priceChange = priceChanges[product.productId];
+              const marketPriceClass = priceChange === 'increase' 
+                ? 'text-green-600 font-semibold' 
+                : priceChange === 'decrease' 
+                  ? 'text-red-600 font-semibold' 
+                  : '';
+                  
+              return (
+                <TableRow key={product.productId} className={priceChange ? 'bg-opacity-25' : ''}>
+                  <TableCell className="font-medium">
+                    {product.name}
+                  </TableCell>
+                  <TableCell className={cn("text-right", marketPriceClass)}>
+                    {formatCurrency(product.marketPrice)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {product.available}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex justify-center">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="bg-blue-100 hover:bg-blue-200 text-blue-800 w-16"
+                        onClick={() => handleBuyClick(product)}
+                      >
+                        Buy
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  };
+
   return (
     <Card className="h-full shadow-sm rounded-lg border border-black">
       <CardHeader className="pb-3">
@@ -49,54 +146,7 @@ export function BuyTab() {
         <CardDescription>Purchase goods at market price and build your inventory</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="relative overflow-x-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[40%]">Product</TableHead>
-                <TableHead className="text-right w-[25%]">Market Price</TableHead>
-                <TableHead className="text-right w-[15%]">Available</TableHead>
-                <TableHead className="text-center w-[20%]">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {marketListings.map((product) => {
-                const priceChange = priceChanges[product.productId];
-                const marketPriceClass = priceChange === 'increase' 
-                  ? 'text-green-600 font-semibold' 
-                  : priceChange === 'decrease' 
-                    ? 'text-red-600 font-semibold' 
-                    : '';
-                    
-                return (
-                  <TableRow key={product.productId} className={priceChange ? 'bg-opacity-25' : ''}>
-                    <TableCell className="font-medium">
-                      {product.name}
-                    </TableCell>
-                    <TableCell className={cn("text-right", marketPriceClass)}>
-                      {formatCurrency(product.marketPrice)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {product.available}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex justify-center">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="bg-blue-100 hover:bg-blue-200 text-blue-800 w-16"
-                          onClick={() => handleBuyClick(product)}
-                        >
-                          Buy
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+        {isMobile ? renderMobileLayout() : renderDesktopLayout()}
       </CardContent>
       
       {/* Buy Product Dialog */}

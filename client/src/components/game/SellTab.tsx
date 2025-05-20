@@ -18,11 +18,13 @@ import { Button } from '@/components/ui/button';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { ProductListing } from '@shared/schema';
 import { SellProductDialog } from './SellProductDialog';
+import { useIsMobile } from '@/hooks/use-is-mobile';
 
 export function SellTab() {
   const { inventory, marketListings } = useGameStore();
   const [selectedProduct, setSelectedProduct] = useState<ProductListing | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isMobile = useIsMobile();
   
   // Format currency
   const formatCurrency = (amount: number): string => {
@@ -51,6 +53,138 @@ export function SellTab() {
     setSelectedProduct(null);
   };
 
+  // Render a mobile-friendly card layout instead of a table
+  const renderMobileLayout = () => {
+    if (inventory.length === 0) {
+      return (
+        <div className="text-center py-10 text-gray-500">
+          <p>Your inventory is empty.</p>
+          <p className="mt-2">Purchase products to build your inventory.</p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="space-y-4">
+        {inventory.map((item) => {
+          // Find market listing to get demand price
+          const marketProduct = marketListings.find(p => p.productId === item.productId);
+          const demandPrice = marketProduct 
+            ? marketProduct.marketPrice * marketProduct.demandMultiplier 
+            : 0;
+          
+          // Calculate potential profit
+          const profitPerUnit = demandPrice - item.purchasePrice;
+          const profitClass = profitPerUnit > 0 
+            ? 'text-green-600 font-semibold' 
+            : profitPerUnit < 0 
+              ? 'text-red-600 font-semibold' 
+              : '';
+              
+          return (
+            <div 
+              key={item.productId}
+              className="p-3 border rounded-md bg-white shadow-sm"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-medium text-base">{item.name}</h3>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="bg-green-100 hover:bg-green-200 text-green-800 min-w-[60px]"
+                  onClick={() => handleSellClick(item)}
+                >
+                  Sell
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-1 text-sm">
+                <div className="text-gray-600">Price:</div>
+                <div className={profitClass}>{formatCurrency(demandPrice)}</div>
+                <div className="text-gray-600">Quantity:</div>
+                <div>{item.quantity}</div>
+                <div className="text-gray-600">Profit:</div>
+                <div className={profitClass}>
+                  {profitPerUnit >= 0 ? '+' : ''}
+                  {formatCurrency(profitPerUnit)} per unit
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // Render the desktop table layout
+  const renderDesktopLayout = () => {
+    if (inventory.length === 0) {
+      return (
+        <div className="text-center py-10 text-gray-500">
+          <p>Your inventory is empty.</p>
+          <p className="mt-2">Purchase products to build your inventory.</p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="relative overflow-x-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[40%]">Product</TableHead>
+              <TableHead className="text-right w-[25%]">Demand Price</TableHead>
+              <TableHead className="text-right w-[15%]">Quantity</TableHead>
+              <TableHead className="text-center w-[20%]">Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {inventory.map((item) => {
+              // Find market listing to get demand price
+              const marketProduct = marketListings.find(p => p.productId === item.productId);
+              const demandPrice = marketProduct 
+                ? marketProduct.marketPrice * marketProduct.demandMultiplier 
+                : 0;
+              
+              // Calculate potential profit
+              const profitPerUnit = demandPrice - item.purchasePrice;
+              const profitClass = profitPerUnit > 0 
+                ? 'text-green-600' 
+                : profitPerUnit < 0 
+                  ? 'text-red-600' 
+                  : '';
+                
+              return (
+                <TableRow key={item.productId}>
+                  <TableCell className="font-medium">
+                    {item.name}
+                  </TableCell>
+                  <TableCell className={`text-right ${profitClass}`}>
+                    {formatCurrency(demandPrice)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {item.quantity}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <div className="flex justify-center">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="bg-green-100 hover:bg-green-200 text-green-800 w-16"
+                        onClick={() => handleSellClick(item)}
+                      >
+                        Sell
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  };
+
   return (
     <Card className="h-full shadow-sm rounded-lg border border-black">
       <CardHeader className="pb-3">
@@ -58,68 +192,7 @@ export function SellTab() {
         <CardDescription>Sell your inventory at demand prices to make profit</CardDescription>
       </CardHeader>
       <CardContent>
-        {inventory.length === 0 ? (
-          <div className="text-center py-10 text-gray-500">
-            <p>Your inventory is empty.</p>
-            <p className="mt-2">Purchase products to build your inventory.</p>
-          </div>
-        ) : (
-          <div className="relative overflow-x-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[40%]">Product</TableHead>
-                  <TableHead className="text-right w-[25%]">Demand Price</TableHead>
-                  <TableHead className="text-right w-[15%]">Quantity</TableHead>
-                  <TableHead className="text-center w-[20%]">Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {inventory.map((item) => {
-                  // Find market listing to get demand price
-                  const marketProduct = marketListings.find(p => p.productId === item.productId);
-                  const demandPrice = marketProduct 
-                    ? marketProduct.marketPrice * marketProduct.demandMultiplier 
-                    : 0;
-                  
-                  // Calculate potential profit
-                  const profitPerUnit = demandPrice - item.purchasePrice;
-                  const profitClass = profitPerUnit > 0 
-                    ? 'text-green-600' 
-                    : profitPerUnit < 0 
-                      ? 'text-red-600' 
-                      : '';
-                    
-                  return (
-                    <TableRow key={item.productId}>
-                      <TableCell className="font-medium">
-                        {item.name}
-                      </TableCell>
-                      <TableCell className={`text-right ${profitClass}`}>
-                        {formatCurrency(demandPrice)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {item.quantity}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex justify-center">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="bg-green-100 hover:bg-green-200 text-green-800 w-16"
-                            onClick={() => handleSellClick(item)}
-                          >
-                            Sell
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+        {isMobile ? renderMobileLayout() : renderDesktopLayout()}
       </CardContent>
       
       {/* Sell Product Dialog */}
