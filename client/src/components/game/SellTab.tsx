@@ -69,9 +69,9 @@ export function SellTab() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[40%]">Product</TableHead>
-                  <TableHead className="text-right">Demand Price</TableHead>
-                  <TableHead className="text-right">Quantity</TableHead>
-                  <TableHead className="text-center">Action</TableHead>
+                  <TableHead className="text-right w-[25%]">Demand Price</TableHead>
+                  <TableHead className="text-right w-[15%]">Quantity</TableHead>
+                  <TableHead className="text-center w-[20%]">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -102,14 +102,16 @@ export function SellTab() {
                         {item.quantity}
                       </TableCell>
                       <TableCell className="text-center">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="bg-green-100 hover:bg-green-200 text-green-800"
-                          onClick={() => handleSellClick(item)}
-                        >
-                          Sell
-                        </Button>
+                        <div className="flex justify-center">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="bg-green-100 hover:bg-green-200 text-green-800 w-16"
+                            onClick={() => handleSellClick(item)}
+                          >
+                            Sell
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
