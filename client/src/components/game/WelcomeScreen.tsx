@@ -6,6 +6,7 @@ import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { toast } from 'sonner';
+import { InstallButton } from './InstallButton';
 
 export function WelcomeScreen() {
   const [activeScreen, setActiveScreen] = useState<'welcome' | 'play' | 'leaderboard' | 'rules'>('welcome');
@@ -97,6 +98,11 @@ export function WelcomeScreen() {
             >
               <img src="/images/GTC_Rules.png" alt="Rules" className="w-full" />
             </button>
+            
+            {/* Add install button that will only show if installation is possible */}
+            <div className="mt-4">
+              <InstallButton />
+            </div>
           </div>
         </div>
       )}
