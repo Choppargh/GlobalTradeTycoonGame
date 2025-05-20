@@ -506,29 +506,32 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Score is based ONLY on banked cash
     const score = Math.max(0, Math.round(state.bankBalance));
     
+    // Always clear saved game state first to prevent resumed play in any case
+    get().clearSavedGameState();
+    
     try {
       // Submit score to leaderboard
       await apiRequest('POST', '/api/scores', {
-        username: state.username,
+        username: state.username || 'Anonymous',
         score,
         days: 31 - state.daysRemaining,
         endNetWorth: netWorth
       });
       
-      // Close the dialog, move to game-over phase, and clear saved game
+      // Successfully submitted - close dialog and show game over screen
       set({ 
         isEndGameConfirmationOpen: false,
-        gamePhase: 'game-over'
+        gamePhase: 'game-over',
+        isTravelRiskDialogOpen: false
       });
-      
-      // Clear saved game state so player can't resume a finished game
-      get().clearSavedGameState();
     } catch (error) {
       console.error("Failed to submit score:", error);
       
-      // Show travel risk dialog for failed score submission
+      // Even if submission fails, move to game over but show error message
       set({
-        travelRiskMessage: "Failed to submit your score. Please try again.",
+        isEndGameConfirmationOpen: false,
+        gamePhase: 'game-over',
+        travelRiskMessage: "Score submission failed, but your game has ended. Thanks for playing!",
         isTravelRiskDialogOpen: true
       });
     }

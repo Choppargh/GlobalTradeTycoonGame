@@ -3,7 +3,7 @@ import GamePage from './GamePage';
 import { GameOver } from '@/components/game/GameOver';
 import { WelcomeScreen } from '@/components/game/WelcomeScreen';
 import { ResumeGamePrompt } from '@/components/game/ResumeGamePrompt';
-import { InstallPrompt } from '@/components/game/InstallPrompt';
+import { CustomInstallPrompt } from '@/components/game/CustomInstallPrompt';
 
 export default function HomePage() {
   const { gamePhase } = useGameStore();
@@ -14,7 +14,7 @@ export default function HomePage() {
       <ResumeGamePrompt />
       
       {/* Custom PWA install prompt with proper styling */}
-      <InstallPrompt />
+      <CustomInstallPrompt />
       
       {gamePhase === 'intro' && <WelcomeScreen />}
       {gamePhase === 'playing' && <GamePage />}
