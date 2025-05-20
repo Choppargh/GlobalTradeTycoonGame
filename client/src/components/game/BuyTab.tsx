@@ -49,7 +49,7 @@ export function BuyTab() {
         <CardDescription>Purchase goods at market price and build your inventory</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="relative overflow-x-auto">
+        <div className="relative overflow-x-hidden">
           <Table>
             <TableHeader>
               <TableRow>

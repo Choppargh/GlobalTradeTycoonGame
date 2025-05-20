@@ -5,6 +5,8 @@
 @layer base {
   * {
     @apply border-border;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   body {
@@ -16,6 +18,32 @@
     overflow-x: hidden;
     overflow-y: auto;
     background-color: #fce4b6;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbars but keep functionality */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+
+  /* Ensure proper text wrapping */
+  .text-wrap-anywhere {
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+  
+  /* Ensures all components prevent horizontal scrollbars */
+  .component-container {
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }
 
