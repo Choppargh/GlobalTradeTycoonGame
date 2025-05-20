@@ -1,5 +1,5 @@
 // Service Worker for Global Trading Tycoon PWA
-const CACHE_NAME = 'global-trading-tycoon-v3'; // Incremented version to force cache refresh
+const CACHE_NAME = 'global-trading-tycoon-v' + new Date().getTime(); // Dynamic cache name to prevent stale caches
 const urlsToCache = [
   '/',
   '/index.html',
@@ -24,15 +24,33 @@ self.addEventListener('install', event => {
   );
 });
 
-// Cache and return requests
+// Cache and return requests with improved caching strategy
 self.addEventListener('fetch', event => {
-  // For HTML and JS requests, use network-first strategy to ensure latest version
+  // Force network refresh for main app files and API requests
   if (event.request.url.endsWith('.html') || 
       event.request.url.endsWith('.js') || 
       event.request.url.endsWith('.css') ||
-      event.request.url.includes('/assets/')) {
+      event.request.url.includes('/assets/') ||
+      event.request.url.includes('/api/')) {
+      
+    // Set timestamp parameter for cache busting
+    const url = new URL(event.request.url);
+    
+    // Add cache bust parameter for non-API requests to force fresh content
+    if (!url.pathname.includes('/api/')) {
+      url.searchParams.set('_cacheBust', Date.now());
+    }
+    
+    const bustRequest = new Request(url.toString(), {
+      method: event.request.method,
+      headers: event.request.headers,
+      mode: event.request.mode,
+      credentials: event.request.credentials,
+      redirect: event.request.redirect
+    });
+    
     event.respondWith(
-      fetch(event.request)
+      fetch(bustRequest)
         .then(response => {
           // Clone the response as it can only be consumed once
           const responseToCache = response.clone();
