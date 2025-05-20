@@ -1,5 +1,5 @@
 // Service Worker for Global Trading Tycoon PWA
-const CACHE_NAME = 'global-trading-tycoon-v' + new Date().getTime(); // Dynamic cache name to prevent stale caches
+const CACHE_NAME = 'global-trading-tycoon-v4'; // Fixed version number for stability
 const urlsToCache = [
   '/',
   '/index.html',
@@ -24,77 +24,28 @@ self.addEventListener('install', event => {
   );
 });
 
-// Cache and return requests with improved caching strategy
+// Simple fetch handler with safe cache strategy
 self.addEventListener('fetch', event => {
-  // Force network refresh for main app files and API requests
-  if (event.request.url.endsWith('.html') || 
-      event.request.url.endsWith('.js') || 
-      event.request.url.endsWith('.css') ||
-      event.request.url.includes('/assets/') ||
-      event.request.url.includes('/api/')) {
-      
-    // Set timestamp parameter for cache busting
-    const url = new URL(event.request.url);
-    
-    // Add cache bust parameter for non-API requests to force fresh content
-    if (!url.pathname.includes('/api/')) {
-      url.searchParams.set('_cacheBust', Date.now());
-    }
-    
-    const bustRequest = new Request(url.toString(), {
-      method: event.request.method,
-      headers: event.request.headers,
-      mode: event.request.mode,
-      credentials: event.request.credentials,
-      redirect: event.request.redirect
-    });
-    
-    event.respondWith(
-      fetch(bustRequest)
-        .then(response => {
+  event.respondWith(
+    // Try the network first
+    fetch(event.request)
+      .then(response => {
+        // Only cache successful responses from the network
+        if (response && response.status === 200) {
           // Clone the response as it can only be consumed once
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
             .then(cache => {
               cache.put(event.request, responseToCache);
             });
-          return response;
-        })
-        .catch(() => {
-          // If network fails, try to serve from cache
-          return caches.match(event.request);
-        })
-    );
-  } else {
-    // For other requests (images, fonts, etc.), use cache-first strategy
-    event.respondWith(
-      caches.match(event.request)
-        .then(response => {
-          // Cache hit - return response
-          if (response) {
-            return response;
-          }
-          return fetch(event.request).then(
-            response => {
-              // Check if we received a valid response
-              if(!response || response.status !== 200 || response.type !== 'basic') {
-                return response;
-              }
-
-              // Clone the response as it can only be consumed once
-              const responseToCache = response.clone();
-
-              caches.open(CACHE_NAME)
-                .then(cache => {
-                  cache.put(event.request, responseToCache);
-                });
-
-              return response;
-            }
-          );
-        })
-      );
-  }
+        }
+        return response;
+      })
+      .catch(() => {
+        // If network fails, try to serve from cache
+        return caches.match(event.request);
+      })
+  );
 });
 
 // Update service worker
