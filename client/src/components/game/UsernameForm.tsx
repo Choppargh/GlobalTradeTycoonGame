@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,14 @@ export function UsernameForm() {
   const [inputUsername, setInputUsername] = useState('');
   const [error, setError] = useState('');
   const { setUsername, startGame } = useGameStore();
+  
+  // Load the previously used username if available
+  useEffect(() => {
+    const savedUsername = localStorage.getItem('globalTradeTycoon_lastUsername');
+    if (savedUsername) {
+      setInputUsername(savedUsername);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

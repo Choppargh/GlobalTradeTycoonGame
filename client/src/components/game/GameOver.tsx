@@ -21,22 +21,64 @@ export function GameOver() {
   const netWorth = calculateNetWorth(cash, bankBalance, inventory, loanAmount);
   
   useEffect(() => {
-    // Fetch leaderboard data
-    const fetchLeaderboard = async () => {
+    // Submit score and fetch leaderboard data
+    const submitScoreAndFetchLeaderboard = async () => {
       try {
         setLoading(true);
+        
+        // Save the username for future games
+        localStorage.setItem('globalTradeTycoon_lastUsername', username || '');
+        
+        // Submit the score if not already submitted
+        const scoreData = {
+          username,
+          score: bankBalance,
+          days: daysPassed,
+          endNetWorth: netWorth
+        };
+        
+        // Check if we already submitted this score
+        const scoreSubmitted = localStorage.getItem('globalTradeTycoon_submittedScore');
+        if (!scoreSubmitted) {
+          try {
+            const submitResponse = await apiRequest('POST', '/api/scores', scoreData);
+            if (submitResponse.ok) {
+              // Mark that we've submitted this score
+              localStorage.setItem('globalTradeTycoon_submittedScore', 'true');
+              console.log('Score submitted successfully');
+            }
+          } catch (submitError) {
+            console.error('Failed to submit score:', submitError);
+          }
+        }
+        
+        // Fetch updated leaderboard
         const response = await apiRequest('GET', '/api/scores');
         const data = await response.json();
+        
+        // Store the leaderboard in localStorage as a backup
+        localStorage.setItem('globalTradeTycoon_leaderboard', JSON.stringify(data));
+        
         setLeaderboard(data);
       } catch (error) {
         console.error('Failed to fetch leaderboard:', error);
+        
+        // Try to load leaderboard from localStorage as fallback
+        const storedLeaderboard = localStorage.getItem('globalTradeTycoon_leaderboard');
+        if (storedLeaderboard) {
+          try {
+            setLeaderboard(JSON.parse(storedLeaderboard));
+          } catch (e) {
+            console.error('Failed to parse stored leaderboard:', e);
+          }
+        }
       } finally {
         setLoading(false);
       }
     };
     
-    fetchLeaderboard();
-  }, []);
+    submitScoreAndFetchLeaderboard();
+  }, [username, bankBalance, daysPassed, netWorth]);
   
   const formatCurrency = (amount: number): string => {
     return `$${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
