@@ -538,6 +538,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   
   restartGame: () => {
+    // Clear the submitted score flag so the player can submit a new score
+    localStorage.removeItem('globalTradeTycoon_submittedScore');
+    
     set({
       currentLocation: null,
       cash: 0,
