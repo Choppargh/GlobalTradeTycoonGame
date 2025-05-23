@@ -6,6 +6,15 @@ const config: CapacitorConfig = {
   webDir: 'dist/public',
   server: {
     androidScheme: 'https'
+  },
+  plugins: {
+    App: {
+      appUrlScheme: 'com.globaltrade.tycoon'
+    },
+    StatusBar: {
+      style: 'dark',
+      backgroundColor: '#1f2937'
+    }
   }
 };
 
