@@ -1,5 +1,5 @@
 // Service Worker for Global Trading Tycoon PWA
-const CACHE_NAME = 'global-trading-tycoon-v4'; // Fixed version number for stability
+const CACHE_NAME = 'global-trading-tycoon-v5'; // Updated for better offline support
 const urlsToCache = [
   '/',
   '/index.html',
@@ -24,10 +24,24 @@ self.addEventListener('install', event => {
   );
 });
 
-// Simple fetch handler with safe cache strategy
+// Improved fetch handler with better offline support
 self.addEventListener('fetch', event => {
+  // For navigation requests (page loads), always serve the app shell
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      caches.match('/')
+        .then(response => {
+          return response || fetch(event.request);
+        })
+        .catch(() => {
+          return caches.match('/');
+        })
+    );
+    return;
+  }
+
+  // For other requests, try network first, then cache
   event.respondWith(
-    // Try the network first
     fetch(event.request)
       .then(response => {
         // Only cache successful responses from the network
@@ -43,7 +57,19 @@ self.addEventListener('fetch', event => {
       })
       .catch(() => {
         // If network fails, try to serve from cache
-        return caches.match(event.request);
+        return caches.match(event.request)
+          .then(cachedResponse => {
+            // If we have a cached version, return it
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            // For navigation requests that aren't cached, return the app shell
+            if (event.request.destination === 'document') {
+              return caches.match('/');
+            }
+            // For other requests, let them fail naturally
+            throw new Error('No cached content available');
+          });
       })
   );
 });
