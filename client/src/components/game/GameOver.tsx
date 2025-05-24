@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { calculateNetWorth } from '@/lib/gameLogic';
 import { Leaderboard } from './Leaderboard';
-import { apiRequest } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
 
 export function GameOver() {
@@ -21,47 +20,49 @@ export function GameOver() {
   const netWorth = calculateNetWorth(cash, bankBalance, inventory, loanAmount);
   
   useEffect(() => {
-    // Submit score and fetch leaderboard data
-    const submitScoreAndFetchLeaderboard = async () => {
+    // Handle local leaderboard (offline version)
+    const handleLocalLeaderboard = () => {
       try {
         setLoading(true);
         
         // Save the username for future games
         localStorage.setItem('globalTradeTycoon_lastUsername', username || '');
         
-        // Submit the score if not already submitted
+        // Create score data for local storage
         const scoreData = {
+          id: Date.now(),
           username,
           score: bankBalance,
           days: daysPassed,
-          endNetWorth: netWorth
+          endNetWorth: netWorth,
+          createdAt: new Date().toISOString()
         };
         
         // Check if we already submitted this score
         const scoreSubmitted = localStorage.getItem('globalTradeTycoon_submittedScore');
         if (!scoreSubmitted) {
-          try {
-            const submitResponse = await apiRequest('POST', '/api/scores', scoreData);
-            if (submitResponse.ok) {
-              // Mark that we've submitted this score
-              localStorage.setItem('globalTradeTycoon_submittedScore', 'true');
-              console.log('Score submitted successfully');
-            }
-          } catch (submitError) {
-            console.error('Failed to submit score:', submitError);
-          }
+          // Get existing local leaderboard
+          const existingScores = JSON.parse(localStorage.getItem('globalTradeTycoon_leaderboard') || '[]');
+          
+          // Add new score
+          existingScores.push(scoreData);
+          
+          // Sort by score (descending) and keep top 50
+          existingScores.sort((a: any, b: any) => b.score - a.score);
+          const topScores = existingScores.slice(0, 50);
+          
+          // Save back to localStorage
+          localStorage.setItem('globalTradeTycoon_leaderboard', JSON.stringify(topScores));
+          localStorage.setItem('globalTradeTycoon_submittedScore', 'true');
+          
+          setLeaderboard(topScores);
+        } else {
+          // Score already submitted, just get existing leaderboard
+          const existingScores = JSON.parse(localStorage.getItem('globalTradeTycoon_leaderboard') || '[]');
+          setLeaderboard(existingScores);
         }
-        
-        // Fetch updated leaderboard
-        const response = await apiRequest('GET', '/api/scores');
-        const data = await response.json();
-        
-        // Store the leaderboard in localStorage as a backup
-        localStorage.setItem('globalTradeTycoon_leaderboard', JSON.stringify(data));
-        
-        setLeaderboard(data);
       } catch (error) {
-        console.error('Failed to fetch leaderboard:', error);
+        console.error('Failed to handle local leaderboard:', error);
         
         // Try to load leaderboard from localStorage as fallback
         const storedLeaderboard = localStorage.getItem('globalTradeTycoon_leaderboard');
