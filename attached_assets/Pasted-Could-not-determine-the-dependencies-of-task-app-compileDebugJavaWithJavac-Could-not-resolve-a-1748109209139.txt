@@ -1,0 +1,34 @@
+Could not determine the dependencies of task ':app:compileDebugJavaWithJavac'.
+> Could not resolve all task dependencies for configuration ':app:debugCompileClasspath'.
+   > Could not resolve project :capacitor-android.
+     Required by:
+         project :app
+      > No matching configuration of project :capacitor-android was found. The consumer was configured to find a library for use during compile-time, preferably optimized for Android, as well as attribute 'com.android.build.api.attributes.BuildTypeAttr' with value 'debug', attribute 'com.android.build.api.attributes.AgpVersionAttr' with value '8.2.0' but:
+          - None of the consumable configurations have attributes.
+   > Could not resolve project :capacitor-app.
+     Required by:
+         project :app
+      > No matching configuration of project :capacitor-app was found. The consumer was configured to find a library for use during compile-time, preferably optimized for Android, as well as attribute 'com.android.build.api.attributes.BuildTypeAttr' with value 'debug', attribute 'com.android.build.api.attributes.AgpVersionAttr' with value '8.2.0' but:
+          - None of the consumable configurations have attributes.
+   > Could not resolve project :capacitor-haptics.
+     Required by:
+         project :app
+      > No matching configuration of project :capacitor-haptics was found. The consumer was configured to find a library for use during compile-time, preferably optimized for Android, as well as attribute 'com.android.build.api.attributes.BuildTypeAttr' with value 'debug', attribute 'com.android.build.api.attributes.AgpVersionAttr' with value '8.2.0' but:
+          - None of the consumable configurations have attributes.
+   > Could not resolve project :capacitor-keyboard.
+     Required by:
+         project :app
+      > No matching configuration of project :capacitor-keyboard was found. The consumer was configured to find a library for use during compile-time, preferably optimized for Android, as well as attribute 'com.android.build.api.attributes.BuildTypeAttr' with value 'debug', attribute 'com.android.build.api.attributes.AgpVersionAttr' with value '8.2.0' but:
+          - None of the consumable configurations have attributes.
+   > Could not resolve project :capacitor-status-bar.
+     Required by:
+         project :app
+      > No matching configuration of project :capacitor-status-bar was found. The consumer was configured to find a library for use during compile-time, preferably optimized for Android, as well as attribute 'com.android.build.api.attributes.BuildTypeAttr' with value 'debug', attribute 'com.android.build.api.attributes.AgpVersionAttr' with value '8.2.0' but:
+          - None of the consumable configurations have attributes.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+BUILD FAILED in 56s
