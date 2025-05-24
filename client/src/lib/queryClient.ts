@@ -7,12 +7,17 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+import { getApiEndpoint } from '@/config/api';
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  // Convert relative URLs to full API endpoints
+  const fullUrl = url.startsWith('/') ? getApiEndpoint(url) : url;
+  
+  const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
