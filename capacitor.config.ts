@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.globaltrade.tycoon',
   appName: 'Global Trade Tycoon',
-  webDir: 'dist/public',
+  webDir: 'client/public',
   server: {
     androidScheme: 'https'
   },

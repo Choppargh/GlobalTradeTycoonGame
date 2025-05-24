@@ -5,6 +5,11 @@ export const API_CONFIG = {
   
   // Determine which API URL to use
   getApiUrl: () => {
+    // Check if we're forcing production API (for mobile apps)
+    if ((window as any).FORCE_PRODUCTION_API) {
+      return (window as any).PRODUCTION_API_URL || API_CONFIG.PRODUCTION_API_URL;
+    }
+    
     // Always use production URL for mobile apps and built versions
     // This ensures the global leaderboard works on all devices
     return API_CONFIG.PRODUCTION_API_URL;
