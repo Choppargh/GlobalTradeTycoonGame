@@ -37,18 +37,17 @@ export function GameOver() {
           endNetWorth: netWorth
         };
         
-        // Check if we already submitted this score
-        const scoreSubmitted = localStorage.getItem('globalTradeTycoon_submittedScore');
-        if (!scoreSubmitted) {
-          try {
-            const submitResponse = await apiRequest('POST', '/api/scores', scoreData);
-            if (submitResponse.ok) {
-              localStorage.setItem('globalTradeTycoon_submittedScore', 'true');
-              console.log('Score submitted successfully');
-            }
-          } catch (submitError) {
-            console.error('Failed to submit score:', submitError);
+        // Submit the score (remove the localStorage check that was preventing multiple submissions)
+        try {
+          console.log('Submitting score:', scoreData);
+          const submitResponse = await apiRequest('POST', '/api/scores', scoreData);
+          if (submitResponse.ok) {
+            console.log('Score submitted successfully');
+          } else {
+            console.error('Failed to submit score - server response:', submitResponse.status);
           }
+        } catch (submitError) {
+          console.error('Failed to submit score:', submitError);
         }
         
         // Fetch updated leaderboard
