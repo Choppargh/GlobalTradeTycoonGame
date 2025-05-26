@@ -35,7 +35,7 @@ export function WelcomeScreen() {
   }, []);
 
   const { data: leaderboardData = [] } = useQuery<LeaderboardEntry[]>({
-    queryKey: ['/scores'],
+    queryKey: ['/api/scores'],
     queryFn: getQueryFn<LeaderboardEntry[]>({
       on401: 'returnNull',
     }),
