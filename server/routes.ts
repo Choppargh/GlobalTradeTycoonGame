@@ -21,16 +21,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit a new score
   app.post('/api/scores', async (req, res) => {
     try {
+      console.log("Received score submission:", req.body);
+      
       // Validate score data
       const scoreData = insertScoreSchema.parse(req.body);
+      console.log("Validated score data:", scoreData);
       
       // Create the score
       const newScore = await storage.createScore(scoreData);
+      console.log("Score saved successfully:", newScore);
+      
       res.status(201).json(newScore);
     } catch (error) {
       console.error("Error creating score:", error);
       
       if (error instanceof ZodError) {
+        console.error("Validation errors:", error.errors);
         return res.status(400).json({ 
           message: "Invalid score data", 
           errors: error.errors 
