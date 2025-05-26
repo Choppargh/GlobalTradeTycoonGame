@@ -4,13 +4,21 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { calculateNetWorth } from '@/lib/gameLogic';
 import { Leaderboard } from './Leaderboard';
-import { apiRequest } from '@/lib/queryClient';
+import { useQuery } from '@tanstack/react-query';
+import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
 
 export function GameOver() {
   const { username, cash, bankBalance, loanAmount, inventory, daysRemaining, restartGame } = useGameStore();
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [scoreSubmitted, setScoreSubmitted] = useState(false);
+
+  // Use React Query to fetch leaderboard data (same as homepage)
+  const { data: leaderboard = [], isLoading: loading } = useQuery<LeaderboardEntry[]>({
+    queryKey: ['/api/scores'],
+    queryFn: getQueryFn<LeaderboardEntry[]>({
+      on401: 'returnNull',
+    }),
+  });
   
   const initialDays = 7;
   const daysPassed = initialDays - daysRemaining;
@@ -21,15 +29,14 @@ export function GameOver() {
   const netWorth = calculateNetWorth(cash, bankBalance, inventory, loanAmount);
   
   useEffect(() => {
-    // Submit score and fetch global leaderboard
-    const submitScoreAndFetchLeaderboard = async () => {
+    // Submit score when game ends
+    const submitScore = async () => {
+      if (scoreSubmitted) return;
+      
       try {
-        setLoading(true);
-        
         // Save the username for future games
         localStorage.setItem('globalTradeTycoon_lastUsername', username || '');
         
-        // Submit the score if not already submitted
         const scoreData = {
           username,
           score: bankBalance,
@@ -37,59 +44,31 @@ export function GameOver() {
           endNetWorth: netWorth
         };
         
-        // Submit the score (remove the localStorage check that was preventing multiple submissions)
-        try {
-          console.log('Submitting score:', scoreData);
-          
-          // Use fetch directly to get better error details
-          const response = await fetch('/api/scores', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(scoreData),
-          });
-          
-          console.log('Server response status:', response.status);
-          
-          if (response.ok) {
-            const result = await response.json();
-            console.log('Score submitted successfully:', result);
-          } else {
-            const errorText = await response.text();
-            console.error('Failed to submit score - server response:', response.status, errorText);
-          }
-        } catch (submitError) {
-          console.error('Failed to submit score:', submitError);
+        console.log('Submitting score:', scoreData);
+        
+        const response = await fetch('/api/scores', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(scoreData),
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Score submitted successfully:', result);
+          setScoreSubmitted(true);
+        } else {
+          const errorText = await response.text();
+          console.error('Failed to submit score:', response.status, errorText);
         }
-        
-        // Fetch updated leaderboard
-        const response = await apiRequest('GET', '/api/scores');
-        const data = await response.json();
-        
-        // Store the leaderboard in localStorage as a backup
-        localStorage.setItem('globalTradeTycoon_leaderboard', JSON.stringify(data));
-        
-        setLeaderboard(data);
       } catch (error) {
-        console.error('Failed to fetch leaderboard:', error);
-        
-        // Try to load leaderboard from localStorage as fallback
-        const storedLeaderboard = localStorage.getItem('globalTradeTycoon_leaderboard');
-        if (storedLeaderboard) {
-          try {
-            setLeaderboard(JSON.parse(storedLeaderboard));
-          } catch (e) {
-            console.error('Failed to parse stored leaderboard:', e);
-          }
-        }
-      } finally {
-        setLoading(false);
+        console.error('Failed to submit score:', error);
       }
     };
     
-    submitScoreAndFetchLeaderboard();
-  }, [username, bankBalance, daysPassed, netWorth]);
+    submitScore();
+  }, [username, bankBalance, daysPassed, netWorth, scoreSubmitted]);
   
   const formatCurrency = (amount: number): string => {
     return `$${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
