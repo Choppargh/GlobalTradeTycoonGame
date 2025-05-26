@@ -12,7 +12,7 @@ export function GameOver() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const initialDays = 31;
+  const initialDays = 7;
   const daysPassed = initialDays - daysRemaining;
   const inventoryValue = inventory.reduce(
     (total, item) => total + (item.quantity * item.purchasePrice),
