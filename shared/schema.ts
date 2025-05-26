@@ -18,7 +18,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const scores = pgTable("scores", {
   id: serial("id").primaryKey(),
   username: text("username").notNull(),
-  score: integer("score").notNull(),
+  score: real("score").notNull(),
   days: integer("days").notNull(),
   endNetWorth: real("end_net_worth").notNull(),
   createdAt: text("created_at").notNull().default(new Date().toISOString()),
