@@ -40,11 +40,24 @@ export function GameOver() {
         // Submit the score (remove the localStorage check that was preventing multiple submissions)
         try {
           console.log('Submitting score:', scoreData);
-          const submitResponse = await apiRequest('POST', '/api/scores', scoreData);
-          if (submitResponse.ok) {
-            console.log('Score submitted successfully');
+          
+          // Use fetch directly to get better error details
+          const response = await fetch('/api/scores', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(scoreData),
+          });
+          
+          console.log('Server response status:', response.status);
+          
+          if (response.ok) {
+            const result = await response.json();
+            console.log('Score submitted successfully:', result);
           } else {
-            console.error('Failed to submit score - server response:', submitResponse.status);
+            const errorText = await response.text();
+            console.error('Failed to submit score - server response:', response.status, errorText);
           }
         } catch (submitError) {
           console.error('Failed to submit score:', submitError);
