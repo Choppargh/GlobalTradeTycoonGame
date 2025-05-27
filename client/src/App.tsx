@@ -7,16 +7,15 @@ import NotFound from "./pages/not-found";
 import { Loading } from "./components/ui/loading";
 // Removed InstallPrompt import as we're using CustomInstallPrompt instead
 import { Toaster } from "./components/ui/sonner";
-import { useRefreshRecovery } from "./hooks/useRefreshRecovery";
+// Temporarily removing refresh recovery to fix authentication system
+// import { useRefreshRecovery } from "./hooks/useRefreshRecovery";
 import { AuthProvider } from "./contexts/AuthContext";
 import "@fontsource/inter";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   
-  // Use the refresh recovery hook to handle unexpected refreshes
-  // Temporarily disabled to fix React hook compatibility issue
-  // useRefreshRecovery();
+  // Temporarily disabled refresh recovery to fix authentication system
 
   useEffect(() => {
     // Simulate loading assets/data
