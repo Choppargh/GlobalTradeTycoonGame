@@ -4,6 +4,8 @@ import { users, type User, type InsertUser, scores, type Score, type InsertScore
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
+  getUserByDeviceId(deviceId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   
   // Score related operations
