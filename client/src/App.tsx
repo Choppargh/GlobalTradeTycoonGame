@@ -28,15 +28,17 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Loading isLoading={isLoading} />
-      {/* Custom install prompt is already included in HomePage */}
-      <Toaster position="top-right" />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <Loading isLoading={isLoading} />
+        {/* Custom install prompt is already included in HomePage */}
+        <Toaster position="top-right" />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
