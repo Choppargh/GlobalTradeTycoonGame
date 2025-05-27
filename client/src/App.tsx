@@ -15,7 +15,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   
   // Use the refresh recovery hook to handle unexpected refreshes
-  useRefreshRecovery();
+  // Temporarily disabled to fix React hook compatibility issue
+  // useRefreshRecovery();
 
   useEffect(() => {
     // Simulate loading assets/data
