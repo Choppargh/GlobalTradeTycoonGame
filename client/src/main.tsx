@@ -2,15 +2,15 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
-// Simple authentication check
+// Simple authentication check without JWT parsing
 function getAuthenticatedUser() {
   try {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return { username: payload.username, authType: payload.authType };
+    const userStr = localStorage.getItem('authUser');
+    if (userStr) {
+      return JSON.parse(userStr);
     }
   } catch (error) {
+    localStorage.removeItem('authUser');
     localStorage.removeItem('authToken');
   }
   return null;
@@ -21,6 +21,7 @@ function SimpleApp() {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
     window.location.reload();
   };
 
@@ -52,6 +53,10 @@ function SimpleApp() {
       if (response.ok) {
         const userData = await response.json();
         localStorage.setItem('authToken', userData.token);
+        localStorage.setItem('authUser', JSON.stringify({
+          username: username,
+          authType: 'guest'
+        }));
         // Force a single reload to show the authenticated state
         setTimeout(() => window.location.reload(), 100);
       } else {
