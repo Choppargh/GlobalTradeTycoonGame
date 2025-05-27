@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UsernameForm } from './UsernameForm';
 import { Leaderboard } from './Leaderboard';
-import { AuthOptions } from '../auth/AuthOptions';
+import { SimpleAuth } from '../auth/SimpleAuth';
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
@@ -60,9 +60,10 @@ export function WelcomeScreen() {
     toast.success('Saved game cleared.');
   };
 
-  const handleAuthSuccess = (userData: any) => {
-    login(userData);
-    toast.success(`Welcome back, ${userData.user.username}!`);
+  const handleAuthSuccess = (username: string) => {
+    // Start the game with the authenticated username
+    const { startGame } = useGameStore.getState();
+    startGame(username);
   };
 
   return (
@@ -112,17 +113,15 @@ export function WelcomeScreen() {
 
       {activeScreen === 'play' && (
         <>
-          {!isAuthenticated ? (
-            <>
-              <AuthOptions onAuthSuccess={handleAuthSuccess} />
-              <button 
-                onClick={() => setActiveScreen('welcome')}
-                className="mt-4 py-2 px-6 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
-              >
-                Back
-              </button>
-            </>
-          ) : (
+          <>
+            <SimpleAuth onAuthSuccess={handleAuthSuccess} />
+            <button 
+              onClick={() => setActiveScreen('welcome')}
+              className="mt-4 py-2 px-6 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
+            >
+              Back
+            </button>
+          </>
             <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
               <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Welcome, {user?.username}!</h2>
               
