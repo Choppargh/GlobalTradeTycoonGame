@@ -63,10 +63,6 @@ export function WelcomeScreen() {
   const handleAuthSuccess = (userData: any) => {
     login(userData);
     toast.success(`Welcome back, ${userData.user.username}!`);
-    // Start a new game immediately after authentication
-    setTimeout(() => {
-      startNewGame(userData.user.username);
-    }, 1000);
   };
 
   return (
