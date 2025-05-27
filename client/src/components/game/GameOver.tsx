@@ -4,13 +4,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { calculateNetWorth } from '@/lib/gameLogic';
 import { Leaderboard } from './Leaderboard';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
 
 export function GameOver() {
   const { username, cash, bankBalance, loanAmount, inventory, daysRemaining, restartGame } = useGameStore();
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
+  const queryClient = useQueryClient();
 
   // Use React Query to fetch leaderboard data (same as homepage)
   const { data: leaderboard = [], isLoading: loading } = useQuery<LeaderboardEntry[]>({
@@ -58,6 +59,9 @@ export function GameOver() {
           const result = await response.json();
           console.log('Score submitted successfully:', result);
           setScoreSubmitted(true);
+          
+          // Invalidate and refetch the leaderboard to show fresh data
+          queryClient.invalidateQueries({ queryKey: ['/api/scores'] });
         } else {
           const errorText = await response.text();
           console.error('Failed to submit score:', response.status, errorText);
