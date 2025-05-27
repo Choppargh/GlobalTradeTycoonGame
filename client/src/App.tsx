@@ -6,8 +6,7 @@ import HomePage from "./pages/HomePage";
 import NotFound from "./pages/not-found";
 import { Loading } from "./components/ui/loading";
 // Removed InstallPrompt import as we're using CustomInstallPrompt instead
-// Temporarily disabled to fix authentication system
-// import { Toaster } from "./components/ui/sonner";
+import { Toaster } from "./components/ui/sonner";
 import { useRefreshRecovery } from "./hooks/useRefreshRecovery";
 import { AuthProvider } from "./contexts/AuthContext";
 import "@fontsource/inter";
@@ -32,7 +31,7 @@ function App() {
       <AuthProvider>
         <Loading isLoading={isLoading} />
         {/* Custom install prompt is already included in HomePage */}
-        {/* Temporarily disabled Toaster to fix authentication system */}
+        <Toaster position="top-right" />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
