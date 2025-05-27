@@ -1,7 +1,8 @@
+import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
-// Simple authentication check without hooks
+// Simple authentication check
 function getAuthenticatedUser() {
   try {
     const token = localStorage.getItem('authToken');
@@ -51,7 +52,8 @@ function SimpleApp() {
       if (response.ok) {
         const userData = await response.json();
         localStorage.setItem('authToken', userData.token);
-        window.location.reload();
+        // Force a single reload to show the authenticated state
+        setTimeout(() => window.location.reload(), 100);
       } else {
         const error = await response.json();
         alert(error.message || 'Username might already be taken. Please try another.');
@@ -61,7 +63,7 @@ function SimpleApp() {
     }
   };
 
-  // Authenticated user view
+  // Show game dashboard for authenticated users
   if (user) {
     return (
       <div style={{
@@ -70,7 +72,6 @@ function SimpleApp() {
         fontFamily: 'system-ui, -apple-system, sans-serif',
         color: 'white'
       }}>
-        {/* Header */}
         <div style={{
           background: 'rgba(0, 0, 0, 0.5)',
           padding: '1rem',
@@ -79,9 +80,7 @@ function SimpleApp() {
           alignItems: 'center',
           borderBottom: '2px solid #4a5568'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Global Trade Tycoon</h1>
-          </div>
+          <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Global Trade Tycoon</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <span style={{ color: '#a0aec0' }}>Welcome, {user.username}!</span>
             <button 
@@ -101,9 +100,7 @@ function SimpleApp() {
           </div>
         </div>
 
-        {/* Game Dashboard */}
         <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-          {/* Status Panel */}
           <div style={{
             background: 'rgba(255, 255, 255, 0.1)',
             borderRadius: '12px',
@@ -118,33 +115,24 @@ function SimpleApp() {
               gap: '1rem'
             }}>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#48bb78' }}>
-                  $500
-                </div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#48bb78' }}>$500</div>
                 <div style={{ fontSize: '14px', color: '#a0aec0' }}>Cash</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4299e1' }}>
-                  $0
-                </div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4299e1' }}>$0</div>
                 <div style={{ fontSize: '14px', color: '#a0aec0' }}>Bank</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f56565' }}>
-                  $2,000
-                </div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f56565' }}>$2,000</div>
                 <div style={{ fontSize: '14px', color: '#a0aec0' }}>Loan</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ed8936' }}>
-                  7
-                </div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ed8936' }}>7</div>
                 <div style={{ fontSize: '14px', color: '#a0aec0' }}>Days Left</div>
               </div>
             </div>
           </div>
 
-          {/* Success Message */}
           <div style={{
             background: 'rgba(72, 187, 120, 0.2)',
             border: '2px solid #48bb78',
@@ -182,6 +170,16 @@ function SimpleApp() {
         width: '90%',
         textAlign: 'center'
       }}>
+        <img 
+          src="/attached_assets/GTC_Logo.png" 
+          alt="Global Trade Tycoon" 
+          style={{ width: '200px', marginBottom: '1rem' }}
+          onError={(e) => { 
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+          }}
+        />
+        
         <h1 style={{ color: '#2d3748', marginBottom: '0.5rem' }}>Welcome to Global Trade Tycoon</h1>
         <p style={{ color: '#4a5568', marginBottom: '2rem' }}>Choose how you'd like to play</p>
         
