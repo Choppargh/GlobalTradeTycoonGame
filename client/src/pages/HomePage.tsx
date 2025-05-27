@@ -10,8 +10,8 @@ export default function HomePage() {
   
   return (
     <div className="min-h-screen">
-      {/* Show resume game prompt on any page */}
-      <ResumeGamePrompt />
+      {/* Temporarily disabled resume game prompt to fix authentication */}
+      {/* <ResumeGamePrompt /> */}
       
       {/* Custom PWA install prompt with proper styling */}
       <CustomInstallPrompt />
