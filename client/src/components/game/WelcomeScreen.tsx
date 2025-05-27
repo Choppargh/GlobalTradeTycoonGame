@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { UsernameForm } from './UsernameForm';
 import { Leaderboard } from './Leaderboard';
+import { AuthOptions } from '../auth/AuthOptions';
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
 import { useGameStore } from '@/lib/stores/useGameStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 export function WelcomeScreen() {
@@ -13,6 +15,7 @@ export function WelcomeScreen() {
   const [savedGameInfo, setSavedGameInfo] = useState<{username: string, days: number, cash: number} | null>(null);
   
   const { loadGameState, clearSavedGameState } = useGameStore();
+  const { isAuthenticated, user, login } = useAuth();
 
   // Check for saved games on component mount
   useEffect(() => {
@@ -55,6 +58,15 @@ export function WelcomeScreen() {
     setHasSavedGame(false);
     setSavedGameInfo(null);
     toast.success('Saved game cleared.');
+  };
+
+  const handleAuthSuccess = (userData: any) => {
+    login(userData);
+    toast.success(`Welcome back, ${userData.user.username}!`);
+    // Start a new game immediately after authentication
+    setTimeout(() => {
+      startNewGame(userData.user.username);
+    }, 1000);
   };
 
   return (
@@ -103,49 +115,63 @@ export function WelcomeScreen() {
       )}
 
       {activeScreen === 'play' && (
-        <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
-          <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Enter Your Trading Name</h2>
-          
-          {/* Show saved game option if available */}
-          {hasSavedGame && savedGameInfo && (
-            <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-amber-800 mb-2">Continue Your Game?</h3>
-              <div className="text-sm text-amber-700 mb-4">
-                <p>Trader: <span className="font-medium">{savedGameInfo.username}</span></p>
-                <p>Day: <span className="font-medium">{savedGameInfo.days} / 31</span></p>
-                <p>Balance: <span className="font-medium">${savedGameInfo.cash.toLocaleString()}</span></p>
+        <>
+          {!isAuthenticated ? (
+            <>
+              <AuthOptions onAuthSuccess={handleAuthSuccess} />
+              <button 
+                onClick={() => setActiveScreen('welcome')}
+                className="mt-4 py-2 px-6 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
+              >
+                Back
+              </button>
+            </>
+          ) : (
+            <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
+              <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Welcome, {user?.username}!</h2>
+              
+              {/* Show saved game option if available */}
+              {hasSavedGame && savedGameInfo && (
+                <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold text-amber-800 mb-2">Continue Your Game?</h3>
+                  <div className="text-sm text-amber-700 mb-4">
+                    <p>Trader: <span className="font-medium">{savedGameInfo.username}</span></p>
+                    <p>Day: <span className="font-medium">{savedGameInfo.days} / 31</span></p>
+                    <p>Balance: <span className="font-medium">${savedGameInfo.cash.toLocaleString()}</span></p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={handleLoadGame}
+                      className="flex-1 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
+                    >
+                      Continue Game
+                    </button>
+                    <button 
+                      onClick={handleClearSavedGame}
+                      className="py-2 px-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
+              
+              <div className={hasSavedGame ? "border-t border-gray-200 pt-6" : ""}>
+                {hasSavedGame && (
+                  <h3 className="text-lg font-semibold text-tycoon-navy mb-4">Start a New Game</h3>
+                )}
+                <UsernameForm />
               </div>
-              <div className="flex gap-2">
-                <button 
-                  onClick={handleLoadGame}
-                  className="flex-1 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
-                >
-                  Continue Game
-                </button>
-                <button 
-                  onClick={handleClearSavedGame}
-                  className="py-2 px-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
+              
+              <button 
+                onClick={() => setActiveScreen('welcome')}
+                className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
+              >
+                Back
+              </button>
             </div>
           )}
-          
-          <div className={hasSavedGame ? "border-t border-gray-200 pt-6" : ""}>
-            {hasSavedGame && (
-              <h3 className="text-lg font-semibold text-tycoon-navy mb-4">Start a New Game</h3>
-            )}
-            <UsernameForm />
-          </div>
-          
-          <button 
-            onClick={() => setActiveScreen('welcome')}
-            className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
-          >
-            Back
-          </button>
-        </div>
+        </>
       )}
 
       {activeScreen === 'leaderboard' && (

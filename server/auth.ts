@@ -56,7 +56,7 @@ export function generateJWT(user: AuthUser): string {
   const payload: JWTPayload = {
     userId: user.id,
     username: user.username,
-    authType: user.authType
+    authType: user.authType as 'google' | 'guest'
   };
   
   return jwt.sign(payload, process.env.JWT_SECRET || 'fallback-secret', {
