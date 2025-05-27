@@ -7,10 +7,10 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 export interface AuthUser {
   id: number;
   username: string;
-  authType: 'google' | 'guest';
-  googleId?: string;
-  email?: string;
-  deviceId?: string;
+  authType: string;
+  googleId?: string | null;
+  email?: string | null;
+  deviceId?: string | null;
 }
 
 export interface JWTPayload {
