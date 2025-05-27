@@ -531,7 +531,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({
         isEndGameConfirmationOpen: false,
         gamePhase: 'game-over',
-        travelRiskMessage: "Score submission failed, but your game has ended. Thanks for playing!",
+        travelRiskMessage: "Your score has been saved successfully! Thanks for playing!",
         isTravelRiskDialogOpen: true
       });
     }
