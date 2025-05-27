@@ -1,25 +1,66 @@
 import React from "react";
 
-function App() {
-  // Check if user is already authenticated
-  const token = localStorage.getItem('authToken');
-  let user = null;
-  
-  if (token) {
-    try {
+// Simple authentication check without hooks
+function getAuthenticatedUser() {
+  try {
+    const token = localStorage.getItem('authToken');
+    if (token) {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      user = { username: payload.username, authType: payload.authType };
-    } catch (error) {
-      localStorage.removeItem('authToken');
+      return { username: payload.username, authType: payload.authType };
     }
+  } catch (error) {
+    localStorage.removeItem('authToken');
   }
+  return null;
+}
+
+function App() {
+  const user = getAuthenticatedUser();
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     window.location.reload();
   };
 
-  // If authenticated, show game dashboard
+  const handleGuestLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const input = form.elements.namedItem('username') as HTMLInputElement;
+    const username = input.value.trim();
+    
+    if (username.length < 3) {
+      alert('Username must be at least 3 characters');
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/auth/guest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: username,
+          deviceFingerprint: btoa(JSON.stringify({
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            timestamp: Date.now()
+          }))
+        }),
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        localStorage.setItem('authToken', userData.token);
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Username might already be taken. Please try another.');
+      }
+    } catch (error) {
+      alert('Authentication failed. Please try again.');
+    }
+  };
+
+  // Authenticated user view
   if (user) {
     return (
       <div style={{
@@ -38,12 +79,6 @@ function App() {
           borderBottom: '2px solid #4a5568'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <img 
-              src="/images/GTC_Logo.png" 
-              alt="Global Trade Tycoon" 
-              style={{ height: '40px' }}
-              onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
-            />
             <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Global Trade Tycoon</h1>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -108,25 +143,6 @@ function App() {
             </div>
           </div>
 
-          {/* Location */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: '12px',
-            padding: '1.5rem',
-            marginBottom: '2rem',
-            border: '2px solid #4a5568'
-          }}>
-            <h2 style={{ margin: '0 0 1rem 0', color: '#63b3ed' }}>Current Location</h2>
-            <div style={{
-              fontSize: '20px',
-              fontWeight: 'bold',
-              color: '#e2e8f0',
-              marginBottom: '1rem'
-            }}>
-              📍 North America
-            </div>
-          </div>
-
           {/* Success Message */}
           <div style={{
             background: 'rgba(72, 187, 120, 0.2)',
@@ -146,7 +162,7 @@ function App() {
     );
   }
 
-  // Authentication screen
+  // Login screen
   return (
     <div style={{
       minHeight: '100vh',
@@ -165,193 +181,84 @@ function App() {
         width: '90%',
         textAlign: 'center'
       }}>
-        <img 
-          src="/images/GTC_Logo.png" 
-          alt="Global Trade Tycoon" 
-          style={{ width: '200px', marginBottom: '1rem' }}
-          onError={(e) => (e.target as HTMLImageElement).style.display = 'none'}
-        />
+        <h1 style={{ color: '#2d3748', marginBottom: '0.5rem' }}>Welcome to Global Trade Tycoon</h1>
+        <p style={{ color: '#4a5568', marginBottom: '2rem' }}>Choose how you'd like to play</p>
         
-        <div id="authScreen">
-          <h1 style={{ color: '#2d3748', marginBottom: '0.5rem' }}>Welcome to Global Trade Tycoon</h1>
-          <p style={{ color: '#4a5568', marginBottom: '2rem' }}>Choose how you'd like to play</p>
-          
-          <button 
-            onClick={() => window.location.href = '/api/auth/google'}
+        <button 
+          onClick={() => window.location.href = '/api/auth/google'}
+          style={{
+            width: '100%',
+            padding: '12px 24px',
+            margin: '8px 0',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            background: '#4285f4',
+            color: 'white'
+          }}
+        >
+          🔑 Sign in with Google
+        </button>
+        
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          margin: '16px 0',
+          color: '#a0aec0',
+          fontSize: '14px'
+        }}>
+          <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }}></div>
+          <span style={{ padding: '0 12px' }}>or</span>
+          <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }}></div>
+        </div>
+        
+        <form onSubmit={handleGuestLogin}>
+          <input 
+            name="username"
+            type="text" 
+            placeholder="Enter your trading name"
+            required
+            minLength={3}
+            maxLength={20}
             style={{
               width: '100%',
-              padding: '12px 24px',
-              margin: '8px 0',
+              padding: '12px',
+              border: '2px solid #e2e8f0',
+              borderRadius: '8px',
+              fontSize: '16px',
+              marginBottom: '16px',
+              boxSizing: 'border-box'
+            }}
+          />
+          
+          <button
+            type="submit"
+            style={{
+              width: '100%',
+              padding: '12px',
               border: 'none',
               borderRadius: '8px',
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
-              background: '#4285f4',
-              color: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}
-          >
-            🔑 Sign in with Google
-          </button>
-          
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            margin: '16px 0',
-            color: '#a0aec0',
-            fontSize: '14px'
-          }}>
-            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }}></div>
-            <span style={{ padding: '0 12px' }}>or</span>
-            <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }}></div>
-          </div>
-          
-          <button 
-            onClick={() => {
-              const authScreen = document.getElementById('authScreen');
-              const guestForm = document.getElementById('guestForm');
-              if (authScreen && guestForm) {
-                authScreen.style.display = 'none';
-                guestForm.style.display = 'block';
-              }
-            }}
-            style={{
-              width: '100%',
-              padding: '12px 24px',
-              margin: '8px 0',
-              border: '2px solid #e2e8f0',
-              borderRadius: '8px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              background: 'transparent',
-              color: '#4a5568',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
+              background: '#48bb78',
+              color: 'white'
             }}
           >
             👤 Continue as Guest
           </button>
-          
-          <div style={{
-            fontSize: '12px',
-            color: '#718096',
-            marginTop: '16px',
-            lineHeight: '1.4'
-          }}>
-            <p>Google Sign-In: Secure your username across all devices</p>
-            <p>Guest Mode: Quick access, username tied to this device only</p>
-          </div>
-        </div>
+        </form>
         
-        <div id="guestForm" style={{ display: 'none' }}>
-          <h1 style={{ color: '#2d3748', marginBottom: '0.5rem' }}>Guest Mode</h1>
-          <p style={{ color: '#4a5568', marginBottom: '2rem' }}>Enter your trading name</p>
-          
-          <form onSubmit={async (e) => {
-            e.preventDefault();
-            const target = e.target as HTMLFormElement;
-            const usernameInput = target.username as HTMLInputElement;
-            const username = usernameInput.value.trim();
-            
-            if (username.length < 3) {
-              alert('Username must be at least 3 characters');
-              return;
-            }
-            
-            try {
-              const response = await fetch('/api/auth/guest', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  username: username,
-                  deviceFingerprint: btoa(JSON.stringify({
-                    userAgent: navigator.userAgent,
-                    language: navigator.language,
-                    timestamp: Date.now()
-                  }))
-                }),
-              });
-              
-              if (response.ok) {
-                const userData = await response.json();
-                localStorage.setItem('authToken', userData.token);
-                window.location.reload();
-              } else {
-                const error = await response.json();
-                alert(error.message || 'Username might already be taken. Please try another.');
-              }
-            } catch (error) {
-              alert('Authentication failed. Please try again.');
-            }
-          }}>
-            <input 
-              name="username"
-              type="text" 
-              placeholder="Enter your trading name"
-              required
-              minLength={3}
-              maxLength={20}
-              style={{
-                width: '100%',
-                padding: '12px',
-                border: '2px solid #e2e8f0',
-                borderRadius: '8px',
-                fontSize: '16px',
-                marginBottom: '16px',
-                boxSizing: 'border-box'
-              }}
-            />
-            
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button
-                type="button"
-                onClick={() => {
-                  const guestForm = document.getElementById('guestForm');
-                  const authScreen = document.getElementById('authScreen');
-                  if (guestForm && authScreen) {
-                    guestForm.style.display = 'none';
-                    authScreen.style.display = 'block';
-                  }
-                }}
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  border: '2px solid #e2e8f0',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  background: 'transparent',
-                  color: '#4a5568'
-                }}
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  background: '#48bb78',
-                  color: 'white'
-                }}
-              >
-                Start Trading
-              </button>
-            </div>
-          </form>
+        <div style={{
+          fontSize: '12px',
+          color: '#718096',
+          marginTop: '16px',
+          lineHeight: '1.4'
+        }}>
+          <p>Google Sign-In: Secure your username across all devices</p>
+          <p>Guest Mode: Quick access, username tied to this device only</p>
         </div>
       </div>
     </div>
