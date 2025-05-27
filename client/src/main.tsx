@@ -4,12 +4,18 @@ import "./index.css";
 
 // Simple authentication check without JWT parsing
 function getAuthenticatedUser() {
+  console.log('🔍 Checking authentication...');
   try {
     const userStr = localStorage.getItem('authUser');
+    console.log('📦 User data from storage:', userStr);
     if (userStr) {
-      return JSON.parse(userStr);
+      const user = JSON.parse(userStr);
+      console.log('✅ User authenticated:', user);
+      return user;
     }
+    console.log('❌ No user data found');
   } catch (error) {
+    console.log('💥 Error parsing user data:', error);
     localStorage.removeItem('authUser');
     localStorage.removeItem('authToken');
   }
@@ -17,7 +23,9 @@ function getAuthenticatedUser() {
 }
 
 function SimpleApp() {
+  console.log('🚀 SimpleApp rendering...');
   const user = getAuthenticatedUser();
+  console.log('👤 Current user state:', user);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
@@ -26,17 +34,22 @@ function SimpleApp() {
   };
 
   const handleGuestLogin = async (e: React.FormEvent) => {
+    console.log('🎯 Guest login started...');
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const input = form.elements.namedItem('username') as HTMLInputElement;
     const username = input.value.trim();
     
+    console.log('📝 Username entered:', username);
+    
     if (username.length < 3) {
+      console.log('❌ Username too short');
       alert('Username must be at least 3 characters');
       return;
     }
     
     try {
+      console.log('📡 Sending authentication request...');
       const response = await fetch('/api/auth/guest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,26 +63,37 @@ function SimpleApp() {
         }),
       });
       
+      console.log('📨 Response status:', response.status);
+      
       if (response.ok) {
         const userData = await response.json();
+        console.log('✅ Authentication successful:', userData);
         localStorage.setItem('authToken', userData.token);
         localStorage.setItem('authUser', JSON.stringify({
           username: username,
           authType: 'guest'
         }));
+        console.log('💾 Data saved to localStorage');
+        console.log('🔄 About to reload...');
         // Force a single reload to show the authenticated state
-        setTimeout(() => window.location.reload(), 100);
+        setTimeout(() => {
+          console.log('🔄 Reloading now...');
+          window.location.reload();
+        }, 100);
       } else {
         const error = await response.json();
+        console.log('❌ Authentication failed:', error);
         alert(error.message || 'Username might already be taken. Please try another.');
       }
     } catch (error) {
+      console.log('💥 Network error:', error);
       alert('Authentication failed. Please try again.');
     }
   };
 
   // Show game dashboard for authenticated users
   if (user) {
+    console.log('🎮 Rendering authenticated dashboard for:', user.username);
     return (
       <div style={{
         minHeight: '100vh',
@@ -157,6 +181,7 @@ function SimpleApp() {
   }
 
   // Login screen
+  console.log('🔓 Rendering login screen');
   return (
     <div style={{
       minHeight: '100vh',
