@@ -113,59 +113,13 @@ export function WelcomeScreen() {
 
       {activeScreen === 'play' && (
         <>
-          <>
-            <SimpleAuth onAuthSuccess={handleAuthSuccess} />
-            <button 
-              onClick={() => setActiveScreen('welcome')}
-              className="mt-4 py-2 px-6 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
-            >
-              Back
-            </button>
-          </>
-            <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
-              <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Welcome, {user?.username}!</h2>
-              
-              {/* Show saved game option if available */}
-              {hasSavedGame && savedGameInfo && (
-                <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-amber-800 mb-2">Continue Your Game?</h3>
-                  <div className="text-sm text-amber-700 mb-4">
-                    <p>Trader: <span className="font-medium">{savedGameInfo.username}</span></p>
-                    <p>Day: <span className="font-medium">{savedGameInfo.days} / 31</span></p>
-                    <p>Balance: <span className="font-medium">${savedGameInfo.cash.toLocaleString()}</span></p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={handleLoadGame}
-                      className="flex-1 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
-                    >
-                      Continue Game
-                    </button>
-                    <button 
-                      onClick={handleClearSavedGame}
-                      className="py-2 px-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              )}
-              
-              <div className={hasSavedGame ? "border-t border-gray-200 pt-6" : ""}>
-                {hasSavedGame && (
-                  <h3 className="text-lg font-semibold text-tycoon-navy mb-4">Start a New Game</h3>
-                )}
-                <UsernameForm />
-              </div>
-              
-              <button 
-                onClick={() => setActiveScreen('welcome')}
-                className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
-              >
-                Back
-              </button>
-            </div>
-          )}
+          <SimpleAuth onAuthSuccess={handleAuthSuccess} />
+          <button 
+            onClick={() => setActiveScreen('welcome')}
+            className="mt-4 py-2 px-6 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
+          >
+            Back
+          </button>
         </>
       )}
 
