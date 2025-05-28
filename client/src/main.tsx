@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
@@ -7,134 +7,78 @@ interface User {
   authType: string;
 }
 
-// Simple authentication check without JWT parsing
-function getAuthenticatedUser(): User | null {
-  console.log('🔍 Checking authentication...');
-  try {
-    const userStr = localStorage.getItem('authUser');
-    console.log('📦 User data from storage:', userStr);
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      console.log('✅ User authenticated:', user);
-      return user;
-    }
-    console.log('❌ No user data found');
-  } catch (error) {
-    console.log('💥 Error parsing user data:', error);
-    localStorage.removeItem('authUser');
-    localStorage.removeItem('authToken');
-  }
-  return null;
-}
-
 function SimpleApp() {
-  console.log('🚀 SimpleApp rendering...');
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    console.log('⚡ useEffect running - checking auth');
-    // Clear any reload flags on mount
-    sessionStorage.removeItem('reloading');
-    
-    const authUser = getAuthenticatedUser();
-    setUser(authUser);
-    setIsLoading(false);
-    console.log('👤 Initial user state set:', authUser);
+  // Check localStorage on first load only
+  React.useEffect(() => {
+    const stored = localStorage.getItem('authUser');
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored));
+      } catch (e) {
+        localStorage.removeItem('authUser');
+      }
+    }
   }, []);
 
   const handleLogout = () => {
-    console.log('🚪 Logging out...');
     localStorage.removeItem('authToken');
     localStorage.removeItem('authUser');
     setUser(null);
   };
 
   const handleGuestLogin = async (e: React.FormEvent) => {
-    console.log('🎯 Guest login started...');
     e.preventDefault();
+    setIsLoading(true);
+    
     const form = e.target as HTMLFormElement;
     const input = form.elements.namedItem('username') as HTMLInputElement;
     const username = input.value.trim();
     
-    console.log('📝 Username entered:', username);
-    
     if (username.length < 3) {
-      console.log('❌ Username too short');
       alert('Username must be at least 3 characters');
+      setIsLoading(false);
       return;
     }
     
     try {
-      console.log('📡 Sending authentication request...');
-      const requestBody = {
-        username: username,
-        deviceFingerprint: btoa(JSON.stringify({
-          userAgent: navigator.userAgent,
-          language: navigator.language,
-          timestamp: Date.now()
-        }))
-      };
-      console.log('📦 Request body:', requestBody);
-      
       const response = await fetch('/api/auth/guest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({
+          username: username,
+          deviceFingerprint: btoa(JSON.stringify({
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            timestamp: Date.now()
+          }))
+        }),
       });
-      
-      console.log('📨 Response status:', response.status);
-      console.log('📨 Response headers:', response.headers);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log('❌ Error response:', errorText);
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
       
       if (response.ok) {
         const userData = await response.json();
-        console.log('✅ Authentication successful:', userData);
         localStorage.setItem('authToken', userData.token);
         const newUser = {
           username: username,
           authType: 'guest'
         };
         localStorage.setItem('authUser', JSON.stringify(newUser));
-        console.log('💾 Data saved to localStorage');
-        console.log('🎮 Updating user state without reload');
         setUser(newUser);
       } else {
         const error = await response.json();
-        console.log('❌ Authentication failed:', error);
         alert(error.message || 'Username might already be taken. Please try another.');
       }
     } catch (error) {
-      console.log('💥 Network error:', error);
       alert('Authentication failed. Please try again.');
     }
+    
+    setIsLoading(false);
   };
 
-  if (isLoading) {
-    console.log('⏳ Showing loading state');
-    return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        fontSize: '18px'
-      }}>
-        Loading...
-      </div>
-    );
-  }
-
-  // Show game dashboard for authenticated users
+  // Authenticated view
   if (user) {
-    console.log('🎮 Rendering authenticated dashboard for:', user.username);
     return (
       <div style={{
         minHeight: '100vh',
@@ -222,7 +166,6 @@ function SimpleApp() {
   }
 
   // Login screen
-  console.log('🔓 Rendering login screen');
   return (
     <div style={{
       minHeight: '100vh',
@@ -292,6 +235,7 @@ function SimpleApp() {
             required
             minLength={3}
             maxLength={20}
+            autoComplete="username"
             style={{
               width: '100%',
               padding: '12px',
@@ -305,6 +249,7 @@ function SimpleApp() {
           
           <button
             type="submit"
+            disabled={isLoading}
             style={{
               width: '100%',
               padding: '12px',
@@ -312,12 +257,12 @@ function SimpleApp() {
               borderRadius: '8px',
               fontSize: '16px',
               fontWeight: '600',
-              cursor: 'pointer',
-              background: '#48bb78',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              background: isLoading ? '#a0aec0' : '#48bb78',
               color: 'white'
             }}
           >
-            👤 Continue as Guest
+            {isLoading ? 'Authenticating...' : '👤 Continue as Guest'}
           </button>
         </form>
         
