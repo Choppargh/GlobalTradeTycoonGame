@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { GameHeader } from '@/components/game/GameHeader';
 import { BuyTab } from '@/components/game/BuyTab';
@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function GamePage() {
   const [activeTab, setActiveTab] = useState("buy");
   
+  const store = useGameStore();
   const { 
     currentLocation, 
     currentEvent, 
@@ -19,7 +20,33 @@ export default function GamePage() {
     isTravelRiskDialogOpen,
     travelRiskMessage,
     clearTravelRiskDialog,
-  } = useGameStore();
+    startGame,
+    setUsername
+  } = store;
+
+  // Initialize game if not already done
+  useEffect(() => {
+    if (!currentLocation) {
+      // Get username from JWT token
+      try {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          setUsername(payload.username);
+          
+          // Try to load saved game, if not start new one
+          const hasExisting = store.loadGameState();
+          if (!hasExisting) {
+            startGame();
+          }
+        }
+      } catch (error) {
+        console.error('Failed to initialize game:', error);
+        // Fallback: just start a new game
+        startGame();
+      }
+    }
+  }, []); // Empty dependency array to prevent loops
   
   // Basic game state loading
   if (!currentLocation) {
