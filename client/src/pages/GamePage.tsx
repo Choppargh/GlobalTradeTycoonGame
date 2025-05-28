@@ -1,66 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { GameHeader } from '@/components/game/GameHeader';
-import { BuyTab } from '@/components/game/BuyTab';
-import { SellTab } from '@/components/game/SellTab';
+import { ProductMarket } from '@/components/game/ProductMarket';
+import { Inventory } from '@/components/game/Inventory';
 import { TravelOptions } from '@/components/game/TravelOptions';
 import { BankInterface } from '@/components/game/BankInterface';
 import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// Restored working pre-authentication version
 export default function GamePage() {
-  const [activeTab, setActiveTab] = useState("buy");
+  const [activeTab, setActiveTab] = useState("market");
   
-  const store = useGameStore();
   const { 
     currentLocation, 
     currentEvent, 
     clearCurrentEvent, 
     isTravelRiskDialogOpen,
     travelRiskMessage,
-    clearTravelRiskDialog,
-    startGame,
-    setUsername
-  } = store;
-
-  // Initialize game if not already done
-  useEffect(() => {
-    let mounted = true;
-    
-    const initGame = async () => {
-      if (!currentLocation && mounted) {
-        try {
-          const token = localStorage.getItem('authToken');
-          if (token) {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            setUsername(payload.username);
-            
-            // Small delay to let username set
-            setTimeout(() => {
-              if (mounted) {
-                const hasExisting = store.loadGameState();
-                if (!hasExisting) {
-                  startGame();
-                }
-              }
-            }, 50);
-          }
-        } catch (error) {
-          console.error('Failed to initialize game:', error);
-          if (mounted) {
-            startGame();
-          }
-        }
-      }
-    };
-    
-    initGame();
-    
-    return () => {
-      mounted = false;
-    };
-  }, []);  // Only run once
+    clearTravelRiskDialog
+  } = useGameStore();
   
   // Basic game state loading
   if (!currentLocation) {
@@ -94,40 +54,40 @@ export default function GamePage() {
           <TravelOptions />
         </div>
         
-        {/* Buy and Sell Tabs - Tabbed on mobile, side-by-side on desktop */}
+        {/* Market and Inventory - Tabbed on mobile, side-by-side on desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
           {/* Tabbed interface on mobile, hidden on desktop */}
           <div className="block lg:hidden w-full">
-            <Tabs defaultValue="buy" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs defaultValue="market" value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid grid-cols-2 w-full bg-amber-50 border-b border-amber-200">
                 <TabsTrigger 
-                  value="buy" 
-                  className="text-base font-medium data-[state=active]:bg-blue-100 data-[state=active]:text-blue-800 rounded-b-none"
+                  value="market" 
+                  className="text-base font-medium data-[state=active]:bg-amber-100 data-[state=active]:text-amber-800 rounded-b-none"
                 >
-                  Buy
+                  Market
                 </TabsTrigger>
                 <TabsTrigger 
-                  value="sell" 
-                  className="text-base font-medium data-[state=active]:bg-green-100 data-[state=active]:text-green-800 rounded-b-none"
+                  value="inventory" 
+                  className="text-base font-medium data-[state=active]:bg-amber-100 data-[state=active]:text-amber-800 rounded-b-none"
                 >
-                  Sell
+                  Inventory
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="buy" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
-                <BuyTab />
+              <TabsContent value="market" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
+                <ProductMarket />
               </TabsContent>
-              <TabsContent value="sell" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
-                <SellTab />
+              <TabsContent value="inventory" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
+                <Inventory />
               </TabsContent>
             </Tabs>
           </div>
           
           {/* Desktop layout - side by side, hidden on mobile */}
           <div className="hidden lg:block col-span-1">
-            <BuyTab />
+            <ProductMarket />
           </div>
           <div className="hidden lg:block col-span-1">
-            <SellTab />
+            <Inventory />
           </div>
         </div>
       </div>
