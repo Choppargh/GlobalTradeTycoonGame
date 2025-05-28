@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
@@ -24,13 +24,25 @@ function getAuthenticatedUser() {
 
 function SimpleApp() {
   console.log('🚀 SimpleApp rendering...');
-  const user = getAuthenticatedUser();
-  console.log('👤 Current user state:', user);
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    console.log('⚡ useEffect running - checking auth');
+    // Clear any reload flags on mount
+    sessionStorage.removeItem('reloading');
+    
+    const authUser = getAuthenticatedUser();
+    setUser(authUser);
+    setIsLoading(false);
+    console.log('👤 Initial user state set:', authUser);
+  }, []);
 
   const handleLogout = () => {
+    console.log('🚪 Logging out...');
     localStorage.removeItem('authToken');
     localStorage.removeItem('authUser');
-    window.location.reload();
+    setUser(null);
   };
 
   const handleGuestLogin = async (e: React.FormEvent) => {
@@ -69,17 +81,14 @@ function SimpleApp() {
         const userData = await response.json();
         console.log('✅ Authentication successful:', userData);
         localStorage.setItem('authToken', userData.token);
-        localStorage.setItem('authUser', JSON.stringify({
+        const newUser = {
           username: username,
           authType: 'guest'
-        }));
+        };
+        localStorage.setItem('authUser', JSON.stringify(newUser));
         console.log('💾 Data saved to localStorage');
-        console.log('🔄 About to reload...');
-        // Force a single reload to show the authenticated state
-        setTimeout(() => {
-          console.log('🔄 Reloading now...');
-          window.location.reload();
-        }, 100);
+        console.log('🎮 Updating user state without reload');
+        setUser(newUser);
       } else {
         const error = await response.json();
         console.log('❌ Authentication failed:', error);
@@ -90,6 +99,23 @@ function SimpleApp() {
       alert('Authentication failed. Please try again.');
     }
   };
+
+  if (isLoading) {
+    console.log('⏳ Showing loading state');
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        fontSize: '18px'
+      }}>
+        Loading...
+      </div>
+    );
+  }
 
   // Show game dashboard for authenticated users
   if (user) {
