@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import GamePage from "./pages/GamePage";
 
 interface User {
   username: string;
@@ -78,10 +77,8 @@ function SimpleApp() {
     setIsLoading(false);
   };
 
-  // Authenticated view - Load the full game
-  if (user) {
-    return <GamePage />;
-  }
+  // This is now handled by App.tsx - redirect there
+  return null;
 
   // Login screen
   return (
