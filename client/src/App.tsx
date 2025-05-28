@@ -1,5 +1,5 @@
 import React from "react";
-import GamePage from "./pages/GamePage";
+import { SimpleGameLoader } from "./SimpleGameLoader";
 
 // Simple authentication check without hooks
 function getAuthenticatedUser() {
@@ -63,7 +63,7 @@ function App() {
 
   // Authenticated user view - Load the full game
   if (user) {
-    return <GamePage />;
+    return <SimpleGameLoader username={user.username} />;
   }
 
   // Login screen
