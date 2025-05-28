@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
+interface User {
+  username: string;
+  authType: string;
+}
+
 // Simple authentication check without JWT parsing
-function getAuthenticatedUser() {
+function getAuthenticatedUser(): User | null {
   console.log('🔍 Checking authentication...');
   try {
     const userStr = localStorage.getItem('authUser');
@@ -24,7 +29,7 @@ function getAuthenticatedUser() {
 
 function SimpleApp() {
   console.log('🚀 SimpleApp rendering...');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -62,20 +67,30 @@ function SimpleApp() {
     
     try {
       console.log('📡 Sending authentication request...');
+      const requestBody = {
+        username: username,
+        deviceFingerprint: btoa(JSON.stringify({
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+          timestamp: Date.now()
+        }))
+      };
+      console.log('📦 Request body:', requestBody);
+      
       const response = await fetch('/api/auth/guest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: username,
-          deviceFingerprint: btoa(JSON.stringify({
-            userAgent: navigator.userAgent,
-            language: navigator.language,
-            timestamp: Date.now()
-          }))
-        }),
+        body: JSON.stringify(requestBody),
       });
       
       console.log('📨 Response status:', response.status);
+      console.log('📨 Response headers:', response.headers);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('❌ Error response:', errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
       
       if (response.ok) {
         const userData = await response.json();
