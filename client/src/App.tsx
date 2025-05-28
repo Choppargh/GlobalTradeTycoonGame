@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import GamePage from "./pages/GamePage";
+import { useGameStore } from "./lib/stores/useGameStore";
 
 // Simple authentication check without hooks
 function getAuthenticatedUser() {
@@ -17,6 +18,21 @@ function getAuthenticatedUser() {
 
 function App() {
   const user = getAuthenticatedUser();
+  const { setUsername, startGame, currentLocation, loadGameState } = useGameStore();
+
+  // Initialize game when user is authenticated
+  useEffect(() => {
+    if (user) {
+      // Set the username first
+      setUsername(user.username);
+      
+      // Try to load existing game state, if not found, start new game
+      const hasExistingGame = loadGameState();
+      if (!hasExistingGame) {
+        startGame();
+      }
+    }
+  }, [user, setUsername, startGame, loadGameState]);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
