@@ -26,27 +26,41 @@ export default function GamePage() {
 
   // Initialize game if not already done
   useEffect(() => {
-    if (!currentLocation) {
-      // Get username from JWT token
-      try {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          setUsername(payload.username);
-          
-          // Try to load saved game, if not start new one
-          const hasExisting = store.loadGameState();
-          if (!hasExisting) {
+    let mounted = true;
+    
+    const initGame = async () => {
+      if (!currentLocation && mounted) {
+        try {
+          const token = localStorage.getItem('authToken');
+          if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            setUsername(payload.username);
+            
+            // Small delay to let username set
+            setTimeout(() => {
+              if (mounted) {
+                const hasExisting = store.loadGameState();
+                if (!hasExisting) {
+                  startGame();
+                }
+              }
+            }, 50);
+          }
+        } catch (error) {
+          console.error('Failed to initialize game:', error);
+          if (mounted) {
             startGame();
           }
         }
-      } catch (error) {
-        console.error('Failed to initialize game:', error);
-        // Fallback: just start a new game
-        startGame();
       }
-    }
-  }, []); // Empty dependency array to prevent loops
+    };
+    
+    initGame();
+    
+    return () => {
+      mounted = false;
+    };
+  }, []);  // Only run once
   
   // Basic game state loading
   if (!currentLocation) {
