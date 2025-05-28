@@ -72,6 +72,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let user = await storage.getUserByDeviceId(deviceId);
       
       if (!user) {
+        // Check if username already exists
+        const existingUser = await storage.getUserByUsername(username);
+        if (existingUser) {
+          return res.status(400).json({ message: "Username already taken. Please choose another." });
+        }
+        
         // Create new guest user
         user = await storage.createUser({
           username,
