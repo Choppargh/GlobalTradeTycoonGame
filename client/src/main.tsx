@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import GamePage from "./pages/GamePage";
 
 interface User {
   username: string;
@@ -77,92 +78,9 @@ function SimpleApp() {
     setIsLoading(false);
   };
 
-  // Authenticated view
+  // Authenticated view - Load the full game
   if (user) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #1a202c 0%, #2d3748 100%)',
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-        color: 'white'
-      }}>
-        <div style={{
-          background: 'rgba(0, 0, 0, 0.5)',
-          padding: '1rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '2px solid #4a5568'
-        }}>
-          <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Global Trade Tycoon</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ color: '#a0aec0' }}>Welcome, {user.username}!</span>
-            <button 
-              onClick={handleLogout}
-              style={{
-                padding: '8px 16px',
-                border: '1px solid #e2e8f0',
-                borderRadius: '6px',
-                background: 'transparent',
-                color: 'white',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-
-        <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: '12px',
-            padding: '1.5rem',
-            marginBottom: '2rem',
-            border: '2px solid #4a5568'
-          }}>
-            <h2 style={{ margin: '0 0 1rem 0', color: '#63b3ed' }}>Trading Status</h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-              gap: '1rem'
-            }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#48bb78' }}>$500</div>
-                <div style={{ fontSize: '14px', color: '#a0aec0' }}>Cash</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4299e1' }}>$0</div>
-                <div style={{ fontSize: '14px', color: '#a0aec0' }}>Bank</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f56565' }}>$2,000</div>
-                <div style={{ fontSize: '14px', color: '#a0aec0' }}>Loan</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ed8936' }}>7</div>
-                <div style={{ fontSize: '14px', color: '#a0aec0' }}>Days Left</div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{
-            background: 'rgba(72, 187, 120, 0.2)',
-            border: '2px solid #48bb78',
-            borderRadius: '12px',
-            padding: '1.5rem',
-            textAlign: 'center'
-          }}>
-            <h3 style={{ margin: '0 0 0.5rem 0', color: '#48bb78' }}>🎉 Authentication Success!</h3>
-            <p style={{ margin: 0, color: '#e2e8f0' }}>
-              Your secure {user.authType === 'google' ? 'Google' : 'guest'} authentication is working perfectly! 
-              Ready to start trading.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    return <GamePage />;
   }
 
   // Login screen
