@@ -19,8 +19,21 @@ export default function GamePage() {
     clearCurrentEvent, 
     isTravelRiskDialogOpen,
     travelRiskMessage,
-    clearTravelRiskDialog
+    clearTravelRiskDialog,
+    startGame,
+    loadGameState
   } = useGameStore();
+
+  // Auto-initialize game on first load
+  useEffect(() => {
+    if (!currentLocation) {
+      // Try to load saved game first, if none exists start new game
+      const hasExistingGame = loadGameState();
+      if (!hasExistingGame) {
+        startGame();
+      }
+    }
+  }, [currentLocation, startGame, loadGameState]);
   
   // Basic game state loading
   if (!currentLocation) {
