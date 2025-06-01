@@ -1,306 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Global Trade Tycoon</title>
+    <meta name="description" content="Build your trading empire across the globe in this economic trading game." />
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#b45309">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Global Trade Tycoon">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="mobile-web-app-capable" content="yes">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .auth-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-        }
-        
-        .logo {
-            width: 200px;
-            margin-bottom: 1rem;
-        }
-        
-        h1 {
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-        }
-        
-        p {
-            color: #4a5568;
-            margin-bottom: 2rem;
-        }
-        
-        .auth-button {
-            width: 100%;
-            padding: 12px 24px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .google-btn {
-            background: #4285f4;
-            color: white;
-        }
-        
-        .google-btn:hover {
-            background: #3367d6;
-            transform: translateY(-1px);
-        }
-        
-        .guest-btn {
-            background: transparent;
-            color: #4a5568;
-            border: 2px solid #e2e8f0;
-        }
-        
-        .guest-btn:hover {
-            background: #f7fafc;
-            border-color: #cbd5e0;
-        }
-        
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 16px 0;
-            color: #a0aec0;
-            font-size: 14px;
-        }
-        
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e2e8f0;
-        }
-        
-        .divider span {
-            padding: 0 12px;
-        }
-        
-        .guest-form {
-            display: none;
-        }
-        
-        .guest-form.active {
-            display: block;
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #4285f4;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .button-group button {
-            flex: 1;
-        }
-        
-        .info-text {
-            font-size: 12px;
-            color: #718096;
-            margin-top: 16px;
-            line-height: 1.4;
-        }
-        
-        .success {
-            background: #48bb78;
-            color: white;
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 16px;
-            display: none;
-        }
-        
-        .error {
-            background: #f56565;
-            color: white;
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 16px;
-            display: none;
-        }
+      html, body {
+        overscroll-behavior: contain;
+        height: 100%;
+      }
+      #root {
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
     </style>
-</head>
-<body>
-    <div class="auth-container">
-        <img src="/images/GTC_Logo.png" alt="Global Trade Tycoon" class="logo" onerror="this.style.display='none'">
-        
-        <div id="authScreen">
-            <h1>Welcome to Global Trade Tycoon</h1>
-            <p>Choose how you'd like to play</p>
-            
-            <button class="auth-button google-btn" onclick="handleGoogleAuth()">
-                🔑 Sign in with Google
-            </button>
-            
-            <div class="divider">
-                <span>or</span>
-            </div>
-            
-            <button class="auth-button guest-btn" onclick="showGuestForm()">
-                👤 Continue as Guest
-            </button>
-            
-            <div class="info-text">
-                <p>Google Sign-In: Secure your username across all devices</p>
-                <p>Guest Mode: Quick access, username tied to this device only</p>
-            </div>
-        </div>
-        
-        <div id="guestForm" class="guest-form">
-            <h1>Guest Mode</h1>
-            <p>Enter your trading name</p>
-            
-            <form onsubmit="handleGuestAuth(event)">
-                <input 
-                    type="text" 
-                    id="username" 
-                    class="input-field" 
-                    placeholder="Enter your trading name"
-                    required
-                    minlength="3"
-                    maxlength="20"
-                >
-                
-                <div class="button-group">
-                    <button type="button" class="auth-button guest-btn" onclick="showAuthScreen()">
-                        Back
-                    </button>
-                    <button type="submit" class="auth-button google-btn">
-                        Start Trading
-                    </button>
-                </div>
-            </form>
-        </div>
-        
-        <div id="success" class="success"></div>
-        <div id="error" class="error"></div>
-    </div>
-
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
     <script>
-        function showGuestForm() {
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('guestForm').classList.add('active');
-            document.getElementById('username').focus();
-        }
-        
-        function showAuthScreen() {
-            document.getElementById('guestForm').classList.remove('active');
-            document.getElementById('authScreen').style.display = 'block';
-        }
-        
-        function showSuccess(message) {
-            const successEl = document.getElementById('success');
-            successEl.textContent = message;
-            successEl.style.display = 'block';
-            document.getElementById('error').style.display = 'none';
-        }
-        
-        function showError(message) {
-            const errorEl = document.getElementById('error');
-            errorEl.textContent = message;
-            errorEl.style.display = 'block';
-            document.getElementById('success').style.display = 'none';
-        }
-        
-        async function handleGoogleAuth() {
-            try {
-                // Redirect to your Google OAuth endpoint
-                window.location.href = '/api/auth/google';
-            } catch (error) {
-                showError('Google authentication failed. Please try guest mode.');
-            }
-        }
-        
-        async function handleGuestAuth(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            
-            if (username.length < 3) {
-                showError('Username must be at least 3 characters');
-                return;
-            }
-            
-            try {
-                const deviceFingerprint = btoa(JSON.stringify({
-                    userAgent: navigator.userAgent,
-                    language: navigator.language,
-                    timestamp: Date.now()
-                }));
-                
-                const response = await fetch('/api/auth/guest', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: username,
-                        deviceFingerprint: deviceFingerprint
-                    }),
-                });
-                
-                if (response.ok) {
-                    const userData = await response.json();
-                    localStorage.setItem('authToken', userData.token);
-                    showSuccess(`Welcome ${userData.user.username}! Your secure authentication is working perfectly. Redirecting to game...`);
-                    
-                    // Redirect to game after success
-                    setTimeout(() => {
-                        window.location.href = '/game';
-                    }, 2000);
-                } else {
-                    const error = await response.json();
-                    showError(error.message || 'Username might already be taken. Please try another.');
-                }
-            } catch (error) {
-                showError('Authentication failed. Please try again.');
-            }
-        }
-        
-        // Check if user is already authenticated
+      if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            const token = localStorage.getItem('authToken');
-            if (token) {
-                showSuccess('You are already authenticated! Redirecting to game...');
-                setTimeout(() => {
-                    window.location.href = '/game';
-                }, 1500);
-            }
+          navigator.serviceWorker.register('/serviceWorker.js')
+            .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+              console.log('Service Worker registration failed:', error);
+            });
         });
+      }
     </script>
-</body>
+  </body>
 </html>
