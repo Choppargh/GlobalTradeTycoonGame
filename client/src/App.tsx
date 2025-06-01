@@ -13,8 +13,8 @@ import "@fontsource/inter";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   
-  // Use the refresh recovery hook to handle unexpected refreshes
-  useRefreshRecovery();
+  // Temporarily disable refresh recovery to fix infinite loop
+  // useRefreshRecovery();
 
   useEffect(() => {
     // Simulate loading assets/data
