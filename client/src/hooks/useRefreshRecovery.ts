@@ -9,11 +9,15 @@ import { useGameStore } from '@/lib/stores/useGameStore';
  * can cause the app to restart unexpectedly.
  */
 export function useRefreshRecovery() {
-  const { loadGameState, saveGameState, gamePhase } = useGameStore();
+  const { gamePhase, saveGameState, loadGameState } = useGameStore((state) => ({
+    gamePhase: state.gamePhase,
+    saveGameState: state.saveGameState,
+    loadGameState: state.loadGameState
+  }));
   
   // Save game state whenever it changes
   useEffect(() => {
-    if (gamePhase === 'playing') {
+    if (gamePhase === 'playing' && saveGameState) {
       // Save game state automatically when in playing phase
       saveGameState();
     }
@@ -25,7 +29,7 @@ export function useRefreshRecovery() {
     const params = new URLSearchParams(window.location.search);
     const autoRecover = params.get('autoRecover') === 'true';
     
-    if (autoRecover) {
+    if (autoRecover && loadGameState) {
       // If autoRecover flag is present, try to load the game state
       const success = loadGameState();
       
@@ -44,15 +48,9 @@ export function useRefreshRecovery() {
   // Add event listener for unload/refresh events
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (gamePhase === 'playing') {
+      if (gamePhase === 'playing' && saveGameState) {
         // Save state before page unload/refresh
         saveGameState();
-        
-        // Add autoRecover param to URL so we know to try recovery on next load
-        if (window.location.search.indexOf('autoRecover=true') === -1) {
-          const separator = window.location.search ? '&' : '?';
-          window.location.href = `${window.location.href}${separator}autoRecover=true`;
-        }
       }
     };
     
