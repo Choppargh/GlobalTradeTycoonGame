@@ -19,16 +19,6 @@ export class DbStorage {
     return result[0];
   }
 
-  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.googleId, googleId));
-    return result[0];
-  }
-
-  async getUserByDeviceId(deviceId: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.deviceId, deviceId));
-    return result[0];
-  }
-
   async createUser(user: InsertUser): Promise<User> {
     const result = await db.insert(users).values(user).returning();
     return result[0];

@@ -4,8 +4,6 @@ import { users, type User, type InsertUser, scores, type Score, type InsertScore
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
-  getUserByGoogleId(googleId: string): Promise<User | undefined>;
-  getUserByDeviceId(deviceId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   
   // Score related operations
@@ -36,29 +34,9 @@ export class MemStorage implements IStorage {
     );
   }
 
-  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.googleId === googleId,
-    );
-  }
-
-  async getUserByDeviceId(deviceId: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.deviceId === deviceId,
-    );
-  }
-
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userCurrentId++;
-    const user: User = { 
-      id,
-      username: insertUser.username,
-      googleId: insertUser.googleId || null,
-      email: insertUser.email || null,
-      deviceId: insertUser.deviceId || null,
-      authType: insertUser.authType || 'guest',
-      createdAt: new Date().toISOString()
-    };
+    const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
   }
