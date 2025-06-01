@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { UsernameForm } from './UsernameForm';
 import { Leaderboard } from './Leaderboard';
-import { SimpleAuth } from '../auth/SimpleAuth';
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
 import { useGameStore } from '@/lib/stores/useGameStore';
+import { toast } from 'sonner';
 
 export function WelcomeScreen() {
-  const [activeScreen, setActiveScreen] = useState<'welcome' | 'play' | 'guest' | 'leaderboard' | 'rules'>('welcome');
+  const [activeScreen, setActiveScreen] = useState<'welcome' | 'play' | 'leaderboard' | 'rules'>('welcome');
   const [hasSavedGame, setHasSavedGame] = useState(false);
   const [savedGameInfo, setSavedGameInfo] = useState<{username: string, days: number, cash: number} | null>(null);
   
-  const { loadGameState, clearSavedGameState, startGame } = useGameStore();
+  const { loadGameState, clearSavedGameState } = useGameStore();
 
   // Check for saved games on component mount
   useEffect(() => {
@@ -44,9 +44,9 @@ export function WelcomeScreen() {
   const handleLoadGame = () => {
     const success = loadGameState();
     if (success) {
-      console.log('Game loaded successfully!');
+      toast.success('Game loaded successfully!');
     } else {
-      console.log('Failed to load saved game.');
+      toast.error('Failed to load saved game.');
     }
   };
   
@@ -54,12 +54,7 @@ export function WelcomeScreen() {
     clearSavedGameState();
     setHasSavedGame(false);
     setSavedGameInfo(null);
-    console.log('Saved game cleared.');
-  };
-
-  const handleAuthSuccess = (username: string) => {
-    // Start the game with the authenticated username
-    startGame(username);
+    toast.success('Saved game cleared.');
   };
 
   return (
@@ -108,92 +103,48 @@ export function WelcomeScreen() {
       )}
 
       {activeScreen === 'play' && (
-        <div className="flex flex-col items-center">
-          <div className="bg-white/90 rounded-lg p-8 max-w-md w-full mx-4">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Welcome to Global Trade Tycoon</h2>
-            <p className="text-center text-gray-600 mb-6">Choose how you'd like to play</p>
-            
-            <div className="space-y-4">
-              <button 
-                onClick={() => window.location.href = '/api/auth/google'}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2"
-              >
-                <span>🔑</span>
-                Sign in with Google
-              </button>
-              
-              <div className="flex items-center">
-                <div className="flex-1 border-t border-gray-300"></div>
-                <span className="px-3 text-gray-500 text-sm">or</span>
-                <div className="flex-1 border-t border-gray-300"></div>
+        <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
+          <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Enter Your Trading Name</h2>
+          
+          {/* Show saved game option if available */}
+          {hasSavedGame && savedGameInfo && (
+            <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-amber-800 mb-2">Continue Your Game?</h3>
+              <div className="text-sm text-amber-700 mb-4">
+                <p>Trader: <span className="font-medium">{savedGameInfo.username}</span></p>
+                <p>Day: <span className="font-medium">{savedGameInfo.days} / 31</span></p>
+                <p>Balance: <span className="font-medium">${savedGameInfo.cash.toLocaleString()}</span></p>
               </div>
-              
-              <button 
-                onClick={() => setActiveScreen('guest')}
-                className="w-full border-2 border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2"
-              >
-                <span>👤</span>
-                Continue as Guest
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  onClick={handleLoadGame}
+                  className="flex-1 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
+                >
+                  Continue Game
+                </button>
+                <button 
+                  onClick={handleClearSavedGame}
+                  className="py-2 px-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-            
-            <div className="mt-6 text-xs text-gray-500 text-center">
-              <p>Google Sign-In: Secure your username across all devices</p>
-              <p>Guest Mode: Quick access, username tied to this device only</p>
-            </div>
+          )}
+          
+          <div className={hasSavedGame ? "border-t border-gray-200 pt-6" : ""}>
+            {hasSavedGame && (
+              <h3 className="text-lg font-semibold text-tycoon-navy mb-4">Start a New Game</h3>
+            )}
+            <UsernameForm />
           </div>
           
           <button 
             onClick={() => setActiveScreen('welcome')}
-            className="mt-4 py-2 px-6 bg-gray-700 text-white rounded hover:bg-gray-800 transition-colors"
+            className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
           >
-            Back to Menu
+            Back
           </button>
-        </div>
-      )}
-
-      {activeScreen === 'guest' && (
-        <div className="flex flex-col items-center">
-          <div className="bg-white/90 rounded-lg p-8 max-w-md w-full mx-4">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Guest Mode</h2>
-            <p className="text-center text-gray-600 mb-6">Enter your trading name</p>
-            
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.target as HTMLFormElement);
-              const username = formData.get('username') as string;
-              if (username?.trim().length >= 3) {
-                handleAuthSuccess(username.trim());
-              }
-            }} className="space-y-4">
-              <input
-                name="username"
-                type="text"
-                placeholder="Enter your trading name"
-                maxLength={20}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                autoFocus
-                required
-                minLength={3}
-              />
-              
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveScreen('play')}
-                  className="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium"
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium"
-                >
-                  Start Trading
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
       )}
 

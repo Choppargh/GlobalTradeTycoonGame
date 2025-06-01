@@ -2,30 +2,22 @@ import { pgTable, text, serial, integer, real } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Enhanced user schema for hybrid authentication
+// User schema (unchanged from original)
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
-  googleId: text("google_id").unique(), // For Google OAuth users
-  email: text("email"), // From Google account
-  deviceId: text("device_id").unique(), // For guest users
-  authType: text("auth_type").notNull().default("guest"), // "google" or "guest"
-  createdAt: text("created_at").notNull().default(new Date().toISOString()),
+  password: text("password").notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
-  googleId: true,
-  email: true,
-  deviceId: true,
-  authType: true,
+  password: true,
 });
 
-// Enhanced scores schema linked to users
+// New schema for game scores
 export const scores = pgTable("scores", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
-  username: text("username").notNull(), // Keep for display purposes
+  username: text("username").notNull(),
   score: real("score").notNull(),
   days: integer("days").notNull(),
   endNetWorth: real("end_net_worth").notNull(),
@@ -33,7 +25,6 @@ export const scores = pgTable("scores", {
 });
 
 export const insertScoreSchema = createInsertSchema(scores).pick({
-  userId: true,
   username: true,
   score: true,
   days: true,
