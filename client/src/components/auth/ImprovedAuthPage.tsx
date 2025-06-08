@@ -127,24 +127,63 @@ export function ImprovedAuthPage() {
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => handleLogin('google')}
-              className="flex justify-center items-center w-20 h-12 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-lg"
+              style={{
+                backgroundColor: '#dc2626',
+                color: 'white',
+                width: '80px',
+                height: '48px',
+                borderRadius: '8px',
+                border: 'none',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#b91c1c'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
               title="Sign in with Google"
             >
-              <span className="font-bold text-lg">G</span>
+              G
             </button>
             <button
               onClick={() => handleLogin('facebook')}
-              className="flex justify-center items-center w-20 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+              style={{
+                backgroundColor: '#2563eb',
+                color: 'white',
+                width: '80px',
+                height: '48px',
+                borderRadius: '8px',
+                border: 'none',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
               title="Sign in with Facebook"
             >
-              <span className="font-bold text-lg">f</span>
+              f
             </button>
             <button
               onClick={() => handleLogin('twitter')}
-              className="flex justify-center items-center w-20 h-12 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors shadow-lg"
+              style={{
+                backgroundColor: '#000000',
+                color: 'white',
+                width: '80px',
+                height: '48px',
+                borderRadius: '8px',
+                border: 'none',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#374151'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#000000'}
               title="Sign in with X (Twitter)"
             >
-              <span className="font-bold text-lg">X</span>
+              X
             </button>
           </div>
 
@@ -228,24 +267,63 @@ export function ImprovedAuthPage() {
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => handleLogin('google')}
-              className="flex justify-center items-center w-20 h-12 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-lg"
+              style={{
+                backgroundColor: '#dc2626',
+                color: 'white',
+                width: '80px',
+                height: '48px',
+                borderRadius: '8px',
+                border: 'none',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#b91c1c'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
               title="Sign up with Google"
             >
-              <span className="font-bold text-lg">G</span>
+              G
             </button>
             <button
               onClick={() => handleLogin('facebook')}
-              className="flex justify-center items-center w-20 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+              style={{
+                backgroundColor: '#2563eb',
+                color: 'white',
+                width: '80px',
+                height: '48px',
+                borderRadius: '8px',
+                border: 'none',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
               title="Sign up with Facebook"
             >
-              <span className="font-bold text-lg">f</span>
+              f
             </button>
             <button
               onClick={() => handleLogin('twitter')}
-              className="flex justify-center items-center w-20 h-12 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors shadow-lg"
+              style={{
+                backgroundColor: '#000000',
+                color: 'white',
+                width: '80px',
+                height: '48px',
+                borderRadius: '8px',
+                border: 'none',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#374151'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#000000'}
               title="Sign up with X (Twitter)"
             >
-              <span className="font-bold text-lg">X</span>
+              X
             </button>
           </div>
 
