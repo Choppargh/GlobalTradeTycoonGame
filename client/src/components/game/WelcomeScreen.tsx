@@ -1,24 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { UsernameForm } from './UsernameForm';
-import { Leaderboard } from './Leaderboard';
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
-import { useGameStore } from '@/lib/stores/useGameStore';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { UserProfile } from '@/components/auth/UserProfile';
 import { Button } from '@/components/ui/button';
-// import { toast } from 'sonner';
 
 export function WelcomeScreen() {
-  const [activeScreen, setActiveScreen] = useState<'welcome' | 'play' | 'leaderboard' | 'rules'>('welcome');
-  const [hasSavedGame, setHasSavedGame] = useState(false);
-  const [savedGameInfo, setSavedGameInfo] = useState<{username: string, days: number, cash: number} | null>(null);
+  const [activeScreen, setActiveScreen] = useState<'welcome' | 'leaderboard' | 'rules'>('welcome');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   
-  const { loadGameState, clearSavedGameState } = useGameStore();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
   // Check for saved games on component mount
