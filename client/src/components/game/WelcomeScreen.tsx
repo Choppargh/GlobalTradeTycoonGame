@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { UserProfile } from '@/components/auth/UserProfile';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
 export function WelcomeScreen() {
   const [activeScreen, setActiveScreen] = useState<'welcome' | 'play' | 'leaderboard' | 'rules'>('welcome');
@@ -51,9 +51,9 @@ export function WelcomeScreen() {
   const handleLoadGame = () => {
     const success = loadGameState();
     if (success) {
-      toast.success('Game loaded successfully!');
+      console.log('Game loaded successfully!');
     } else {
-      toast.error('Failed to load saved game.');
+      console.error('Failed to load saved game.');
     }
   };
   
@@ -61,7 +61,7 @@ export function WelcomeScreen() {
     clearSavedGameState();
     setHasSavedGame(false);
     setSavedGameInfo(null);
-    toast.success('Saved game cleared.');
+    console.log('Saved game cleared.');
   };
 
   const handleShowLogin = () => {
@@ -84,6 +84,37 @@ export function WelcomeScreen() {
         zIndex: 1
       }}
     >
+      {/* Authentication Section */}
+      <div className="absolute top-4 right-4 z-20">
+        {isAuthenticated && user ? (
+          <UserProfile user={user} />
+        ) : (
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleShowLogin}
+              variant="outline"
+              size="sm"
+              className="bg-white/90 hover:bg-white"
+            >
+              Sign In
+            </Button>
+            <Button 
+              onClick={handleShowRegister}
+              size="sm"
+              className="bg-tycoon-navy hover:bg-tycoon-navy/90"
+            >
+              Register
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Authentication Modal */}
+      <AuthModal 
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        defaultMode={authMode}
+      />
 
 
       {activeScreen === 'welcome' && (
