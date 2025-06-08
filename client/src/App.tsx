@@ -29,7 +29,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Loading isLoading={isLoading} />
       {/* Custom install prompt is already included in HomePage */}
-      <Toaster position="top-right" />
+      {/* <Toaster position="top-right" /> */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
