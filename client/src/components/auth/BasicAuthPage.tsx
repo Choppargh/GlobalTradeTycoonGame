@@ -49,11 +49,11 @@ export function BasicAuthPage() {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      <div className="bg-white/95 rounded-lg p-8 max-w-md w-full shadow-lg">
+      <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-2xl border">
         <div className="text-center mb-6">
-          <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-32 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900">Global Trade Tycoon</h1>
-          <p className="text-gray-600">Sign in to compete on the global leaderboard</p>
+          <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-24 mx-auto mb-3" />
+          <h1 className="text-xl font-bold text-gray-900 mb-1">Global Trade Tycoon</h1>
+          <p className="text-sm text-gray-700 font-medium">Sign in to compete on the global leaderboard</p>
         </div>
 
         {/* Login Form */}

@@ -1,9 +1,9 @@
-import { BasicAuthPage } from '@/components/auth/BasicAuthPage';
+import { ImprovedAuthPage } from '@/components/auth/ImprovedAuthPage';
 
 export default function HomePage() {
   return (
     <div className="min-h-screen">
-      <BasicAuthPage />
+      <ImprovedAuthPage />
     </div>
   );
 }
