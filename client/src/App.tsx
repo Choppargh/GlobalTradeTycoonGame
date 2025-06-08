@@ -6,7 +6,7 @@ import HomePage from "./pages/HomePage";
 import NotFound from "./pages/not-found";
 import { Loading } from "./components/ui/loading";
 // Removed InstallPrompt import as we're using CustomInstallPrompt instead
-import { Toaster } from "./components/ui/sonner";
+// import { Toaster } from "./components/ui/sonner";
 // import { useRefreshRecovery } from "./hooks/useRefreshRecovery";
 import "@fontsource/inter";
 
