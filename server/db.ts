@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 import { users, scores, type User, type InsertUser, type Score, type InsertScore } from '@shared/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 
 // Database connection
 const sql = neon(process.env.DATABASE_URL!);
@@ -16,6 +16,17 @@ export class DbStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     const result = await db.select().from(users).where(eq(users.username, username));
+    return result[0];
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.email, email));
+    return result[0];
+  }
+
+  async getUserByProvider(provider: string, providerId: string): Promise<User | undefined> {
+    const result = await db.select().from(users)
+      .where(and(eq(users.provider, provider), eq(users.providerId, providerId)));
     return result[0];
   }
 

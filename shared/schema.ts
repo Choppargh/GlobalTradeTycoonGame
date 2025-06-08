@@ -2,16 +2,27 @@ import { pgTable, text, serial, integer, real } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// User schema (unchanged from original)
+// User schema with OAuth support
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  email: text("email"),
+  password: text("password"), // Optional for OAuth users
+  provider: text("provider").default("local"), // 'local', 'google', 'facebook', 'twitter'
+  providerId: text("provider_id"), // OAuth provider's user ID
+  displayName: text("display_name"),
+  avatar: text("avatar"),
+  createdAt: text("created_at").notNull().default(new Date().toISOString()),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
+  email: true,
   password: true,
+  provider: true,
+  providerId: true,
+  displayName: true,
+  avatar: true,
 });
 
 // New schema for game scores
