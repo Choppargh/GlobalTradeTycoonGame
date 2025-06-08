@@ -1,0 +1,264 @@
+import React from 'react';
+
+export function ImprovedAuthPage() {
+  const handleLogin = (provider: string) => {
+    if (provider === 'google' || provider === 'facebook' || provider === 'twitter') {
+      window.location.href = `/auth/${provider}`;
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const mode = (e.currentTarget.dataset.mode as string) || 'login';
+    
+    try {
+      const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
+      const body: any = {
+        email: formData.get('email'),
+        password: formData.get('password')
+      };
+      
+      if (mode === 'register') {
+        body.username = formData.get('username');
+      }
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Authentication failed');
+      }
+    } catch (error) {
+      alert('Network error occurred');
+    }
+  };
+
+  const toggleForm = (showRegister: boolean) => {
+    const loginForm = document.getElementById('login-section');
+    const registerForm = document.getElementById('register-section');
+    
+    if (showRegister) {
+      loginForm!.classList.add('hidden');
+      registerForm!.classList.remove('hidden');
+    } else {
+      registerForm!.classList.add('hidden');
+      loginForm!.classList.remove('hidden');
+    }
+  };
+
+  return (
+    <div 
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(99, 102, 241, 0.8)), url("/images/GTC_Background_Portrait.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm border border-gray-200">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-20 h-20 mx-auto mb-4 rounded-lg shadow-md" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Global Trade Tycoon</h1>
+          <p className="text-gray-600 text-sm">Join the global competition</p>
+        </div>
+
+        {/* Login Section */}
+        <div id="login-section" className="space-y-6">
+          <div className="text-center mb-4">
+            <h2 className="text-xl font-semibold text-gray-800">Welcome Back</h2>
+            <p className="text-gray-600 text-sm">Sign in to your account</p>
+          </div>
+
+          <form data-mode="login" onSubmit={handleFormSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="login-email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
+              <input
+                id="login-email"
+                name="email"
+                type="email"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                placeholder="your@email.com"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="login-password" className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <input
+                id="login-password"
+                name="password"
+                type="password"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                placeholder="Enter your password"
+              />
+            </div>
+            
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium transition-colors"
+            >
+              Sign In
+            </button>
+          </form>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-4 text-gray-500 font-medium">Or continue with</span>
+            </div>
+          </div>
+
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => handleLogin('google')}
+              className="flex justify-center items-center w-20 h-12 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-lg"
+              title="Sign in with Google"
+            >
+              <span className="font-bold text-lg">G</span>
+            </button>
+            <button
+              onClick={() => handleLogin('facebook')}
+              className="flex justify-center items-center w-20 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+              title="Sign in with Facebook"
+            >
+              <span className="font-bold text-lg">f</span>
+            </button>
+            <button
+              onClick={() => handleLogin('twitter')}
+              className="flex justify-center items-center w-20 h-12 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors shadow-lg"
+              title="Sign in with X (Twitter)"
+            >
+              <span className="font-bold text-lg">X</span>
+            </button>
+          </div>
+
+          <div className="text-center mt-6">
+            <button
+              onClick={() => toggleForm(true)}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              Don't have an account? <span className="underline">Sign up</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Register Section */}
+        <div id="register-section" className="space-y-6 hidden">
+          <div className="text-center mb-4">
+            <h2 className="text-xl font-semibold text-gray-800">Create Account</h2>
+            <p className="text-gray-600 text-sm">Join the competition</p>
+          </div>
+
+          <form data-mode="register" onSubmit={handleFormSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="register-username" className="block text-sm font-medium text-gray-700 mb-2">
+                Username
+              </label>
+              <input
+                id="register-username"
+                name="username"
+                type="text"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
+                placeholder="Choose a username"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="register-email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
+              <input
+                id="register-email"
+                name="email"
+                type="email"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
+                placeholder="your@email.com"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="register-password" className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <input
+                id="register-password"
+                name="password"
+                type="password"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900"
+                placeholder="Create a password"
+              />
+            </div>
+            
+            <button
+              type="submit"
+              className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 font-medium transition-colors"
+            >
+              Create Account
+            </button>
+          </form>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-4 text-gray-500 font-medium">Or continue with</span>
+            </div>
+          </div>
+
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => handleLogin('google')}
+              className="flex justify-center items-center w-20 h-12 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-lg"
+              title="Sign up with Google"
+            >
+              <span className="font-bold text-lg">G</span>
+            </button>
+            <button
+              onClick={() => handleLogin('facebook')}
+              className="flex justify-center items-center w-20 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+              title="Sign up with Facebook"
+            >
+              <span className="font-bold text-lg">f</span>
+            </button>
+            <button
+              onClick={() => handleLogin('twitter')}
+              className="flex justify-center items-center w-20 h-12 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors shadow-lg"
+              title="Sign up with X (Twitter)"
+            >
+              <span className="font-bold text-lg">X</span>
+            </button>
+          </div>
+
+          <div className="text-center mt-6">
+            <button
+              onClick={() => toggleForm(false)}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              Already have an account? <span className="underline">Sign in</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
