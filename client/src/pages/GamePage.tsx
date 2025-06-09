@@ -56,7 +56,8 @@ class GamePage extends React.Component {
       isTravelRiskDialogOpen,
       travelRiskMessage,
       clearTravelRiskDialog,
-      gamePhase
+      gamePhase,
+      username
     } = gameStore;
 
     // Show loading while checking authentication

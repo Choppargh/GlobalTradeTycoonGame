@@ -104,10 +104,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     set({
       currentLocation: startLocation,
-      cash: 2000, // Start with $2k cash from initial loan
+      cash: 2500, // Start with $2.5k cash
       bankBalance: 0,
-      loanAmount: 2000,
-      daysRemaining: 7,
+      loanAmount: 0,
+      daysRemaining: 31,
       inventory: [],
       marketListings,
       priceChanges: initialPriceChanges,

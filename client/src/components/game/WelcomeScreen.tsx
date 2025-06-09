@@ -168,7 +168,17 @@ export class WelcomeScreen extends React.Component<{}, WelcomeScreenState> {
             {/* Navigation Buttons */}
             <div className="grid grid-cols-2 gap-4 w-full max-w-md">
               <button 
-                onClick={() => this.setState({ activeScreen: 'play' })}
+                onClick={() => {
+                  if (isAuthenticated && user && user.username) {
+                    // If user is authenticated, start game directly with their username
+                    const { setUsername, startGame } = useGameStore.getState();
+                    setUsername(user.username);
+                    startGame();
+                    window.location.href = '/game';
+                  } else {
+                    console.error('Cannot start game: user not authenticated or missing username');
+                  }
+                }}
                 className="transition-transform hover:scale-105 focus:outline-none"
                 disabled={!isAuthenticated}
               >
@@ -198,7 +208,7 @@ export class WelcomeScreen extends React.Component<{}, WelcomeScreenState> {
 
         {activeScreen === 'play' && (
           <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
-            <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Enter Your Trading Name</h2>
+            <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Game Options</h2>
             
             {/* Show saved game option if available */}
             {hasSavedGame && savedGameInfo && (
@@ -230,6 +240,7 @@ export class WelcomeScreen extends React.Component<{}, WelcomeScreenState> {
               {hasSavedGame && (
                 <h3 className="text-lg font-semibold text-tycoon-navy mb-4">Start a New Game</h3>
               )}
+              <p className="text-center text-gray-600 mb-4">Playing as: <span className="font-medium text-tycoon-navy">{user?.username}</span></p>
               <button 
                 onClick={this.handleStartNewGame}
                 className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
