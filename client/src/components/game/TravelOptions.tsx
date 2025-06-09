@@ -111,7 +111,7 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
               // Show "Open Travel Map" button when not on the last day
               <Button
                 onClick={() => this.setState({ showTravelDialog: true })}
-                className="w-full justify-between bg-orange-500 hover:bg-orange-600 text-white"
+                className="w-full justify-between bg-green-600 hover:bg-green-700 text-white"
               >
                 <span className="flex items-center gap-2">
                   <PlaneIcon className="h-4 w-4" />
