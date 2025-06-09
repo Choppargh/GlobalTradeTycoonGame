@@ -24,8 +24,6 @@ import { CustomEndGameDialog } from './CustomEndGameDialog';
 interface TravelOptionsState {
   showTravelDialog: boolean;
   selectedDestination: Location | null;
-  showChallengeResult: boolean;
-  challengeMessage: string;
   isEndGameDialogOpen: boolean;
 }
 
@@ -35,15 +33,9 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
     this.state = {
       showTravelDialog: false,
       selectedDestination: null,
-      showChallengeResult: false,
-      challengeMessage: "",
       isEndGameDialogOpen: false
     };
   }
-
-  handleTravelSelect = (location: Location) => {
-    this.setState({ selectedDestination: location });
-  };
 
   handleTravelConfirm = () => {
     const { selectedDestination } = this.state;
@@ -59,10 +51,6 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
         });
       }
     }
-  };
-
-  formatCurrency = (amount: number): string => {
-    return `$${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   handleEndGameClick = () => {
@@ -82,42 +70,19 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
     const gameStore = useGameStore.getState();
     const { 
       currentLocation, 
-      daysRemaining, 
-      loanAmount, 
-      inventory, 
-      cash
+      daysRemaining
     } = gameStore;
 
-    // Ensure currentLocation is treated as Location and not null
     if (!currentLocation) return null;
-
-    // Filter out current location
-    const availableLocations = Object.values(Location).filter(
-      location => location !== currentLocation
-    );
 
     return (
       <>
         <Card className="h-full shadow-sm rounded-lg border border-black">
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Departures</CardTitle>
-                <CardDescription>
-                  Travel to new markets (costs 1 day)
-                </CardDescription>
-              </div>
-              {daysRemaining > 1 && (
-                <Button
-                  onClick={this.handleEndGameClick}
-                  variant="outline"
-                  size="sm"
-                  className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
-                >
-                  End Game
-                </Button>
-              )}
-            </div>
+            <CardTitle>Departures</CardTitle>
+            <CardDescription>
+              Travel to new markets (costs 1 day)
+            </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-2">
             {daysRemaining <= 1 ? (
@@ -138,76 +103,56 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
                 </p>
               </>
             ) : (
-              // Show travel options when not on the last day
-              <>
-                {availableLocations.map((location) => (
-                  <Button
-                    key={location}
-                    onClick={() => this.setState({ 
-                      showTravelDialog: true, 
-                      selectedDestination: location 
-                    })}
-                    variant="outline"
-                    className="w-full justify-between hover:bg-purple-50 hover:border-purple-300"
-                  >
-                    <span>{location}</span>
-                    <ArrowRightIcon className="h-4 w-4" />
-                  </Button>
-                ))}
-                <div className="mt-4">
-                  <LocationMap currentLocation={currentLocation} />
-                </div>
-              </>
+              // Show "Open Travel Map" button when not on the last day
+              <Button
+                onClick={() => this.setState({ showTravelDialog: true })}
+                className="w-full justify-between bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                <span className="flex items-center gap-2">
+                  <PlaneIcon className="h-4 w-4" />
+                  Open Travel Map
+                </span>
+                <ArrowRightIcon className="h-4 w-4" />
+              </Button>
             )}
           </CardContent>
         </Card>
 
-        {/* Travel Confirmation Dialog */}
-        <Dialog open={showTravelDialog} onOpenChange={(open) => this.setState({ showTravelDialog: open })}>
-          <DialogContent className="sm:max-w-md">
+        {/* Travel Map Dialog */}
+        <Dialog open={showTravelDialog} onOpenChange={(open) => this.setState({ showTravelDialog: open, selectedDestination: null })}>
+          <DialogContent className="sm:max-w-lg">
             <DialogHeader>
-              <DialogTitle>Confirm Travel</DialogTitle>
+              <DialogTitle>Select Destination</DialogTitle>
               <DialogDescription>
-                Travel to {selectedDestination}? This will advance the game by 1 day.
+                Choose where to travel next. Each journey costs 1 day and increases your loan by 5%. Travel involves risks which could result in loss of cash or inventory.
               </DialogDescription>
             </DialogHeader>
             
             <div className="space-y-4">
-              <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium">Current Location:</span>
-                  <span className="text-sm">{currentLocation}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium">Destination:</span>
-                  <span className="text-sm">{selectedDestination}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium">Days Remaining:</span>
-                  <span className="text-sm">{daysRemaining - 1}</span>
-                </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <LocationMap 
+                  currentLocation={currentLocation} 
+                  onLocationSelect={(location) => this.setState({ selectedDestination: location })}
+                  selectedLocation={selectedDestination}
+                />
               </div>
-
-              {selectedDestination && (
-                <div className="mt-4 p-3 bg-muted rounded-md">
-                  <p className="font-medium">Travel to {selectedDestination}</p>
-                  <p className="text-sm text-muted-foreground">
-                    New loan amount after travel: {this.formatCurrency(Math.round(loanAmount * 1.05 * 100) / 100)}
-                  </p>
-                </div>
-              )}
+              
+              <div className="text-center text-sm text-gray-600">
+                Current: {currentLocation} | Click a location to travel
+              </div>
             </div>
             
-            <DialogFooter>
+            <DialogFooter className="flex gap-2">
               <Button
-                onClick={() => this.setState({ showTravelDialog: false })}
+                onClick={() => this.setState({ showTravelDialog: false, selectedDestination: null })}
                 variant="outline"
+                className="flex-1"
               >
                 Cancel
               </Button>
               <Button
                 onClick={this.handleTravelConfirm}
-                className="bg-purple-600 hover:bg-purple-700 text-white"
+                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
                 disabled={!selectedDestination || selectedDestination === currentLocation}
               >
                 Confirm Travel
