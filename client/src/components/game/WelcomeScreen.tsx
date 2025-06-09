@@ -58,11 +58,13 @@ export function WelcomeScreen() {
   };
   
   const handleStartNewGame = () => {
-    if (user) {
+    if (user && user.username) {
       setUsername(user.username);
       startGame();
       // Navigate to game page
       window.location.href = '/game';
+    } else {
+      console.error('Cannot start game: user not authenticated or missing username');
     }
   };
   
