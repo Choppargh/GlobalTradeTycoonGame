@@ -1,7 +1,14 @@
 import React from 'react';
 import { ImprovedAuthPage } from '@/components/auth/ImprovedAuthPage';
+import { useNavigate } from 'react-router-dom';
 
-class HomePage extends React.Component {
+// Wrapper function component to provide navigation to class component
+function HomePageWrapper() {
+  const navigate = useNavigate();
+  return <HomePage navigate={navigate} />;
+}
+
+class HomePage extends React.Component<{ navigate?: (path: string) => void }> {
   state = {
     isLoading: true,
     isAuthenticated: false
@@ -42,7 +49,7 @@ class HomePage extends React.Component {
       const WelcomeScreen = React.lazy(() => import('@/components/game/WelcomeScreen').then(module => ({ default: module.WelcomeScreen })));
       return (
         <React.Suspense fallback={<div>Loading dashboard...</div>}>
-          <WelcomeScreen />
+          <WelcomeScreen navigate={this.props.navigate} />
         </React.Suspense>
       );
     }
@@ -55,4 +62,4 @@ class HomePage extends React.Component {
   }
 }
 
-export default HomePage;
+export default HomePageWrapper;
