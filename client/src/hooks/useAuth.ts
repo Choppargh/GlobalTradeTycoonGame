@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 export interface User {
   id: number;
@@ -16,50 +16,41 @@ export interface AuthState {
 }
 
 export function useAuth() {
-  const [authState, setAuthState] = useState<AuthState>({
-    user: null,
-    isAuthenticated: false,
-    isLoading: true,
-    error: null
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const checkAuthStatus = useCallback(async () => {
-    try {
-      setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-      
-      const response = await fetch('/auth/status');
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/auth/status');
+        const data = await response.json();
+        
+        setUser(data.user || null);
+        setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
+        setError(null);
+      } catch (err) {
+        console.error('Auth check failed:', err);
+        setUser(null);
+        setIsAuthenticated(false);
+        setError(null);
+      } finally {
+        setIsLoading(false);
       }
-      
-      const data = await response.json();
-      
-      setAuthState({
-        user: data.user || null,
-        isAuthenticated: Boolean(data.isAuthenticated && data.user),
-        isLoading: false,
-        error: null
-      });
-    } catch (error) {
-      console.error('Auth status check failed:', error);
-      setAuthState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null // Don't show error for auth status check failures
-      });
-    }
+    };
+
+    checkAuth();
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     try {
-      setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+      setIsLoading(true);
+      setError(null);
       
       const response = await fetch('/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
@@ -69,34 +60,26 @@ export function useAuth() {
       }
 
       const data = await response.json();
-      setAuthState({
-        user: data.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null
-      });
-
+      setUser(data.user);
+      setIsAuthenticated(true);
       return data;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed';
-      setAuthState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: errorMessage
-      }));
-      throw error;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
+  };
 
-  const register = useCallback(async (username: string, email: string, password: string) => {
+  const register = async (username: string, email: string, password: string) => {
     try {
-      setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+      setIsLoading(true);
+      setError(null);
       
       const response = await fetch('/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password }),
       });
 
@@ -106,57 +89,58 @@ export function useAuth() {
       }
 
       const data = await response.json();
-      setAuthState({
-        user: data.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null
-      });
-
+      setUser(data.user);
+      setIsAuthenticated(true);
       return data;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
-      setAuthState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: errorMessage
-      }));
-      throw error;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Registration failed';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
+  };
 
-  const logout = useCallback(async () => {
+  const logout = async () => {
     try {
       await fetch('/auth/logout', { method: 'POST' });
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch (err) {
+      console.error('Logout error:', err);
     } finally {
-      setAuthState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null
-      });
+      setUser(null);
+      setIsAuthenticated(false);
+      setError(null);
     }
-  }, []);
+  };
 
-  const clearError = useCallback(() => {
-    setAuthState(prev => ({ ...prev, error: null }));
-  }, []);
+  const clearError = () => {
+    setError(null);
+  };
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, [checkAuthStatus]);
+  const refreshAuth = async () => {
+    try {
+      const response = await fetch('/auth/status');
+      const data = await response.json();
+      
+      setUser(data.user || null);
+      setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
+      setError(null);
+    } catch (err) {
+      console.error('Auth refresh failed:', err);
+      setUser(null);
+      setIsAuthenticated(false);
+    }
+  };
 
   return {
-    user: authState.user,
-    isAuthenticated: authState.isAuthenticated,
-    isLoading: authState.isLoading,
-    error: authState.error,
+    user,
+    isAuthenticated,
+    isLoading,
+    error,
     login,
     register,
     logout,
     clearError,
-    refreshAuth: checkAuthStatus
+    refreshAuth
   };
 }
