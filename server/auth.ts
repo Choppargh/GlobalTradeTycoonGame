@@ -53,10 +53,14 @@ passport.use(new LocalStrategy(
 
 // Google OAuth Strategy
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? 'https://globaltradingtycoon.app' 
+    : 'http://localhost:5000';
+    
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback"
+    callbackURL: `${baseURL}/auth/google/callback`
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -98,10 +102,14 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 
 // Facebook OAuth Strategy
 if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? 'https://globaltradingtycoon.app' 
+    : 'http://localhost:5000';
+    
   passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: "/auth/facebook/callback",
+    callbackURL: `${baseURL}/auth/facebook/callback`,
     profileFields: ['id', 'emails', 'name', 'picture']
   },
   async (accessToken, refreshToken, profile, done) => {
@@ -147,10 +155,14 @@ const twitterConsumerSecret = process.env.TWITTER_CONSUMER_SECRET || 'SPU5151LaU
 
 if (twitterConsumerKey && twitterConsumerSecret) {
   console.log('Registering Twitter OAuth strategy...');
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? 'https://globaltradingtycoon.app' 
+    : 'http://localhost:5000';
+    
   passport.use(new TwitterStrategy({
     consumerKey: twitterConsumerKey,
     consumerSecret: twitterConsumerSecret,
-    callbackURL: "/auth/twitter/callback",
+    callbackURL: `${baseURL}/auth/twitter/callback`,
     includeEmail: true
   },
   async (token, tokenSecret, profile, done) => {
