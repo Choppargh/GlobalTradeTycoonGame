@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { useAuth, type User } from '@/hooks/useAuth';
+import { type User } from '@/hooks/useAuth';
 import { LogOut, User as UserIcon, Trophy } from 'lucide-react';
 
 interface UserProfileProps {

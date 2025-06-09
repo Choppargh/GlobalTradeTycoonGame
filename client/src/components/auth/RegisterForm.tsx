@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { useAuth } from '@/hooks/useAuth';
+
 import { FaGoogle, FaFacebook, FaTwitter } from 'react-icons/fa';
 
 interface RegisterFormProps {
@@ -13,7 +13,8 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ onToggleMode, onSuccess }: RegisterFormProps) {
-  const { register, isLoading, error } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -25,15 +26,35 @@ export function RegisterForm({ onToggleMode, onSuccess }: RegisterFormProps) {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+      setError('Passwords do not match');
       return;
     }
 
+    setIsLoading(true);
+    setError(null);
+
     try {
-      await register(formData.username, formData.email, formData.password);
-      onSuccess?.();
-    } catch (error) {
-      // Error is handled by the useAuth hook
+      const response = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+
+      // Redirect to home page after successful registration
+      window.location.href = '/';
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 
