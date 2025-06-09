@@ -10,13 +10,13 @@ interface UserProfileProps {
 }
 
 export function UserProfile({ user }: UserProfileProps) {
-  const { logout } = useAuth();
-
   const handleLogout = async () => {
     try {
-      await logout();
+      await fetch('/auth/logout', { method: 'POST' });
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout failed:', error);
+      window.location.href = '/';
     }
   };
 
