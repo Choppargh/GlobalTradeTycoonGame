@@ -119,9 +119,25 @@ export function registerAuthRoutes(app: Express) {
   );
 
   // Twitter OAuth routes
-  app.get('/auth/twitter',
-    passport.authenticate('twitter')
-  );
+  app.get('/auth/twitter', (req: Request, res: Response, next) => {
+    passport.authenticate('twitter', (err: any, user: any, info: any) => {
+      if (err) {
+        console.error('Twitter OAuth error:', err);
+        return res.status(500).json({ message: 'Twitter authentication failed', error: err.message });
+      }
+      if (!user) {
+        console.error('Twitter OAuth failed:', info);
+        return res.status(401).json({ message: 'Twitter authentication failed', info });
+      }
+      // This shouldn't happen for the initial request, but handle it
+      req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          return res.status(500).json({ message: 'Login failed after Twitter auth' });
+        }
+        res.redirect('/game');
+      });
+    })(req, res, next);
+  });
 
   app.get('/auth/twitter/callback',
     passport.authenticate('twitter', { failureRedirect: '/?error=twitter_auth_failed' }),

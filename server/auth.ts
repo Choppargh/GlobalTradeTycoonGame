@@ -149,9 +149,9 @@ if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
   }));
 }
 
-// Twitter OAuth Strategy - Set credentials directly
-const twitterConsumerKey = process.env.TWITTER_CONSUMER_KEY || 'SGVOX05hODNtcWgyMV9rd1JweW86MTpjaQ';
-const twitterConsumerSecret = process.env.TWITTER_CONSUMER_SECRET || 'SPU5151LaUzZbbGW95iAFyyHIZbt_VGzGW1TQyurxxlhZTCapT';
+// Twitter OAuth Strategy - Use hardcoded credentials
+const twitterConsumerKey = 'SGVOX05hODNtcWgyMV9rd1JweW86MTpjaQ';
+const twitterConsumerSecret = 'SPU5151LaUzZbbGW95iAFyyHIZbt_VGzGW1TQyurxxlhZTCapT';
 
 if (twitterConsumerKey && twitterConsumerSecret) {
   console.log('Registering Twitter OAuth strategy...');
