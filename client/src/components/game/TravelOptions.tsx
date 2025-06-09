@@ -48,12 +48,16 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
   handleTravelConfirm = () => {
     const { selectedDestination } = this.state;
     if (selectedDestination) {
-      const { travel } = useGameStore.getState();
-      travel(selectedDestination);
-      this.setState({ 
-        showTravelDialog: false, 
-        selectedDestination: null 
-      });
+      const gameStore = useGameStore.getState();
+      const { travel, currentLocation } = gameStore;
+      
+      if (selectedDestination !== currentLocation) {
+        travel(selectedDestination);
+        this.setState({ 
+          showTravelDialog: false, 
+          selectedDestination: null 
+        });
+      }
     }
   };
 
@@ -62,6 +66,7 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
   };
 
   handleEndGameClick = () => {
+    console.log("Opening end game dialog");
     this.setState({ isEndGameDialogOpen: true });
   };
 
@@ -86,87 +91,73 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
     // Ensure currentLocation is treated as Location and not null
     if (!currentLocation) return null;
 
-    const availableLocations = Object.values(Location).filter(loc => loc !== currentLocation);
-    const isInventoryFull = inventory.length >= 10;
-    const canAffordTravel = cash >= 100; // Minimum cost estimate for travel
+    // Filter out current location
+    const availableLocations = Object.values(Location).filter(
+      location => location !== currentLocation
+    );
 
     return (
       <>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <PlaneIcon className="h-5 w-5" />
-                Departures
-              </span>
-              <Button
-                onClick={this.handleEndGameClick}
-                variant="outline"
-                size="sm"
-                className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
-              >
-                End Game
-              </Button>
-            </CardTitle>
-            <CardDescription>
-              Select your next trading location. Each trip takes 1 day.
-            </CardDescription>
+        <Card className="h-full shadow-sm rounded-lg border border-black">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Departures</CardTitle>
+                <CardDescription>
+                  Travel to new markets (costs 1 day)
+                </CardDescription>
+              </div>
+              {daysRemaining > 1 && (
+                <Button
+                  onClick={this.handleEndGameClick}
+                  variant="outline"
+                  size="sm"
+                  className="text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400"
+                >
+                  End Game
+                </Button>
+              )}
+            </div>
           </CardHeader>
-          <CardContent>
-            {daysRemaining <= 0 ? (
-              <div className="text-center py-8">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Your Trading Journey is Complete!</h3>
-                <p className="text-gray-600 mb-4">Time to see how you performed on the global market!</p>
+          <CardContent className="grid gap-2">
+            {daysRemaining <= 1 ? (
+              // Show "I'm Finished" button on the last day
+              <>
                 <Button 
                   onClick={this.handleEndGameClick}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                  size="lg"
+                  variant="default" 
+                  className="w-full justify-between bg-green-600 hover:bg-green-700 text-white"
                 >
-                  Submit Score
+                  <span className="flex items-center">
+                    I'm Finished
+                  </span>
+                  <ArrowRightIcon className="h-4 w-4" />
                 </Button>
-              </div>
+                <p className="text-sm text-green-600 mt-2">
+                  Click to end the game and submit your score!
+                </p>
+              </>
             ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-3">
-                  {availableLocations.map((location) => (
-                    <Card 
-                      key={location} 
-                      className="cursor-pointer border-2 transition-all hover:border-purple-300 hover:shadow-md"
-                      onClick={() => this.setState({ showTravelDialog: true, selectedDestination: location })}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-semibold text-lg">{location}</h3>
-                            <p className="text-sm text-muted-foreground">New market opportunities await</p>
-                          </div>
-                          <ArrowRightIcon className="h-5 w-5 text-purple-600" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
-                {!canAffordTravel && (
-                  <div className="p-3 bg-orange-50 border border-orange-200 rounded-md">
-                    <p className="text-sm text-orange-800">
-                      💰 You may need more cash for travel expenses and potential risks.
-                    </p>
-                  </div>
-                )}
-
-                {isInventoryFull && (
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-                    <p className="text-sm text-blue-800">
-                      📦 Your inventory is full. Consider selling items to make room for new opportunities.
-                    </p>
-                  </div>
-                )}
-
-                <div className="text-center">
+              // Show travel options when not on the last day
+              <>
+                {availableLocations.map((location) => (
+                  <Button
+                    key={location}
+                    onClick={() => this.setState({ 
+                      showTravelDialog: true, 
+                      selectedDestination: location 
+                    })}
+                    variant="outline"
+                    className="w-full justify-between hover:bg-purple-50 hover:border-purple-300"
+                  >
+                    <span>{location}</span>
+                    <ArrowRightIcon className="h-4 w-4" />
+                  </Button>
+                ))}
+                <div className="mt-4">
                   <LocationMap currentLocation={currentLocation} />
                 </div>
-              </div>
+              </>
             )}
           </CardContent>
         </Card>
