@@ -11,7 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
   const [activeTab, setActiveTab] = useState("buy");
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   
   const { 
     currentLocation, 
@@ -21,44 +20,6 @@ export default function GamePage() {
     travelRiskMessage,
     clearTravelRiskDialog,
   } = useGameStore();
-
-  // Check authentication status
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/auth/status');
-        const data = await response.json();
-        setIsAuthenticated(data.isAuthenticated);
-        
-        if (!data.isAuthenticated) {
-          window.location.replace('/');
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        setIsAuthenticated(false);
-        window.location.replace('/');
-      }
-    };
-    
-    checkAuth();
-  }, []);
-
-  // Show loading while checking authentication
-  if (isAuthenticated === null) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-700">Checking authentication...</h2>
-        </div>
-      </div>
-    );
-  }
-
-  // Redirect to login if not authenticated
-  if (isAuthenticated === false) {
-    return null; // Component will unmount as redirect happens
-  }
   
   // Basic game state loading
   if (!currentLocation) {
