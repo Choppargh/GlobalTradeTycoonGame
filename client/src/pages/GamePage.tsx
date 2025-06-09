@@ -17,6 +17,8 @@ class GamePage extends React.Component {
     isLoading: true
   };
 
+  unsubscribe: (() => void) | null = null;
+
   async componentDidMount() {
     try {
       const response = await fetch('/auth/status');
@@ -31,12 +33,23 @@ class GamePage extends React.Component {
         const { loadGameState } = useGameStore.getState();
         loadGameState();
       }
+      
+      // Subscribe to game store changes to trigger re-renders
+      this.unsubscribe = useGameStore.subscribe(() => {
+        this.forceUpdate();
+      });
     } catch (err) {
       console.error('Auth check failed:', err);
       this.setState({
         isAuthenticated: false,
         isLoading: false
       });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
     }
   }
 
