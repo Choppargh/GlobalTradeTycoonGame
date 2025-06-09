@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '@/lib/stores/useGameStore';
-import { useAuth } from '@/hooks/useAuth';
 import { GameHeader } from '@/components/game/GameHeader';
 import { BuyTab } from '@/components/game/BuyTab';
 import { SellTab } from '@/components/game/SellTab';
@@ -13,7 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
   const [activeTab, setActiveTab] = useState("buy");
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   const { 
     currentLocation, 
@@ -22,25 +22,33 @@ export default function GamePage() {
     isTravelRiskDialogOpen,
     travelRiskMessage,
     clearTravelRiskDialog,
-    startGame,
     loadGameState,
     username,
-    gamePhase,
-    setUsername
+    gamePhase
   } = useGameStore();
 
-  // Initialize game state when component mounts and user is authenticated
+  // Check authentication on component mount
   useEffect(() => {
-    if (isAuthenticated && user && !isLoading) {
-      // Set the username from authenticated user
-      if (!username || username !== user.username) {
-        setUsername(user.username);
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/auth/status');
+        const data = await response.json();
+        setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
+        
+        // Try to load saved game if authenticated
+        if (data.isAuthenticated && data.user) {
+          loadGameState();
+        }
+      } catch (err) {
+        console.error('Auth check failed:', err);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
       }
-      
-      // Only try to load saved game, don't automatically start new game
-      loadGameState();
-    }
-  }, [isAuthenticated, user, isLoading, username, setUsername, loadGameState]);
+    };
+    
+    checkAuth();
+  }, [loadGameState]);
 
   // Show loading while checking authentication
   if (isLoading) {
