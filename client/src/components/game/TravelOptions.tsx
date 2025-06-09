@@ -132,8 +132,8 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <LocationMap 
                   currentLocation={currentLocation} 
-                  onLocationSelect={(location) => this.setState({ selectedDestination: location })}
-                  selectedLocation={selectedDestination}
+                  onSelect={(location) => this.setState({ selectedDestination: location })}
+                  interactive={true}
                 />
               </div>
               
