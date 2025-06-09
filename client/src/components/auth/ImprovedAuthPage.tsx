@@ -131,7 +131,7 @@ export function ImprovedAuthPage() {
               style={{
                 backgroundColor: '#dc2626',
                 color: 'white',
-                width: '80px',
+                width: '100px',
                 height: '48px',
                 borderRadius: '8px',
                 border: 'none',
@@ -144,34 +144,14 @@ export function ImprovedAuthPage() {
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
               title="Sign in with Google"
             >
-              G
-            </button>
-            <button
-              onClick={() => handleLogin('facebook')}
-              style={{
-                backgroundColor: '#2563eb',
-                color: 'white',
-                width: '80px',
-                height: '48px',
-                borderRadius: '8px',
-                border: 'none',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-              title="Sign in with Facebook"
-            >
-              f
+              Google
             </button>
             <button
               onClick={() => handleLogin('twitter')}
               style={{
                 backgroundColor: '#000000',
                 color: 'white',
-                width: '80px',
+                width: '100px',
                 height: '48px',
                 borderRadius: '8px',
                 border: 'none',
@@ -184,7 +164,7 @@ export function ImprovedAuthPage() {
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#000000'}
               title="Sign in with X (Twitter)"
             >
-              X
+              X / Twitter
             </button>
           </div>
 
@@ -271,7 +251,7 @@ export function ImprovedAuthPage() {
               style={{
                 backgroundColor: '#dc2626',
                 color: 'white',
-                width: '80px',
+                width: '100px',
                 height: '48px',
                 borderRadius: '8px',
                 border: 'none',
@@ -284,34 +264,14 @@ export function ImprovedAuthPage() {
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
               title="Sign up with Google"
             >
-              G
-            </button>
-            <button
-              onClick={() => handleLogin('facebook')}
-              style={{
-                backgroundColor: '#2563eb',
-                color: 'white',
-                width: '80px',
-                height: '48px',
-                borderRadius: '8px',
-                border: 'none',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-              title="Sign up with Facebook"
-            >
-              f
+              Google
             </button>
             <button
               onClick={() => handleLogin('twitter')}
               style={{
                 backgroundColor: '#000000',
                 color: 'white',
-                width: '80px',
+                width: '100px',
                 height: '48px',
                 borderRadius: '8px',
                 border: 'none',
@@ -324,7 +284,7 @@ export function ImprovedAuthPage() {
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#000000'}
               title="Sign up with X (Twitter)"
             >
-              X
+              X / Twitter
             </button>
           </div>
 
