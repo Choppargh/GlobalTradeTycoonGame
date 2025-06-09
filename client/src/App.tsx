@@ -12,19 +12,7 @@ import { Loading } from "./components/ui/loading";
 import "@fontsource/inter";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Temporarily disable refresh recovery to fix infinite loop
-  // useRefreshRecovery();
-
-  useEffect(() => {
-    // Simulate loading assets/data
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000); // Show loading screen for 2 seconds
-    
-    return () => clearTimeout(timer);
-  }, []);
+  const [isLoading, setIsLoading] = useState(false); // Disable loading screen to prevent redirect loops
 
   return (
     <QueryClientProvider client={queryClient}>
