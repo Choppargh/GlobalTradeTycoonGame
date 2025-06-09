@@ -140,7 +140,14 @@ export function GameOver() {
             </div>
           )}
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button 
+            onClick={() => window.location.href = '/'} 
+            variant="outline" 
+            className="w-full max-w-xs"
+          >
+            Return to Dashboard
+          </Button>
           <Button onClick={restartGame} className="w-full max-w-xs">
             Play Again
           </Button>
