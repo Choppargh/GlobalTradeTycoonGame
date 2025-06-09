@@ -1,9 +1,31 @@
+import React, { useState, useEffect } from 'react';
 import { ImprovedAuthPage } from '@/components/auth/ImprovedAuthPage';
 import { WelcomeScreen } from '@/components/game/WelcomeScreen';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function HomePage() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/auth/status');
+        const data = await response.json();
+        
+        setUser(data.user || null);
+        setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
+      } catch (err) {
+        console.error('Auth check failed:', err);
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   // Show loading while checking authentication
   if (isLoading) {

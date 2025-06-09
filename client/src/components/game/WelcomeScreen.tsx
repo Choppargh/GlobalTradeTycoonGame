@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
-import { useAuth } from '@/hooks/useAuth';
+import { User } from '@/hooks/useAuth';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { UserProfile } from '@/components/auth/UserProfile';
@@ -16,7 +16,23 @@ export function WelcomeScreen() {
   const [hasSavedGame, setHasSavedGame] = useState(false);
   const [savedGameInfo, setSavedGameInfo] = useState<any>(null);
   
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Get user data on component mount
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await fetch('/auth/status');
+        const data = await response.json();
+        setUser(data.user || null);
+        setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
+      } catch (err) {
+        console.error('Failed to get user data:', err);
+      }
+    };
+    getUserData();
+  }, []);
   const { startGame, loadGameState, clearSavedGameState, setUsername } = useGameStore();
 
   // Check for saved games on component mount
