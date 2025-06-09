@@ -40,8 +40,13 @@ export function LocationMap({ currentLocation, onSelect, interactive = false }: 
     <Card className="overflow-hidden">
       <CardContent className="p-0 relative">
         <div 
-          className="relative w-full h-[250px] bg-cover bg-center"
-          style={{ backgroundImage: 'url(/images/world-map.png)' }}
+          className="relative w-full h-[250px] bg-cover bg-center bg-gray-100"
+          style={{ 
+            backgroundImage: 'url(/images/world-map.png)',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center'
+          }}
         >
           {/* Location points */}
           {locationPoints.map((point) => (
