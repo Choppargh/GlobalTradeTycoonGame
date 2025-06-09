@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
@@ -9,273 +9,348 @@ import { UserProfile } from '@/components/auth/UserProfile';
 import { Button } from '@/components/ui/button';
 import { Leaderboard } from './Leaderboard';
 
-export function WelcomeScreen() {
-  const [activeScreen, setActiveScreen] = useState<'welcome' | 'leaderboard' | 'rules' | 'play'>('welcome');
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-  const [hasSavedGame, setHasSavedGame] = useState(false);
-  const [savedGameInfo, setSavedGameInfo] = useState<any>(null);
-  
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+interface WelcomeScreenState {
+  activeScreen: 'welcome' | 'leaderboard' | 'rules' | 'play';
+  showAuthModal: boolean;
+  authMode: 'login' | 'register';
+  hasSavedGame: boolean;
+  savedGameInfo: any;
+  user: User | null;
+  isAuthenticated: boolean;
+}
 
-  // Get user data on component mount
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const response = await fetch('/auth/status');
-        const data = await response.json();
-        setUser(data.user || null);
-        setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
-      } catch (err) {
-        console.error('Failed to get user data:', err);
-      }
+export class WelcomeScreen extends React.Component<{}, WelcomeScreenState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      activeScreen: 'welcome',
+      showAuthModal: false,
+      authMode: 'login',
+      hasSavedGame: false,
+      savedGameInfo: null,
+      user: null,
+      isAuthenticated: false
     };
-    getUserData();
-  }, []);
-  const { startGame, loadGameState, clearSavedGameState, setUsername } = useGameStore();
+  }
 
-  // Check for saved games on component mount
-  useEffect(() => {
+  async componentDidMount() {
+    // Get user data
+    try {
+      const response = await fetch('/auth/status');
+      const data = await response.json();
+      this.setState({
+        user: data.user || null,
+        isAuthenticated: Boolean(data.isAuthenticated && data.user)
+      });
+    } catch (err) {
+      console.error('Failed to get user data:', err);
+    }
+
+    // Check for saved games
     try {
       const savedGame = localStorage.getItem('globalTradeTycoon_savedGame');
       if (savedGame) {
         const gameData = JSON.parse(savedGame);
         if (gameData && gameData.username && gameData.daysRemaining) {
-          setHasSavedGame(true);
-          setSavedGameInfo({
-            username: gameData.username,
-            days: 31 - gameData.daysRemaining,
-            cash: gameData.cash + gameData.bankBalance
+          this.setState({
+            hasSavedGame: true,
+            savedGameInfo: {
+              username: gameData.username,
+              days: 31 - gameData.daysRemaining,
+              cash: gameData.cash + gameData.bankBalance
+            }
           });
         }
       }
     } catch (err) {
       console.error('Error checking for saved games:', err);
     }
-  }, []);
+  }
 
-  const { data: leaderboardData = [] } = useQuery<LeaderboardEntry[]>({
-    queryKey: ['/api/scores'],
-    queryFn: getQueryFn<LeaderboardEntry[]>({
-      on401: 'returnNull',
-    }),
-  });
-  
-  const handleLoadGame = () => {
+  handleLoadGame = () => {
+    const { loadGameState } = useGameStore.getState();
     const success = loadGameState();
     if (success) {
       console.log('Game loaded successfully!');
-      // Navigate to game page
       window.location.href = '/game';
     } else {
       console.error('Failed to load saved game.');
     }
   };
-  
-  const handleStartNewGame = () => {
+
+  handleStartNewGame = () => {
+    const { user } = this.state;
     if (user && user.username) {
+      const { setUsername, startGame } = useGameStore.getState();
       setUsername(user.username);
       startGame();
-      // Navigate to game page
       window.location.href = '/game';
     } else {
       console.error('Cannot start game: user not authenticated or missing username');
     }
   };
-  
-  const handleClearSavedGame = () => {
+
+  handleClearSavedGame = () => {
+    const { clearSavedGameState } = useGameStore.getState();
     clearSavedGameState();
-    setHasSavedGame(false);
-    setSavedGameInfo(null);
+    this.setState({
+      hasSavedGame: false,
+      savedGameInfo: null
+    });
     console.log('Saved game cleared.');
   };
 
-  const handleShowLogin = () => {
-    setAuthMode('login');
-    setShowAuthModal(true);
+  handleShowLogin = () => {
+    this.setState({
+      authMode: 'login',
+      showAuthModal: true
+    });
   };
 
-  const handleShowRegister = () => {
-    setAuthMode('register');
-    setShowAuthModal(true);
+  handleShowRegister = () => {
+    this.setState({
+      authMode: 'register',
+      showAuthModal: true
+    });
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
-      style={{
-        backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        zIndex: 1
-      }}
-    >
-      {/* Authentication Section */}
-      <div className="absolute top-4 right-4 z-20">
-        {isAuthenticated && user ? (
-          <UserProfile user={user} />
-        ) : (
-          <div className="flex gap-2">
-            <Button 
-              onClick={handleShowLogin}
-              variant="outline"
-              size="sm"
-              className="bg-white/90 hover:bg-white"
-            >
-              Sign In
-            </Button>
-            <Button 
-              onClick={handleShowRegister}
-              size="sm"
-              className="bg-tycoon-navy hover:bg-tycoon-navy/90"
-            >
-              Register
-            </Button>
-          </div>
-        )}
-      </div>
+  render() {
+    const { activeScreen, showAuthModal, authMode, hasSavedGame, savedGameInfo, user, isAuthenticated } = this.state;
 
-      {/* Authentication Modal */}
-      <AuthModal 
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        defaultMode={authMode}
-      />
-
-
-      {activeScreen === 'welcome' && (
-        <div className="flex flex-col md:flex-row items-center justify-center md:justify-between max-w-5xl w-full mx-auto p-6 gap-8">
-          {/* Logo on the left on desktop, centered on mobile */}
-          <div className="flex justify-center md:justify-start">
-            <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-40 sm:w-60 md:w-80" />
-          </div>
-          
-          {/* Buttons on the right on desktop, centered below on mobile */}
-          <div className="flex flex-col space-y-4 md:space-y-6 w-32 sm:w-48 md:w-64">
-            <button 
-              onClick={() => setActiveScreen('play')} 
-              className="transition-transform hover:scale-105 focus:outline-none"
-            >
-              <img src="/images/GTC_Play.png" alt="Play" className="w-full" />
-            </button>
-            
-            <button 
-              onClick={() => setActiveScreen('leaderboard')} 
-              className="transition-transform hover:scale-105 focus:outline-none"
-            >
-              <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-full" />
-            </button>
-            
-            <button 
-              onClick={() => setActiveScreen('rules')} 
-              className="transition-transform hover:scale-105 focus:outline-none"
-            >
-              <img src="/images/GTC_Rules.png" alt="Rules" className="w-full" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {activeScreen === 'play' && (
-        <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
-          <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Enter Your Trading Name</h2>
-          
-          {/* Show saved game option if available */}
-          {hasSavedGame && savedGameInfo && (
-            <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-amber-800 mb-2">Continue Your Game?</h3>
-              <div className="text-sm text-amber-700 mb-4">
-                <p>Trader: <span className="font-medium">{savedGameInfo.username}</span></p>
-                <p>Day: <span className="font-medium">{savedGameInfo.days} / 31</span></p>
-                <p>Balance: <span className="font-medium">${savedGameInfo.cash.toLocaleString()}</span></p>
-              </div>
-              <div className="flex gap-2">
-                <button 
-                  onClick={handleLoadGame}
-                  className="flex-1 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
-                >
-                  Continue Game
-                </button>
-                <button 
-                  onClick={handleClearSavedGame}
-                  className="py-2 px-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+        style={{
+          backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: 1
+        }}
+      >
+        {/* Authentication Section */}
+        <div className="absolute top-4 right-4 z-20">
+          {isAuthenticated && user ? (
+            <UserProfile user={user} />
+          ) : (
+            <div className="flex gap-2">
+              <Button 
+                onClick={this.handleShowLogin}
+                variant="outline" 
+                className="bg-white/90 hover:bg-white"
+              >
+                Login
+              </Button>
+              <Button 
+                onClick={this.handleShowRegister}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Sign Up
+              </Button>
             </div>
           )}
-          
-          <div className={hasSavedGame ? "border-t border-gray-200 pt-6" : ""}>
-            {hasSavedGame && (
-              <h3 className="text-lg font-semibold text-tycoon-navy mb-4">Start a New Game</h3>
+        </div>
+
+        {/* Authentication Modal */}
+        <AuthModal 
+          isOpen={showAuthModal}
+          onClose={() => this.setState({ showAuthModal: false })}
+          defaultMode={authMode}
+        />
+
+        {/* Main Content */}
+        {activeScreen === 'welcome' && (
+          <div className="flex flex-col items-center space-y-6 z-10 relative px-4">
+            {/* Logo */}
+            <div className="mb-8">
+              <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-64 sm:w-80" />
+            </div>
+            
+            {/* Navigation Buttons */}
+            <div className="grid grid-cols-2 gap-4 w-full max-w-md">
+              <button 
+                onClick={() => this.setState({ activeScreen: 'play' })}
+                className="transition-transform hover:scale-105 focus:outline-none"
+                disabled={!isAuthenticated}
+              >
+                <img 
+                  src="/images/GTC_Play.png" 
+                  alt="Play" 
+                  className={`w-full ${!isAuthenticated ? 'opacity-50' : ''}`} 
+                />
+              </button>
+              
+              <button 
+                onClick={() => this.setState({ activeScreen: 'leaderboard' })}
+                className="transition-transform hover:scale-105 focus:outline-none"
+              >
+                <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-full" />
+              </button>
+              
+              <button 
+                onClick={() => this.setState({ activeScreen: 'rules' })}
+                className="transition-transform hover:scale-105 focus:outline-none"
+              >
+                <img src="/images/GTC_Rules.png" alt="Rules" className="w-full" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeScreen === 'play' && (
+          <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
+            <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Enter Your Trading Name</h2>
+            
+            {/* Show saved game option if available */}
+            {hasSavedGame && savedGameInfo && (
+              <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-amber-800 mb-2">Continue Your Game?</h3>
+                <div className="text-sm text-amber-700 mb-4">
+                  <p>Trader: <span className="font-medium">{savedGameInfo.username}</span></p>
+                  <p>Day: <span className="font-medium">{savedGameInfo.days} / 31</span></p>
+                  <p>Balance: <span className="font-medium">${savedGameInfo.cash.toLocaleString()}</span></p>
+                </div>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={this.handleLoadGame}
+                    className="flex-1 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
+                  >
+                    Continue Game
+                  </button>
+                  <button 
+                    onClick={this.handleClearSavedGame}
+                    className="py-2 px-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             )}
+            
+            <div className={hasSavedGame ? "border-t border-gray-200 pt-6" : ""}>
+              {hasSavedGame && (
+                <h3 className="text-lg font-semibold text-tycoon-navy mb-4">Start a New Game</h3>
+              )}
+              <button 
+                onClick={this.handleStartNewGame}
+                className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              >
+                Start New Game
+              </button>
+            </div>
+            
             <button 
-              onClick={handleStartNewGame}
-              className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              onClick={() => this.setState({ activeScreen: 'welcome' })}
+              className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
             >
-              Start New Game
+              Back
             </button>
           </div>
-          
-          <button 
-            onClick={() => setActiveScreen('welcome')}
-            className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
-          >
-            Back
-          </button>
-        </div>
-      )}
+        )}
 
-      {activeScreen === 'leaderboard' && (
-        <div className="bg-white/90 rounded-lg p-6 max-w-xl w-full mx-4 z-10 relative">
-          <h2 className="text-2xl font-bold text-tycoon-navy mb-4 text-center">Leaderboard</h2>
-          <div className="overflow-y-auto max-h-[60vh]">
-            <Leaderboard scores={leaderboardData} />
-          </div>
-          <button 
-            onClick={() => setActiveScreen('welcome')}
-            className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
-          >
-            Back
-          </button>
-        </div>
-      )}
+        {activeScreen === 'leaderboard' && (
+          <LeaderboardScreen onBack={() => this.setState({ activeScreen: 'welcome' })} />
+        )}
 
-      {activeScreen === 'rules' && (
-        <div className="bg-white/90 rounded-lg p-6 max-w-xl w-full mx-4 z-10 relative">
-          <h2 className="text-2xl font-bold text-tycoon-navy mb-4 text-center">Game Rules</h2>
-          <div className="overflow-y-auto max-h-[60vh] text-tycoon-navy space-y-4">
-            <p>Welcome to Global Trading Tycoon, the trading simulation where your goal is to build wealth through strategic buying and selling!</p>
-            
-            <h3 className="text-xl font-bold">How to Play:</h3>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>You start with a $2,000 loan and 31 days to make as much profit as possible.</li>
-              <li>Travel between 7 global locations, each with unique market conditions.</li>
-              <li>Buy products at market price and sell them at the higher demand price for profit.</li>
-              <li>Use the bank to deposit cash (earning 3% interest), withdraw funds, or take loans (with 5% fee).</li>
-              <li>Travel costs 1 day and increases your loan by 5%.</li>
-              <li>Watch out for random events that can affect prices and inventory!</li>
-            </ul>
-            
-            <h3 className="text-xl font-bold">Game Rules:</h3>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>You cannot buy and sell the same product on the same day in the same location.</li>
-              <li>Your final score is based on your banked cash at the end of 31 days.</li>
-              <li>The maximum loan amount is $10,000.</li>
-            </ul>
-            
-            <p className="font-bold">Good luck, and may your trades be profitable!</p>
-          </div>
-          <button 
-            onClick={() => setActiveScreen('welcome')}
-            className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
-          >
-            Back
-          </button>
+        {activeScreen === 'rules' && (
+          <RulesScreen onBack={() => this.setState({ activeScreen: 'welcome' })} />
+        )}
+      </div>
+    );
+  }
+}
+
+// Helper components for leaderboard and rules
+class LeaderboardScreen extends React.Component<{ onBack: () => void }, { leaderboardData: LeaderboardEntry[] }> {
+  constructor(props: { onBack: () => void }) {
+    super(props);
+    this.state = {
+      leaderboardData: []
+    };
+  }
+
+  async componentDidMount() {
+    try {
+      const response = await fetch('/api/scores');
+      if (response.ok) {
+        const data = await response.json();
+        this.setState({ leaderboardData: data });
+      }
+    } catch (err) {
+      console.error('Failed to load leaderboard:', err);
+    }
+  }
+
+  render() {
+    const { onBack } = this.props;
+    const { leaderboardData } = this.state;
+
+    return (
+      <div className="bg-white/90 rounded-lg p-6 max-w-xl w-full mx-4 z-10 relative">
+        <h2 className="text-2xl font-bold text-tycoon-navy mb-4 text-center">Leaderboard</h2>
+        <div className="overflow-y-auto max-h-[60vh]">
+          <Leaderboard scores={leaderboardData} />
         </div>
-      )}
+        <button 
+          onClick={onBack}
+          className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
+        >
+          Back
+        </button>
+      </div>
+    );
+  }
+}
+
+function RulesScreen({ onBack }: { onBack: () => void }) {
+  return (
+    <div className="bg-white/90 rounded-lg p-6 max-w-xl w-full mx-4 z-10 relative max-h-[80vh] overflow-y-auto">
+      <h2 className="text-2xl font-bold text-tycoon-navy mb-4 text-center">How to Play</h2>
+      <div className="space-y-4 text-sm text-gray-700">
+        <div>
+          <h3 className="font-semibold text-tycoon-navy mb-2">Objective</h3>
+          <p>Build your trading empire by buying and selling products across different locations within 31 days.</p>
+        </div>
+        
+        <div>
+          <h3 className="font-semibold text-tycoon-navy mb-2">Getting Started</h3>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>You start with $2,500 cash</li>
+            <li>Buy products at low prices</li>
+            <li>Travel to locations where they sell for more</li>
+            <li>Manage your cash and bank account</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="font-semibold text-tycoon-navy mb-2">Banking</h3>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Deposit money to earn 0.25% daily interest</li>
+            <li>Take loans when you need more cash</li>
+            <li>Loan interest: 0.5% daily</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="font-semibold text-tycoon-navy mb-2">Travel & Events</h3>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Each travel takes 1 day</li>
+            <li>Random events can affect prices</li>
+            <li>Some travels have risks that may cost money</li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="font-semibold text-tycoon-navy mb-2">Winning</h3>
+          <p>Maximize your net worth (cash + bank - loans) by day 31 to climb the leaderboard!</p>
+        </div>
+      </div>
+      
+      <button 
+        onClick={onBack}
+        className="mt-6 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
+      >
+        Back
+      </button>
     </div>
   );
 }
