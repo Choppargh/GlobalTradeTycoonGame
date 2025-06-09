@@ -9,6 +9,10 @@ import { UserProfile } from '@/components/auth/UserProfile';
 import { Button } from '@/components/ui/button';
 import { Leaderboard } from './Leaderboard';
 
+interface WelcomeScreenProps {
+  navigate?: (path: string) => void;
+}
+
 interface WelcomeScreenState {
   activeScreen: 'welcome' | 'leaderboard' | 'rules' | 'play';
   showAuthModal: boolean;
@@ -19,8 +23,8 @@ interface WelcomeScreenState {
   isAuthenticated: boolean;
 }
 
-export class WelcomeScreen extends React.Component<{}, WelcomeScreenState> {
-  constructor(props: {}) {
+export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeScreenState> {
+  constructor(props: WelcomeScreenProps) {
     super(props);
     this.state = {
       activeScreen: 'welcome',
@@ -72,7 +76,11 @@ export class WelcomeScreen extends React.Component<{}, WelcomeScreenState> {
     const success = loadGameState();
     if (success) {
       console.log('Game loaded successfully!');
-      window.location.href = '/game';
+      if (this.props.navigate) {
+        this.props.navigate('/game');
+      } else {
+        window.location.href = '/game';
+      }
     } else {
       console.error('Failed to load saved game.');
     }
@@ -84,7 +92,11 @@ export class WelcomeScreen extends React.Component<{}, WelcomeScreenState> {
       const { setUsername, startGame } = useGameStore.getState();
       setUsername(user.username);
       startGame();
-      window.location.href = '/game';
+      if (this.props.navigate) {
+        this.props.navigate('/game');
+      } else {
+        window.location.href = '/game';
+      }
     } else {
       console.error('Cannot start game: user not authenticated or missing username');
     }
@@ -170,11 +182,8 @@ export class WelcomeScreen extends React.Component<{}, WelcomeScreenState> {
               <button 
                 onClick={() => {
                   if (isAuthenticated && user && user.username) {
-                    // If user is authenticated, start game directly with their username
-                    const { setUsername, startGame } = useGameStore.getState();
-                    setUsername(user.username);
-                    startGame();
-                    window.location.href = '/game';
+                    // Show game options screen (continue/new game)
+                    this.setState({ activeScreen: 'play' });
                   } else {
                     console.error('Cannot start game: user not authenticated or missing username');
                   }
