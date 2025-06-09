@@ -1,53 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ImprovedAuthPage } from '@/components/auth/ImprovedAuthPage';
-import { WelcomeScreen } from '@/components/game/WelcomeScreen';
 
-export default function HomePage() {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+class HomePage extends React.Component {
+  state = {
+    isLoading: true,
+    isAuthenticated: false
+  };
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/auth/status');
-        const data = await response.json();
-        
-        setUser(data.user || null);
-        setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
-      } catch (err) {
-        console.error('Auth check failed:', err);
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  async componentDidMount() {
+    try {
+      const response = await fetch('/auth/status');
+      const data = await response.json();
+      this.setState({
+        isAuthenticated: Boolean(data.isAuthenticated && data.user),
+        isLoading: false
+      });
+    } catch {
+      this.setState({
+        isAuthenticated: false,
+        isLoading: false
+      });
+    }
+  }
 
-    checkAuth();
-  }, []);
+  render() {
+    const { isLoading, isAuthenticated } = this.state;
 
-  // Show loading while checking authentication
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
+          </div>
         </div>
+      );
+    }
+
+    if (isAuthenticated) {
+      // Import WelcomeScreen dynamically to avoid hook issues
+      const WelcomeScreen = React.lazy(() => import('@/components/game/WelcomeScreen').then(module => ({ default: module.WelcomeScreen })));
+      return (
+        <React.Suspense fallback={<div>Loading dashboard...</div>}>
+          <WelcomeScreen />
+        </React.Suspense>
+      );
+    }
+
+    return (
+      <div className="min-h-screen">
+        <ImprovedAuthPage />
       </div>
     );
   }
-
-  // Show dashboard (WelcomeScreen) for authenticated users
-  if (isAuthenticated) {
-    return <WelcomeScreen />;
-  }
-
-  // Show auth page for non-authenticated users
-  return (
-    <div className="min-h-screen">
-      <ImprovedAuthPage />
-    </div>
-  );
 }
+
+export default HomePage;
