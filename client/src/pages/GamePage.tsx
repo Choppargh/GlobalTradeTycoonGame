@@ -37,13 +37,10 @@ export default function GamePage() {
         setUsername(user.username);
       }
       
-      // Try to load saved game first, if that fails start new game
-      const loaded = loadGameState();
-      if (!loaded && !currentLocation) {
-        startGame();
-      }
+      // Only try to load saved game, don't automatically start new game
+      loadGameState();
     }
-  }, [isAuthenticated, user, isLoading, username, setUsername, startGame, loadGameState, currentLocation]);
+  }, [isAuthenticated, user, isLoading, username, setUsername, loadGameState]);
 
   // Show loading while checking authentication
   if (isLoading) {
@@ -68,16 +65,10 @@ export default function GamePage() {
     return <GameOver />;
   }
   
-  // Basic game state loading
+  // Redirect to dashboard if no active game
   if (!currentLocation) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-amber-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-amber-700">Loading game...</h2>
-        </div>
-      </div>
-    );
+    window.location.replace('/');
+    return null;
   }
 
   return (

@@ -3,16 +3,21 @@ import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { LeaderboardEntry } from '@/types/game';
 import { useAuth } from '@/hooks/useAuth';
+import { useGameStore } from '@/lib/stores/useGameStore';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { UserProfile } from '@/components/auth/UserProfile';
 import { Button } from '@/components/ui/button';
+import { Leaderboard } from './Leaderboard';
 
 export function WelcomeScreen() {
-  const [activeScreen, setActiveScreen] = useState<'welcome' | 'leaderboard' | 'rules'>('welcome');
+  const [activeScreen, setActiveScreen] = useState<'welcome' | 'leaderboard' | 'rules' | 'play'>('welcome');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [hasSavedGame, setHasSavedGame] = useState(false);
+  const [savedGameInfo, setSavedGameInfo] = useState<any>(null);
   
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { startGame, loadGameState, clearSavedGameState, setUsername } = useGameStore();
 
   // Check for saved games on component mount
   useEffect(() => {
@@ -45,8 +50,19 @@ export function WelcomeScreen() {
     const success = loadGameState();
     if (success) {
       console.log('Game loaded successfully!');
+      // Navigate to game page
+      window.location.href = '/game';
     } else {
       console.error('Failed to load saved game.');
+    }
+  };
+  
+  const handleStartNewGame = () => {
+    if (user) {
+      setUsername(user.username);
+      startGame();
+      // Navigate to game page
+      window.location.href = '/game';
     }
   };
   
@@ -177,7 +193,12 @@ export function WelcomeScreen() {
             {hasSavedGame && (
               <h3 className="text-lg font-semibold text-tycoon-navy mb-4">Start a New Game</h3>
             )}
-            <UsernameForm />
+            <button 
+              onClick={handleStartNewGame}
+              className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+            >
+              Start New Game
+            </button>
           </div>
           
           <button 
