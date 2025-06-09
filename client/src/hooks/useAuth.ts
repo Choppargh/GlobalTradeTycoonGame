@@ -28,20 +28,25 @@ export function useAuth() {
       setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
       
       const response = await fetch('/auth/status');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
       const data = await response.json();
       
       setAuthState({
-        user: data.user,
-        isAuthenticated: data.isAuthenticated,
+        user: data.user || null,
+        isAuthenticated: Boolean(data.isAuthenticated && data.user),
         isLoading: false,
         error: null
       });
     } catch (error) {
+      console.error('Auth status check failed:', error);
       setAuthState({
         user: null,
         isAuthenticated: false,
         isLoading: false,
-        error: 'Failed to check authentication status'
+        error: null // Don't show error for auth status check failures
       });
     }
   }, []);
@@ -144,7 +149,10 @@ export function useAuth() {
   }, [checkAuthStatus]);
 
   return {
-    ...authState,
+    user: authState.user,
+    isAuthenticated: authState.isAuthenticated,
+    isLoading: authState.isLoading,
+    error: authState.error,
     login,
     register,
     logout,
