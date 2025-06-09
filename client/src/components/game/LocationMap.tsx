@@ -42,7 +42,7 @@ export function LocationMap({ currentLocation, onSelect, interactive = false }: 
         <div 
           className="relative w-full h-[250px] bg-cover bg-center bg-gray-100"
           style={{ 
-            backgroundImage: 'url(/images/world-map.png)',
+            backgroundImage: 'url(/images/world-map.svg)',
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center'
