@@ -527,12 +527,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     } catch (error) {
       console.error("Failed to submit score:", error);
       
-      // Even if submission fails, move to game over but show error message
+      // Even if submission fails, move to game over screen properly
       set({
         isEndGameConfirmationOpen: false,
         gamePhase: 'game-over',
-        travelRiskMessage: "Your score has been saved successfully! Thanks for playing!",
-        isTravelRiskDialogOpen: true
+        isTravelRiskDialogOpen: false
       });
     }
   },

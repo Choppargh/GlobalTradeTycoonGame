@@ -8,6 +8,7 @@ import { TravelOptions } from '@/components/game/TravelOptions';
 import { BankInterface } from '@/components/game/BankInterface';
 import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
+import { GameOver } from '@/components/game/GameOver';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
@@ -60,6 +61,11 @@ export default function GamePage() {
   if (!isAuthenticated) {
     window.location.replace('/');
     return null;
+  }
+
+  // Show Game Over screen when game is completed
+  if (gamePhase === 'game-over') {
+    return <GameOver />;
   }
   
   // Basic game state loading
