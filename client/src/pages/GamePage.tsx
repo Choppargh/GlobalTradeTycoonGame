@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '@/lib/stores/useGameStore';
+import { useAuth } from '@/hooks/useAuth';
 import { GameHeader } from '@/components/game/GameHeader';
 import { BuyTab } from '@/components/game/BuyTab';
 import { SellTab } from '@/components/game/SellTab';
@@ -11,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
   const [activeTab, setActiveTab] = useState("buy");
+  const { user, isAuthenticated, isLoading } = useAuth();
   
   const { 
     currentLocation, 
@@ -19,7 +21,46 @@ export default function GamePage() {
     isTravelRiskDialogOpen,
     travelRiskMessage,
     clearTravelRiskDialog,
+    startGame,
+    loadGameState,
+    username,
+    gamePhase,
+    setUsername
   } = useGameStore();
+
+  // Initialize game state when component mounts and user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && user && !isLoading) {
+      // Set the username from authenticated user
+      if (!username || username !== user.username) {
+        setUsername(user.username);
+      }
+      
+      // Try to load saved game first, if that fails start new game
+      const loaded = loadGameState();
+      if (!loaded && !currentLocation) {
+        startGame();
+      }
+    }
+  }, [isAuthenticated, user, isLoading, username, setUsername, startGame, loadGameState, currentLocation]);
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-700">Checking authentication...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    window.location.replace('/');
+    return null;
+  }
   
   // Basic game state loading
   if (!currentLocation) {
