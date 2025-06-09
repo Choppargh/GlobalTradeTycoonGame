@@ -35,9 +35,14 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
       selectedDestination: null,
       isEndGameDialogOpen: false
     };
+    
+    // Bind methods
+    this.handleConfirmTravel = this.handleConfirmTravel.bind(this);
+    this.handleEndGameClick = this.handleEndGameClick.bind(this);
+    this.handleEndGameConfirm = this.handleEndGameConfirm.bind(this);
   }
 
-  handleTravelConfirm = () => {
+  handleConfirmTravel = () => {
     const { selectedDestination } = this.state;
     if (selectedDestination) {
       const gameStore = useGameStore.getState();
@@ -120,7 +125,7 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
 
         {/* Travel Map Dialog */}
         <Dialog open={showTravelDialog} onOpenChange={(open) => this.setState({ showTravelDialog: open, selectedDestination: null })}>
-          <DialogContent className="sm:max-w-lg">
+          <DialogContent className="sm:max-w-lg bg-white border border-gray-200 shadow-lg">
             <DialogHeader>
               <DialogTitle>Select Destination</DialogTitle>
               <DialogDescription>
@@ -151,7 +156,7 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
                 Cancel
               </Button>
               <Button
-                onClick={this.handleTravelConfirm}
+                onClick={this.handleConfirmTravel}
                 className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
                 disabled={!selectedDestination || selectedDestination === currentLocation}
               >
