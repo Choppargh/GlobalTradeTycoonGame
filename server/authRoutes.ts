@@ -99,10 +99,10 @@ export function registerAuthRoutes(app: Express) {
   );
 
   app.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/login?error=google_auth_failed' }),
+    passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
     (req: Request, res: Response) => {
-      // Successful authentication
-      res.redirect('/?auth_success=true');
+      // Successful authentication - redirect to game
+      res.redirect('/game');
     }
   );
 
@@ -124,9 +124,10 @@ export function registerAuthRoutes(app: Express) {
   );
 
   app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', { failureRedirect: '/login?error=twitter_auth_failed' }),
+    passport.authenticate('twitter', { failureRedirect: '/?error=twitter_auth_failed' }),
     (req: Request, res: Response) => {
-      res.redirect('/?auth_success=true');
+      // Successful authentication - redirect to game
+      res.redirect('/game');
     }
   );
 
