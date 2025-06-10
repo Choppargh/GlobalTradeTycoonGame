@@ -178,7 +178,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
             </div>
             
             {/* Navigation Buttons - Mobile Optimized */}
-            <div className="flex flex-col gap-4 w-full max-w-xs sm:max-w-sm">
+            <div className="flex flex-col items-center gap-4 w-full">
               <button 
                 onClick={() => {
                   if (isAuthenticated && user && user.username) {
@@ -194,7 +194,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
                 <img 
                   src="/images/GTC_Play.png" 
                   alt="Play" 
-                  style={{ width: '200px', height: 'auto', maxWidth: '100%' }}
+                  style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
                   className={!isAuthenticated ? 'opacity-50' : ''} 
                 />
               </button>
@@ -206,7 +206,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
                 <img 
                   src="/images/GTC_Leaderboard.png" 
                   alt="Leaderboard" 
-                  style={{ width: '200px', height: 'auto', maxWidth: '100%' }}
+                  style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
                 />
               </button>
               
@@ -217,7 +217,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
                 <img 
                   src="/images/GTC_Rules.png" 
                   alt="Rules" 
-                  style={{ width: '200px', height: 'auto', maxWidth: '100%' }}
+                  style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
                 />
               </button>
             </div>
