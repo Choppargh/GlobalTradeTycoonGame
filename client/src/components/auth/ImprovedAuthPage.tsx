@@ -72,27 +72,24 @@ export function ImprovedAuthPage() {
         </div>
         
         {/* Buttons Section */}
-        <div className="flex flex-col gap-4 mr-16">
+        <div className="flex flex-col gap-6 mr-16">
           <button
             onClick={() => handleLogin('google')}
-            className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg transition-colors"
-            style={{ minWidth: '200px' }}
+            className="transition-transform hover:scale-105"
           >
-            PLAY
+            <img src="/images/GTC_Play.png" alt="Play" className="w-48 h-auto" />
           </button>
           <button
             onClick={() => window.location.href = '/leaderboard'}
-            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg transition-colors"
-            style={{ minWidth: '200px' }}
+            className="transition-transform hover:scale-105"
           >
-            LEADERBOARD
+            <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-48 h-auto" />
           </button>
           <button
             onClick={() => window.location.href = '/rules'}
-            className="bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-lg transition-colors"
-            style={{ minWidth: '200px' }}
+            className="transition-transform hover:scale-105"
           >
-            RULES
+            <img src="/images/GTC_Rules.png" alt="Rules" className="w-48 h-auto" />
           </button>
         </div>
       </div>
