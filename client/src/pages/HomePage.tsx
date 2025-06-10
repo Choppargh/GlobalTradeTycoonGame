@@ -45,19 +45,54 @@ class HomePage extends React.Component<{ navigate?: (path: string) => void }> {
     }
 
     if (isAuthenticated) {
-      // Import WelcomeScreen dynamically to avoid hook issues
-      const WelcomeScreen = React.lazy(() => import('@/components/game/WelcomeScreen').then(module => ({ default: module.WelcomeScreen })));
       return (
-        <React.Suspense fallback={
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="text-center">
-              <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
-              <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
+        <div className="min-h-screen" style={{
+          backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}>
+          <div className="flex flex-col items-center justify-center min-h-screen space-y-6 px-4">
+            <div className="mb-8">
+              <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-64 sm:w-80" />
+            </div>
+            
+            <div className="flex flex-col items-center gap-4 w-full">
+              <button 
+                onClick={() => this.props.navigate && this.props.navigate('/game')}
+                className="transition-transform hover:scale-105 focus:outline-none"
+              >
+                <img 
+                  src="/images/GTC_Play.png" 
+                  alt="Play" 
+                  style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
+                />
+              </button>
+              
+              <button 
+                onClick={() => {}}
+                className="transition-transform hover:scale-105 focus:outline-none"
+              >
+                <img 
+                  src="/images/GTC_Leaderboard.png" 
+                  alt="Leaderboard" 
+                  style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
+                />
+              </button>
+              
+              <button 
+                onClick={() => {}}
+                className="transition-transform hover:scale-105 focus:outline-none"
+              >
+                <img 
+                  src="/images/GTC_Rules.png" 
+                  alt="Rules" 
+                  style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
+                />
+              </button>
             </div>
           </div>
-        }>
-          <WelcomeScreen navigate={this.props.navigate} />
-        </React.Suspense>
+        </div>
       );
     }
 
