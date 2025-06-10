@@ -78,19 +78,19 @@ export function ImprovedAuthPage() {
               onClick={() => handleLogin('google')}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Play.png" alt="Play" className="w-32 h-auto" />
+              <img src="/images/GTC_Play.png" alt="Play" className="w-48 h-auto" />
             </button>
             <button
               onClick={() => window.location.href = '/leaderboard'}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-32 h-auto" />
+              <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-48 h-auto" />
             </button>
             <button
               onClick={() => window.location.href = '/rules'}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Rules.png" alt="Rules" className="w-32 h-auto" />
+              <img src="/images/GTC_Rules.png" alt="Rules" className="w-48 h-auto" />
             </button>
           </div>
         </div>
