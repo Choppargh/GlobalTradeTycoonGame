@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export function ImprovedAuthPage() {
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const handleLogin = (provider: string) => {
     if (provider === 'google' || provider === 'facebook' || provider === 'twitter') {
       window.location.href = `/auth/${provider}`;
@@ -85,7 +86,7 @@ export function ImprovedAuthPage() {
           {/* Buttons Section */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <button
-              onClick={() => handleLogin('google')}
+              onClick={() => setShowAuthModal(true)}
               className="transition-transform hover:scale-105"
             >
               <img 
@@ -95,7 +96,7 @@ export function ImprovedAuthPage() {
               />
             </button>
             <button
-              onClick={() => handleLogin('google')}
+              onClick={() => setShowAuthModal(true)}
               className="transition-transform hover:scale-105"
             >
               <img 
@@ -105,7 +106,7 @@ export function ImprovedAuthPage() {
               />
             </button>
             <button
-              onClick={() => handleLogin('google')}
+              onClick={() => setShowAuthModal(true)}
               className="transition-transform hover:scale-105"
             >
               <img 
@@ -355,6 +356,252 @@ export function ImprovedAuthPage() {
           </div>
         </div>
       </div>
+
+      {/* Authentication Modal for Desktop */}
+      {showAuthModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm border border-gray-200 relative">
+            <button
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold"
+            >
+              ×
+            </button>
+            
+            {/* Header */}
+            <div className="text-center mb-8">
+              <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-20 h-20 mx-auto mb-4 rounded-lg shadow-md" />
+              <h1 className="text-2xl font-bold text-gray-800">Global Trading Tycoon</h1>
+              <p className="text-gray-600 text-sm">Choose your path to trading success</p>
+            </div>
+
+            {/* Login Section */}
+            <div id="modal-login-section" className="space-y-6">
+              <div className="text-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-800">Welcome Back</h2>
+                <p className="text-gray-600 text-sm">Continue your trading journey</p>
+              </div>
+
+              <form data-mode="login" onSubmit={handleFormSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="modal-login-email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    id="modal-login-email"
+                    name="email"
+                    type="email"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="modal-login-password" className="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <input
+                    id="modal-login-password"
+                    name="password"
+                    type="password"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your password"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium"
+                >
+                  Sign In
+                </button>
+              </form>
+
+              <div className="text-center">
+                <p className="text-gray-600 text-sm mb-4">Or continue with</p>
+              </div>
+
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => handleLogin('google')}
+                  style={{
+                    backgroundColor: '#dc2626',
+                    color: 'white',
+                    width: '100px',
+                    height: '48px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#b91c1c'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
+                  title="Sign in with Google"
+                >
+                  Google
+                </button>
+                <button
+                  onClick={() => handleLogin('twitter')}
+                  style={{
+                    backgroundColor: '#000000',
+                    color: 'white',
+                    width: '100px',
+                    height: '48px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#374151'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#000000'}
+                  title="Sign in with X (Twitter)"
+                >
+                  X / Twitter
+                </button>
+              </div>
+
+              <div className="text-center mt-6">
+                <button
+                  onClick={() => {
+                    const loginSection = document.getElementById('modal-login-section');
+                    const registerSection = document.getElementById('modal-register-section');
+                    if (loginSection && registerSection) {
+                      loginSection.classList.add('hidden');
+                      registerSection.classList.remove('hidden');
+                    }
+                  }}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Don't have an account? <span className="underline">Sign up</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Register Section */}
+            <div id="modal-register-section" className="hidden space-y-6">
+              <div className="text-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-800">Create Account</h2>
+                <p className="text-gray-600 text-sm">Join the global competition</p>
+              </div>
+
+              <form data-mode="register" onSubmit={handleFormSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="modal-register-username" className="block text-sm font-medium text-gray-700 mb-2">
+                    Username
+                  </label>
+                  <input
+                    id="modal-register-username"
+                    name="username"
+                    type="text"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    placeholder="Choose a username"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="modal-register-email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    id="modal-register-email"
+                    name="email"
+                    type="email"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="modal-register-password" className="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <input
+                    id="modal-register-password"
+                    name="password"
+                    type="password"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    placeholder="Create a password"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium"
+                >
+                  Create Account
+                </button>
+              </form>
+
+              <div className="text-center">
+                <p className="text-gray-600 text-sm mb-4">Or sign up with</p>
+              </div>
+
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => handleLogin('google')}
+                  style={{
+                    backgroundColor: '#dc2626',
+                    color: 'white',
+                    width: '100px',
+                    height: '48px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#b91c1c'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
+                  title="Sign up with Google"
+                >
+                  Google
+                </button>
+                <button
+                  onClick={() => handleLogin('twitter')}
+                  style={{
+                    backgroundColor: '#000000',
+                    color: 'white',
+                    width: '100px',
+                    height: '48px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#374151'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#000000'}
+                  title="Sign up with X (Twitter)"
+                >
+                  X / Twitter
+                </button>
+              </div>
+
+              <div className="text-center mt-6">
+                <button
+                  onClick={() => {
+                    const loginSection = document.getElementById('modal-login-section');
+                    const registerSection = document.getElementById('modal-register-section');
+                    if (loginSection && registerSection) {
+                      registerSection.classList.add('hidden');
+                      loginSection.classList.remove('hidden');
+                    }
+                  }}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Already have an account? <span className="underline">Sign in</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
