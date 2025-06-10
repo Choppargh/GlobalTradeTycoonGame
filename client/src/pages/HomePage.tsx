@@ -48,7 +48,14 @@ class HomePage extends React.Component<{ navigate?: (path: string) => void }> {
       // Import WelcomeScreen dynamically to avoid hook issues
       const WelcomeScreen = React.lazy(() => import('@/components/game/WelcomeScreen').then(module => ({ default: module.WelcomeScreen })));
       return (
-        <React.Suspense fallback={<div>Loading dashboard...</div>}>
+        <React.Suspense fallback={
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
+              <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
+            </div>
+          </div>
+        }>
           <WelcomeScreen navigate={this.props.navigate} />
         </React.Suspense>
       );
