@@ -95,7 +95,7 @@ export function ImprovedAuthPage() {
               />
             </button>
             <button
-              onClick={() => window.location.href = '/leaderboard'}
+              onClick={() => handleLogin('google')}
               className="transition-transform hover:scale-105"
             >
               <img 
@@ -105,7 +105,7 @@ export function ImprovedAuthPage() {
               />
             </button>
             <button
-              onClick={() => window.location.href = '/rules'}
+              onClick={() => handleLogin('google')}
               className="transition-transform hover:scale-105"
             >
               <img 
@@ -148,7 +148,7 @@ export function ImprovedAuthPage() {
               />
             </button>
             <button
-              onClick={() => window.location.href = '/leaderboard'}
+              onClick={() => handleLogin('google')}
               className="transition-transform hover:scale-105"
             >
               <img 
@@ -158,7 +158,7 @@ export function ImprovedAuthPage() {
               />
             </button>
             <button
-              onClick={() => window.location.href = '/rules'}
+              onClick={() => handleLogin('google')}
               className="transition-transform hover:scale-105"
             >
               <img 
