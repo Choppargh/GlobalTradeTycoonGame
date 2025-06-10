@@ -65,32 +65,32 @@ export function ImprovedAuthPage() {
       }}
     >
       {/* Desktop Layout */}
-      <div className="hidden lg:flex min-h-screen items-center justify-center px-16">
-        <div className="flex items-center justify-between w-full max-w-6xl">
+      <div className="hidden lg:flex min-h-screen items-center justify-center">
+        <div className="flex items-center justify-between" style={{ width: '800px', margin: '0 auto' }}>
           {/* Logo Section */}
           <div className="flex justify-center">
-            <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="max-w-md h-auto" />
+            <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-80 h-auto" />
           </div>
           
           {/* Buttons Section */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             <button
               onClick={() => handleLogin('google')}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Play.png" alt="Play" className="w-48 h-auto" />
+              <img src="/images/GTC_Play.png" alt="Play" className="w-40 h-auto" />
             </button>
             <button
               onClick={() => window.location.href = '/leaderboard'}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-48 h-auto" />
+              <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-40 h-auto" />
             </button>
             <button
               onClick={() => window.location.href = '/rules'}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Rules.png" alt="Rules" className="w-48 h-auto" />
+              <img src="/images/GTC_Rules.png" alt="Rules" className="w-40 h-auto" />
             </button>
           </div>
         </div>
