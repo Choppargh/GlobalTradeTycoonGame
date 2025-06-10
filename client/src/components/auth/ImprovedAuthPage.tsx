@@ -66,31 +66,53 @@ export function ImprovedAuthPage() {
     >
       {/* Desktop Layout */}
       <div className="hidden lg:flex min-h-screen items-center justify-center">
-        <div className="flex items-center justify-between" style={{ width: '900px', margin: '0 auto' }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          width: '800px', 
+          margin: '0 auto' 
+        }}>
           {/* Logo Section */}
-          <div className="flex justify-center">
-            <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-96 h-auto" />
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <img 
+              src="/images/GTC_Logo.png" 
+              alt="Global Trading Tycoon" 
+              style={{ width: '280px', height: 'auto' }}
+            />
           </div>
           
           {/* Buttons Section */}
-          <div className="flex flex-col gap-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <button
               onClick={() => handleLogin('google')}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Play.png" alt="Play" className="w-48 h-auto" />
+              <img 
+                src="/images/GTC_Play.png" 
+                alt="Play" 
+                style={{ width: '160px', height: 'auto' }}
+              />
             </button>
             <button
               onClick={() => window.location.href = '/leaderboard'}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-48 h-auto" />
+              <img 
+                src="/images/GTC_Leaderboard.png" 
+                alt="Leaderboard" 
+                style={{ width: '160px', height: 'auto' }}
+              />
             </button>
             <button
               onClick={() => window.location.href = '/rules'}
               className="transition-transform hover:scale-105"
             >
-              <img src="/images/GTC_Rules.png" alt="Rules" className="w-48 h-auto" />
+              <img 
+                src="/images/GTC_Rules.png" 
+                alt="Rules" 
+                style={{ width: '160px', height: 'auto' }}
+              />
             </button>
           </div>
         </div>
