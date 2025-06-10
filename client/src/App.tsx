@@ -22,7 +22,7 @@ function App() {
       {/* <Toaster position="top-right" /> */}
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<TestComponent />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/game" element={<GamePage />} />
           <Route path="*" element={<NotFound />} />
