@@ -64,62 +64,8 @@ export function ImprovedAuthPage() {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      {/* Desktop Layout */}
-      <div className="hidden xl:flex min-h-screen items-center justify-center">
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          width: '800px', 
-          margin: '0 auto' 
-        }}>
-          {/* Logo Section */}
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <img 
-              src="/images/GTC_Logo.png" 
-              alt="Global Trading Tycoon" 
-              style={{ width: '280px', height: 'auto' }}
-            />
-          </div>
-          
-          {/* Buttons Section */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <button
-              onClick={() => handleLogin('google')}
-              className="transition-transform hover:scale-105"
-            >
-              <img 
-                src="/images/GTC_Play.png" 
-                alt="Play" 
-                style={{ width: '160px', height: 'auto' }}
-              />
-            </button>
-            <button
-              onClick={() => handleLogin('google')}
-              className="transition-transform hover:scale-105"
-            >
-              <img 
-                src="/images/GTC_Leaderboard.png" 
-                alt="Leaderboard" 
-                style={{ width: '160px', height: 'auto' }}
-              />
-            </button>
-            <button
-              onClick={() => handleLogin('google')}
-              className="transition-transform hover:scale-105"
-            >
-              <img 
-                src="/images/GTC_Rules.png" 
-                alt="Rules" 
-                style={{ width: '160px', height: 'auto' }}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Layout */}
-      <div className="xl:hidden min-h-screen flex items-center justify-center p-4">
+      {/* Mobile Layout - Default */}
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm border border-gray-200">
           {/* Header */}
           <div className="text-center mb-8">
