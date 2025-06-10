@@ -177,8 +177,8 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
               <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-64 sm:w-80" />
             </div>
             
-            {/* Navigation Buttons */}
-            <div className="grid grid-cols-2 gap-4 w-full max-w-md">
+            {/* Navigation Buttons - Mobile Optimized */}
+            <div className="flex flex-col gap-4 w-full max-w-xs sm:max-w-sm">
               <button 
                 onClick={() => {
                   if (isAuthenticated && user && user.username) {
@@ -194,7 +194,8 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
                 <img 
                   src="/images/GTC_Play.png" 
                   alt="Play" 
-                  className={`w-full ${!isAuthenticated ? 'opacity-50' : ''}`} 
+                  style={{ width: '200px', height: 'auto', maxWidth: '100%' }}
+                  className={!isAuthenticated ? 'opacity-50' : ''} 
                 />
               </button>
               
@@ -202,14 +203,22 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
                 onClick={() => this.setState({ activeScreen: 'leaderboard' })}
                 className="transition-transform hover:scale-105 focus:outline-none"
               >
-                <img src="/images/GTC_Leaderboard.png" alt="Leaderboard" className="w-full" />
+                <img 
+                  src="/images/GTC_Leaderboard.png" 
+                  alt="Leaderboard" 
+                  style={{ width: '200px', height: 'auto', maxWidth: '100%' }}
+                />
               </button>
               
               <button 
                 onClick={() => this.setState({ activeScreen: 'rules' })}
                 className="transition-transform hover:scale-105 focus:outline-none"
               >
-                <img src="/images/GTC_Rules.png" alt="Rules" className="w-full" />
+                <img 
+                  src="/images/GTC_Rules.png" 
+                  alt="Rules" 
+                  style={{ width: '200px', height: 'auto', maxWidth: '100%' }}
+                />
               </button>
             </div>
           </div>
