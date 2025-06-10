@@ -65,7 +65,7 @@ export function ImprovedAuthPage() {
       }}
     >
       {/* Desktop Layout */}
-      <div className="hidden md:flex min-h-screen items-center justify-center">
+      <div className="hidden xl:flex min-h-screen items-center justify-center">
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
@@ -119,7 +119,7 @@ export function ImprovedAuthPage() {
       </div>
 
       {/* Mobile Layout */}
-      <div className="md:hidden min-h-screen flex items-center justify-center p-4">
+      <div className="xl:hidden min-h-screen flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm border border-gray-200">
           {/* Header */}
           <div className="text-center mb-8">
