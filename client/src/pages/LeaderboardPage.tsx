@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 interface LeaderboardEntry {
   id: number;
@@ -65,27 +63,30 @@ export default function LeaderboardPage() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Global Leaderboard</h1>
-          <Button 
+          <button 
             onClick={() => window.location.href = '/'}
-            variant="outline"
+            className="px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50"
           >
             Back to Home
-          </Button>
+          </button>
         </div>
 
         {error ? (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <p className="text-red-600 mb-4">{error}</p>
-              <Button onClick={fetchLeaderboard}>Try Again</Button>
-            </CardContent>
-          </Card>
+          <div className="bg-white rounded-lg shadow p-8 text-center">
+            <p className="text-red-600 mb-4">{error}</p>
+            <button 
+              onClick={fetchLeaderboard}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Try Again
+            </button>
+          </div>
         ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Traders This Week</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-semibold">Top Traders This Week</h2>
+            </div>
+            <div className="p-6">
               {scores.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 text-lg">No scores yet this week!</p>
