@@ -31,8 +31,8 @@ export function ImprovedAuthPage() {
       });
 
       if (response.ok) {
-        // Use router navigation instead of window.location to prevent refresh loops
-        window.location.replace('/game');
+        // Redirect to homepage dashboard after successful authentication
+        window.location.replace('/');
       } else {
         const error = await response.json();
         alert(error.message || 'Authentication failed');
