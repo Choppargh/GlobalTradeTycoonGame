@@ -2,20 +2,25 @@ import React from 'react';
 
 export default function RulesPage() {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{
+      backgroundImage: `url('/images/GTC_Background.png')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }}>
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Game Rules</h1>
+          <h1 className="text-3xl font-bold text-white">Game Rules</h1>
           <button 
             onClick={() => window.location.href = '/'}
-            className="px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50"
+            className="px-4 py-2 border border-white rounded-md bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm"
           >
             Back to Home
           </button>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
             <div className="p-6 border-b">
               <h2 className="text-xl font-semibold">🎯 Objective</h2>
             </div>
@@ -27,7 +32,7 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
             <div className="p-6 border-b">
               <h2 className="text-xl font-semibold">💰 Starting Conditions</h2>
             </div>
@@ -41,7 +46,7 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
             <div className="p-6 border-b">
               <h2 className="text-xl font-semibold">🌍 Trading Mechanics</h2>
             </div>
@@ -69,7 +74,7 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
             <div className="p-6 border-b">
               <h2 className="text-xl font-semibold">🏦 Banking System</h2>
             </div>
@@ -88,7 +93,7 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
             <div className="p-6 border-b">
               <h2 className="text-xl font-semibold">⚡ Random Events</h2>
             </div>
@@ -106,7 +111,7 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
             <div className="p-6 border-b">
               <h2 className="text-xl font-semibold">🏆 Scoring & Leaderboard</h2>
             </div>
@@ -128,7 +133,7 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
             <div className="p-6 border-b">
               <h2 className="text-xl font-semibold">🎮 Controls</h2>
             </div>
