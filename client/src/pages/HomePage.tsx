@@ -64,7 +64,7 @@ export default function HomePage() {
     }}>
       <div className="flex flex-col items-center justify-center min-h-screen space-y-6 px-4">
         <div className="mb-8">
-          <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-64 sm:w-80" />
+          <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-64 sm:w-80" />
         </div>
         
 
