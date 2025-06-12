@@ -7,11 +7,26 @@ import { ZodError } from "zod";
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes for the game
   
-  // Get leaderboard scores
+  // Get leaderboard scores (highest score per user only)
   app.get('/api/scores', async (req, res) => {
     try {
-      const scores = await storage.getScores();
-      res.json(scores);
+      const allScores = await storage.getScores();
+      
+      // Group scores by username and keep only the highest score for each user
+      const userHighestScores = new Map();
+      
+      allScores.forEach(score => {
+        const existing = userHighestScores.get(score.username);
+        if (!existing || score.score > existing.score) {
+          userHighestScores.set(score.username, score);
+        }
+      });
+      
+      // Convert back to array and sort by score descending
+      const highestScores = Array.from(userHighestScores.values())
+        .sort((a, b) => b.score - a.score);
+      
+      res.json(highestScores);
     } catch (error) {
       console.error("Error fetching scores:", error);
       res.status(500).json({ message: "Failed to fetch leaderboard" });
