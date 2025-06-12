@@ -67,11 +67,7 @@ export default function HomePage() {
           <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-64 sm:w-80" />
         </div>
         
-        {user && (
-          <div className="text-center mb-4">
-            <p className="text-white text-lg font-semibold">Welcome back, {user.username || user.email}!</p>
-          </div>
-        )}
+
         
         <div className="flex flex-col items-center gap-4 w-full">
           <button 
@@ -86,7 +82,7 @@ export default function HomePage() {
           </button>
           
           <button 
-            onClick={() => {}}
+            onClick={() => window.location.href = '/leaderboard'}
             className="transition-transform hover:scale-105 focus:outline-none"
           >
             <img 
@@ -97,7 +93,7 @@ export default function HomePage() {
           </button>
           
           <button 
-            onClick={() => {}}
+            onClick={() => window.location.href = '/rules'}
             className="transition-transform hover:scale-105 focus:outline-none"
           >
             <img 
