@@ -1,9 +1,7 @@
 import React from 'react';
 import { ImprovedAuthPage } from '@/components/auth/ImprovedAuthPage';
-import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(true);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
@@ -50,7 +48,7 @@ export default function HomePage() {
           
           <div className="flex flex-col items-center gap-4 w-full">
             <button 
-              onClick={() => navigate('/game')}
+              onClick={() => window.location.href = '/game'}
               className="transition-transform hover:scale-105 focus:outline-none"
             >
               <img 
