@@ -54,9 +54,16 @@ export function GameHeader() {
       <div className="container mx-auto px-4 py-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex">
-            <div className="mr-6">
-              <div className="text-lg font-bold">Trader</div>
-              <div className="text-3xl font-bold">{username}</div>
+            <div className="flex items-center mr-6">
+              <img 
+                src="/images/GTC_Logo-512x512.png" 
+                alt="Global Trade Tycoon" 
+                className="w-12 h-12 mr-3"
+              />
+              <div>
+                <div className="text-lg font-bold">Trader</div>
+                <div className="text-3xl font-bold">{username}</div>
+              </div>
             </div>
             <div className="border-l border-gray-300 pl-6">
               <div className="text-lg font-bold">Location</div>
