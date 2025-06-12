@@ -526,6 +526,13 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Always clear saved game state first to prevent resumed play in any case
     get().clearSavedGameState();
     
+    // Move to game over screen immediately to prevent multiple submissions
+    set({
+      isEndGameConfirmationOpen: false,
+      gamePhase: 'game-over',
+      isTravelRiskDialogOpen: false
+    });
+    
     try {
       // Submit score to leaderboard
       await apiRequest('POST', '/api/scores', {
@@ -535,21 +542,10 @@ export const useGameStore = create<GameState>((set, get) => ({
         endNetWorth: netWorth
       });
       
-      // Successfully submitted - close dialog and show game over screen
-      set({ 
-        isEndGameConfirmationOpen: false,
-        gamePhase: 'game-over',
-        isTravelRiskDialogOpen: false
-      });
+      console.log("Score submitted successfully");
     } catch (error) {
       console.error("Failed to submit score:", error);
-      
-      // Even if submission fails, move to game over screen properly
-      set({
-        isEndGameConfirmationOpen: false,
-        gamePhase: 'game-over',
-        isTravelRiskDialogOpen: false
-      });
+      // Game over screen is already showing, no need to change state again
     }
   },
   
