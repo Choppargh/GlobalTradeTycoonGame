@@ -125,20 +125,20 @@ export default function LeaderboardPage() {
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         <div className="mt-8 text-center">
           <p className="text-gray-600 mb-4">
             Leaderboard resets every Monday at midnight UTC
           </p>
-          <Button 
+          <button 
             onClick={() => window.location.href = '/game'}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Play Now
-          </Button>
+          </button>
         </div>
       </div>
     </div>
