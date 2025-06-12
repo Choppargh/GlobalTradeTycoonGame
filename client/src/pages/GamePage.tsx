@@ -25,13 +25,17 @@ export default function GamePage() {
 
   // Auto-initialize game on first load
   useEffect(() => {
-    if (!currentLocation) {
-      // Try to load saved game first, if none exists start new game
-      const hasExistingGame = loadGameState();
-      if (!hasExistingGame) {
-        startGame();
+    const initializeGame = async () => {
+      if (!currentLocation) {
+        // Try to load saved game first, if none exists start new game
+        const hasExistingGame = loadGameState();
+        if (!hasExistingGame) {
+          await startGame();
+        }
       }
-    }
+    };
+    
+    initializeGame();
   }, [currentLocation, startGame, loadGameState]);
 
   // Basic game state loading

@@ -39,7 +39,7 @@ interface GameState {
   
   // Game actions
   setUsername: (username: string) => void;
-  startGame: () => void;
+  startGame: () => Promise<void>;
   travel: (destination: Location) => void;
   buyProduct: (productId: number, quantity: number, price: number) => void;
   sellProduct: (productId: number, quantity: number, price: number) => void;
@@ -87,7 +87,24 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ username });
   },
   
-  startGame: () => {
+  startGame: async () => {
+    // Fetch current user information
+    try {
+      const response = await fetch('/auth/status', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isAuthenticated && data.user) {
+          set({ username: data.user.username || data.user.email || 'Trader' });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch user info:', error);
+      set({ username: 'Trader' }); // Fallback
+    }
+    
     // Pick random location
     const locations = Object.values(Location);
     const randomIndex = Math.floor(Math.random() * locations.length);
