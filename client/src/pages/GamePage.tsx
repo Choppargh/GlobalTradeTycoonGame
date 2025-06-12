@@ -7,6 +7,7 @@ import { TravelOptions } from '@/components/game/TravelOptions';
 import { BankInterface } from '@/components/game/BankInterface';
 import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
+import { GameOver } from '@/components/game/GameOver';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
@@ -14,6 +15,7 @@ export default function GamePage() {
 
   const { 
     currentLocation, 
+    gamePhase,
     currentEvent, 
     clearCurrentEvent, 
     isTravelRiskDialogOpen,
@@ -37,6 +39,11 @@ export default function GamePage() {
     
     initializeGame();
   }, [currentLocation, startGame, loadGameState]);
+
+  // Check for game over state first
+  if (gamePhase === 'game-over') {
+    return <GameOver />;
+  }
 
   // Basic game state loading
   if (!currentLocation) {
