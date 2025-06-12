@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 export function ImprovedAuthPage() {
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(true); // Show authentication immediately
   const handleLogin = (provider: string) => {
     if (provider === 'google' || provider === 'facebook' || provider === 'twitter') {
       window.location.href = `/auth/${provider}`;
