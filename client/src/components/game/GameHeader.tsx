@@ -54,7 +54,7 @@ export function GameHeader() {
       <div className="w-full px-2 py-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex">
-            <div className="flex items-center mr-4">
+            <div className="flex items-center mr-6">
               <img 
                 src="/images/GTC_Logo-512x512.png" 
                 alt="Global Trade Tycoon" 
