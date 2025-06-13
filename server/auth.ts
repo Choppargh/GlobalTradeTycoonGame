@@ -54,7 +54,7 @@ passport.use(new LocalStrategy(
 // Google OAuth Strategy
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   const baseURL = process.env.REPLIT_DOMAINS 
-    ? `https://${process.env.REPLIT_DOMAINS}` 
+    ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
     : (process.env.NODE_ENV === 'production' 
         ? 'https://globaltradingtycoon.app' 
         : 'http://localhost:5000');
@@ -107,7 +107,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 // Facebook OAuth Strategy
 if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
   const baseURL = process.env.REPLIT_DOMAINS 
-    ? `https://${process.env.REPLIT_DOMAINS}` 
+    ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
     : (process.env.NODE_ENV === 'production' 
         ? 'https://globaltradingtycoon.app' 
         : 'http://localhost:5000');
@@ -162,7 +162,7 @@ const twitterConsumerSecret = 'SPU5151LaUzZbbGW95iAFyyHIZbt_VGzGW1TQyurxxlhZTCap
 if (twitterConsumerKey && twitterConsumerSecret) {
   console.log('Registering Twitter OAuth strategy...');
   const baseURL = process.env.REPLIT_DOMAINS 
-    ? `https://${process.env.REPLIT_DOMAINS}` 
+    ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
     : (process.env.NODE_ENV === 'production' 
         ? 'https://globaltradingtycoon.app' 
         : 'http://localhost:5000');

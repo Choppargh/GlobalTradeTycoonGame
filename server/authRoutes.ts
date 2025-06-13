@@ -98,7 +98,7 @@ export function registerAuthRoutes(app: Express) {
   console.log('Registering Google OAuth routes...');
   app.get('/auth/google', (req, res, next) => {
     console.log('Google OAuth route accessed');
-    console.log('Passport strategies available:', Object.keys(passport._strategies || {}));
+    console.log('Passport strategies available:', Object.keys((passport as any)._strategies || {}));
     passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
   });
 
