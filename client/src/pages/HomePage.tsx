@@ -1,74 +1,80 @@
 import React from 'react';
 import { ImprovedAuthPage } from '@/components/auth/ImprovedAuthPage';
+import { DisplayNameSetup } from '@/components/auth/DisplayNameSetup';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function HomePage() {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [user, setUser] = React.useState<any>(null);
+  const { user, isLoading, isAuthenticated, logout } = useAuth();
+  const [showDisplayNameSetup, setShowDisplayNameSetup] = React.useState(false);
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
 
   React.useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/auth/status', {
-          credentials: 'include'
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          const authenticated = Boolean(data.isAuthenticated && data.user);
-          setIsAuthenticated(authenticated);
-          setUser(data.user || null);
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        setIsAuthenticated(false);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    checkAuth();
+    // Check if redirected from protected route
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('showAuth') === 'true') {
+      setShowAuthModal(true);
+      // Clean up URL
+      window.history.replaceState({}, '', '/');
+    }
   }, []);
 
+  React.useEffect(() => {
+    // Show display name setup for OAuth users who just signed in
+    if (isAuthenticated && user && user.provider !== 'local' && !localStorage.getItem(`displayNameSetup_${user.id}`)) {
+      setShowDisplayNameSetup(true);
+    }
+  }, [isAuthenticated, user]);
+
+  const handleDisplayNameSetupComplete = () => {
+    if (user) {
+      localStorage.setItem(`displayNameSetup_${user.id}`, 'completed');
+    }
+    setShowDisplayNameSetup(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
+  // Show auth page for unauthenticated users or when auth modal is requested
+  if (!isAuthenticated || showAuthModal) {
+    return <ImprovedAuthPage />;
+  }
+
+  // Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
-        </div>
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{
+          backgroundImage: 'url("/images/GTC_Background.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        <div className="text-white text-xl">Loading...</div>
       </div>
     );
   }
 
-  // Always show auth page first - user must authenticate before accessing dashboard
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen">
-        <ImprovedAuthPage />
-      </div>
-    );
-  }
-
-  // Authenticated dashboard
   return (
-    <div className="min-h-screen" style={{
-      backgroundImage: `url('/images/GTC_Background_Portrait.png')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat'
-    }}>
+    <div 
+      className="min-h-screen relative"
+      style={{
+        backgroundImage: 'url("/images/GTC_Background.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       {/* Mobile Layout */}
-      <div className="flex md:hidden flex-col items-center justify-center min-h-screen space-y-6 px-4">
-        <div className="mb-8">
-          <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-64" />
+      <div className="lg:hidden min-h-screen flex flex-col items-center justify-center p-4 gap-8">
+        <div className="text-center">
+          <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-64 mx-auto mb-8" />
         </div>
         
-        <div className="flex flex-col items-center gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full max-w-xs">
           <button 
             onClick={() => window.location.href = '/game'}
             className="transition-transform hover:scale-105 focus:outline-none"
@@ -76,7 +82,7 @@ export default function HomePage() {
             <img 
               src="/images/GTC_Play.png" 
               alt="Play" 
-              style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
+              className="w-full"
             />
           </button>
           
@@ -87,7 +93,7 @@ export default function HomePage() {
             <img 
               src="/images/GTC_Leaderboard.png" 
               alt="Leaderboard" 
-              style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
+              className="w-full"
             />
           </button>
           
@@ -98,8 +104,19 @@ export default function HomePage() {
             <img 
               src="/images/GTC_Rules.png" 
               alt="Rules" 
-              style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
+              className="w-full"
             />
+          </button>
+        </div>
+        
+        {/* User info and logout button for mobile */}
+        <div className="text-center text-white">
+          <p className="mb-2">Welcome, {user?.displayName || user?.username}</p>
+          <button 
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white text-sm"
+          >
+            Logout
           </button>
         </div>
       </div>
@@ -157,6 +174,19 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* User info and logout button for desktop */}
+      <div className="hidden lg:block absolute top-4 right-4">
+        <div className="text-white text-right">
+          <p className="mb-2">Welcome, {user?.displayName || user?.username}</p>
+          <button 
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white text-sm"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
       
       {/* Footer with legal links */}
       <footer className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
@@ -175,6 +205,13 @@ export default function HomePage() {
           </a>
         </div>
       </footer>
+
+      {/* Display Name Setup Modal */}
+      <DisplayNameSetup
+        isOpen={showDisplayNameSetup}
+        onComplete={handleDisplayNameSetupComplete}
+        currentDisplayName={user?.displayName || user?.username || ''}
+      />
     </div>
   );
 }

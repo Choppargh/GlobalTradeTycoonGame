@@ -9,6 +9,7 @@ import RulesPage from "./pages/RulesPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import NotFound from "./pages/not-found";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { Loading } from "./components/ui/loading";
 import { Toaster } from "./components/ui/sonner";
 import "@fontsource/inter";
@@ -24,8 +25,16 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/game" element={<GamePage />} />
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/game" element={
+            <ProtectedRoute>
+              <GamePage />
+            </ProtectedRoute>
+          } />
+          <Route path="/leaderboard" element={
+            <ProtectedRoute>
+              <LeaderboardPage />
+            </ProtectedRoute>
+          } />
           <Route path="/rules" element={<RulesPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
