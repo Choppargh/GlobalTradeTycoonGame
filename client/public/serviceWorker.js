@@ -1,5 +1,5 @@
 // Service Worker for Global Trading Tycoon PWA
-const CACHE_NAME = 'global-trading-tycoon-v5'; // Updated for better offline support
+const CACHE_NAME = 'global-trading-tycoon-v6'; // Fixed auth routes caching issue
 const urlsToCache = [
   '/',
   '/index.html',
@@ -26,6 +26,11 @@ self.addEventListener('install', event => {
 
 // Improved fetch handler with better offline support
 self.addEventListener('fetch', event => {
+  // Skip service worker for authentication routes
+  if (event.request.url.includes('/auth/')) {
+    return;
+  }
+
   // For navigation requests (page loads), always serve the app shell
   if (event.request.mode === 'navigate') {
     event.respondWith(
