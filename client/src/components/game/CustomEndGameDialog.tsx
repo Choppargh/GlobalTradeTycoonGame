@@ -12,9 +12,7 @@ interface CustomEndGameDialogProps {
 export function CustomEndGameDialog({ isOpen, isLastDay, onClose, onConfirm }: CustomEndGameDialogProps) {
   if (!isOpen) return null;
 
-  const message = isLastDay 
-    ? "Are you ready to finish the game and see your final score?" 
-    : "Are you sure you want to end the game early? Your score will not be at its maximum potential if you end now.";
+  const message = "Are you sure? All progress will be lost and you will return to the dashboard.";
 
   return (
     <div 
@@ -23,7 +21,7 @@ export function CustomEndGameDialog({ isOpen, isLastDay, onClose, onConfirm }: C
     >
       <div className="bg-white rounded-lg p-6 max-w-md w-[95%] shadow-xl">
         <h2 className="text-xl font-bold mb-4">
-          {isLastDay ? "Finish Game" : "End Game Early?"}
+          End Game
         </h2>
         
         <p className="mb-6 text-gray-700">{message}</p>
@@ -37,11 +35,10 @@ export function CustomEndGameDialog({ isOpen, isLastDay, onClose, onConfirm }: C
           </Button>
           
           <Button
-            variant={isLastDay ? "default" : "destructive"}
-            className={isLastDay ? "bg-green-600 hover:bg-green-700" : ""}
+            variant="destructive"
             onClick={onConfirm}
           >
-            {isLastDay ? "Submit Score" : "End Game"}
+            End Game
           </Button>
         </div>
       </div>
