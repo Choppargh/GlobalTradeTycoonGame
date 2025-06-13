@@ -114,11 +114,18 @@ export function registerAuthRoutes(app: Express) {
       redirectDomain = 'globaltradetycoon.app';
     }
     
-    // Redirect to the primary domain for OAuth to maintain consistency
-    const oauthURL = `https://globaltradingtycoon.app/auth/google?return_to=${encodeURIComponent(`${protocol}://${host}`)}`;
+    // Store return URL in query parameter for callback
+    const returnTo = req.query.return_to as string;
     
     if (host !== 'globaltradingtycoon.app') {
+      // Redirect to primary domain with return URL
+      const oauthURL = `https://globaltradingtycoon.app/auth/google?return_to=${encodeURIComponent(`${protocol}://${host}`)}`;
       return res.redirect(oauthURL);
+    }
+    
+    // Store return URL in session for callback
+    if (returnTo) {
+      (req.session as any).oauthReturnTo = returnTo;
     }
     
     passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
@@ -128,8 +135,15 @@ export function registerAuthRoutes(app: Express) {
     passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
     (req: Request, res: Response) => {
       // Successful authentication - redirect back to original domain
-      const returnTo = req.query.return_to as string;
+      const returnTo = (req.session as any).oauthReturnTo || req.query.return_to as string;
+      
+      // Clear the session variable
+      if ((req.session as any).oauthReturnTo) {
+        delete (req.session as any).oauthReturnTo;
+      }
+      
       if (returnTo && returnTo.startsWith('https://')) {
+        console.log('Redirecting user back to:', returnTo);
         res.redirect(returnTo);
       } else {
         res.redirect('/');
