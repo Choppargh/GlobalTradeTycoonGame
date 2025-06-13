@@ -58,6 +58,8 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     : (process.env.NODE_ENV === 'production' 
         ? 'https://globaltradingtycoon.app' 
         : 'http://localhost:5000');
+  
+  console.log('Registering Google OAuth strategy with callback URL:', `${baseURL}/auth/google/callback`);
     
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
