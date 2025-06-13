@@ -114,38 +114,55 @@ export function registerAuthRoutes(app: Express) {
       redirectDomain = 'globaltradetycoon.app';
     }
     
-    // Store return URL in query parameter for callback
+    // Handle return URL for cross-domain OAuth
     const returnTo = req.query.return_to as string;
     
     if (host !== 'globaltradingtycoon.app') {
       // Redirect to primary domain with return URL
       const oauthURL = `https://globaltradingtycoon.app/auth/google?return_to=${encodeURIComponent(`${protocol}://${host}`)}`;
+      console.log('Redirecting to primary domain for OAuth:', oauthURL);
       return res.redirect(oauthURL);
     }
     
-    // Store return URL in session for callback
-    if (returnTo) {
-      (req.session as any).oauthReturnTo = returnTo;
-    }
+    // Determine the final return URL
+    const finalReturnTo = returnTo || `${protocol}://${host}`;
+    console.log('Final return URL for OAuth:', finalReturnTo);
     
-    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+    // Use OAuth state parameter to pass return URL
+    const state = Buffer.from(JSON.stringify({ returnTo: finalReturnTo })).toString('base64');
+    
+    passport.authenticate('google', { 
+      scope: ['profile', 'email'],
+      state: state
+    })(req, res, next);
   });
 
   app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
     (req: Request, res: Response) => {
-      // Successful authentication - redirect back to original domain
-      const returnTo = (req.session as any).oauthReturnTo || req.query.return_to as string;
+      // Extract return URL from OAuth state parameter
+      let returnTo = '/';
       
-      // Clear the session variable
-      if ((req.session as any).oauthReturnTo) {
-        delete (req.session as any).oauthReturnTo;
+      try {
+        const state = req.query.state as string;
+        if (state) {
+          const decoded = JSON.parse(Buffer.from(state, 'base64').toString());
+          returnTo = decoded.returnTo || '/';
+          console.log('OAuth callback - Decoded state returnTo:', returnTo);
+        }
+      } catch (error) {
+        console.log('OAuth callback - Error decoding state:', error);
+        // Fallback to query parameter
+        returnTo = req.query.return_to as string || '/';
       }
       
-      if (returnTo && returnTo.startsWith('https://')) {
-        console.log('Redirecting user back to:', returnTo);
+      console.log('OAuth callback - Final returnTo:', returnTo);
+      
+      if (returnTo && (returnTo.startsWith('https://') || returnTo.startsWith('http://'))) {
+        console.log('Redirecting user back to original domain:', returnTo);
         res.redirect(returnTo);
       } else {
+        console.log('No valid return URL, redirecting to root');
         res.redirect('/');
       }
     }
