@@ -56,7 +56,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   const baseURL = process.env.REPLIT_DOMAINS 
     ? `https://${process.env.REPLIT_DOMAINS}` 
     : (process.env.NODE_ENV === 'production' 
-        ? 'https://globaltradingtycoon.app' 
+        ? 'https://globaltradertycoon.app' 
         : 'http://localhost:5000');
   
   console.log('Registering Google OAuth strategy with callback URL:', `${baseURL}/auth/google/callback`);
