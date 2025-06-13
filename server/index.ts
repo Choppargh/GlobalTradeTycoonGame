@@ -1,6 +1,14 @@
 import { config } from 'dotenv';
 config(); // Load environment variables
 
+// Debug environment variables for production OAuth issues
+console.log('=== ENVIRONMENT DEBUG ===');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('GOOGLE_CLIENT_ID exists:', !!process.env.GOOGLE_CLIENT_ID);
+console.log('GOOGLE_CLIENT_SECRET exists:', !!process.env.GOOGLE_CLIENT_SECRET);
+console.log('REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
+console.log('=========================');
+
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import passport from "./auth";
