@@ -70,49 +70,52 @@ export default function HomePage() {
       }}
     >
       {/* Mobile Layout */}
-      <div className="lg:hidden min-h-screen flex flex-col items-center justify-center p-4 gap-8">
-        <div className="text-center">
-          <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-64 mx-auto mb-8" />
-        </div>
-        
-        <div className="flex flex-col gap-4 w-full max-w-xs">
-          <button 
-            onClick={() => window.location.href = '/game'}
-            className="transition-transform hover:scale-105 focus:outline-none"
-          >
-            <img 
-              src="/images/GTC_Play.png" 
-              alt="Play" 
-              className="w-full"
-            />
-          </button>
-          
-          <button 
-            onClick={() => window.location.href = '/leaderboard'}
-            className="transition-transform hover:scale-105 focus:outline-none"
-          >
-            <img 
-              src="/images/GTC_Leaderboard.png" 
-              alt="Leaderboard" 
-              className="w-full"
-            />
-          </button>
-          
-          <button 
-            onClick={() => window.location.href = '/rules'}
-            className="transition-transform hover:scale-105 focus:outline-none"
-          >
-            <img 
-              src="/images/GTC_Rules.png" 
-              alt="Rules" 
-              className="w-full"
-            />
-          </button>
-        </div>
-        
+      <div className="lg:hidden min-h-screen flex flex-col items-center justify-between p-4 pb-20">
         {/* Mobile User Avatar */}
         <div className="absolute top-4 right-4 z-10">
           <UserAvatar onChangeDisplayName={handleChangeDisplayName} />
+        </div>
+        
+        {/* Logo and buttons centered */}
+        <div className="flex-1 flex flex-col items-center justify-center gap-6">
+          <div className="text-center">
+            <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-48 mx-auto mb-6" />
+          </div>
+          
+          <div className="flex flex-col gap-3 w-full max-w-[200px]">
+            <button 
+              onClick={() => window.location.href = '/game'}
+              className="transition-transform hover:scale-105 focus:outline-none"
+            >
+              <img 
+                src="/images/GTC_Play.png" 
+                alt="Play" 
+                className="w-full"
+              />
+            </button>
+            
+            <button 
+              onClick={() => window.location.href = '/leaderboard'}
+              className="transition-transform hover:scale-105 focus:outline-none"
+            >
+              <img 
+                src="/images/GTC_Leaderboard.png" 
+                alt="Leaderboard" 
+                className="w-full"
+              />
+            </button>
+            
+            <button 
+              onClick={() => window.location.href = '/rules'}
+              className="transition-transform hover:scale-105 focus:outline-none"
+            >
+              <img 
+                src="/images/GTC_Rules.png" 
+                alt="Rules" 
+                className="w-full"
+              />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -175,18 +178,18 @@ export default function HomePage() {
         <UserAvatar onChangeDisplayName={handleChangeDisplayName} />
       </div>
       
-      {/* Footer with legal links */}
-      <footer className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-        <div className="flex gap-4 text-sm">
+      {/* Footer with legal links - positioned differently for mobile vs desktop */}
+      <footer className="absolute bottom-4 left-1/2 transform -translate-x-1/2 lg:bottom-4">
+        <div className="flex gap-2 lg:gap-4 text-xs lg:text-sm">
           <a 
             href="/privacy" 
-            className="text-white/80 hover:text-white underline bg-black/20 px-3 py-1 rounded backdrop-blur-sm"
+            className="text-white/80 hover:text-white underline bg-black/20 px-2 lg:px-3 py-1 rounded backdrop-blur-sm"
           >
             Privacy Policy
           </a>
           <a 
             href="/terms" 
-            className="text-white/80 hover:text-white underline bg-black/20 px-3 py-1 rounded backdrop-blur-sm"
+            className="text-white/80 hover:text-white underline bg-black/20 px-2 lg:px-3 py-1 rounded backdrop-blur-sm"
           >
             Terms of Service
           </a>
