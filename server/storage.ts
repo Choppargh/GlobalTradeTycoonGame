@@ -7,6 +7,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByProvider(provider: string, providerId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUserDisplayName(id: number, displayName: string): Promise<User | undefined>;
   
   // Score related operations
   getScores(): Promise<Score[]>;
@@ -80,6 +81,16 @@ export class MemStorage implements IStorage {
     };
     this.scores.set(id, score);
     return score;
+  }
+
+  async updateUserDisplayName(id: number, displayName: string): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (user) {
+      const updatedUser = { ...user, displayName };
+      this.users.set(id, updatedUser);
+      return updatedUser;
+    }
+    return undefined;
   }
 }
 

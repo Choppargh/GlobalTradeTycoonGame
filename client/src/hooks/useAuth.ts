@@ -1,146 +1,91 @@
 import { useState, useEffect } from 'react';
 
-export interface User {
+interface User {
   id: number;
   username: string;
   email: string;
   displayName: string;
   avatar: string | null;
-}
-
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
+  provider?: string;
 }
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/auth/status');
-        const data = await response.json();
-        
-        setUser(data.user || null);
-        setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
-        setError(null);
-      } catch (err) {
-        console.error('Auth check failed:', err);
-        setUser(null);
-        setIsAuthenticated(false);
-        setError(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
+    checkAuthStatus();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const checkAuthStatus = async () => {
     try {
-      setIsLoading(true);
-      setError(null);
-      
-      const response = await fetch('/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const response = await fetch('/auth/me', {
+        credentials: 'include'
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
       }
-
-      const data = await response.json();
-      setUser(data.user);
-      setIsAuthenticated(true);
-      return data;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
-      setError(errorMessage);
-      throw err;
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      setUser(null);
+      setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (username: string, email: string, password: string) => {
+  const updateDisplayName = async (newDisplayName: string) => {
     try {
-      setIsLoading(true);
-      setError(null);
-      
-      const response = await fetch('/auth/register', {
+      const response = await fetch('/auth/update-display-name', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ displayName: newDisplayName })
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+      if (response.ok) {
+        const data = await response.json();
+        setUser(prev => prev ? { ...prev, displayName: newDisplayName } : null);
+        return { success: true };
+      } else {
+        const error = await response.json();
+        return { success: false, error: error.message };
       }
-
-      const data = await response.json();
-      setUser(data.user);
-      setIsAuthenticated(true);
-      return data;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Registration failed';
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      return { success: false, error: 'Network error occurred' };
     }
   };
 
   const logout = async () => {
     try {
-      await fetch('/auth/logout', { method: 'POST' });
-    } catch (err) {
-      console.error('Logout error:', err);
+      await fetch('/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
     } finally {
       setUser(null);
       setIsAuthenticated(false);
-      setError(null);
-    }
-  };
-
-  const clearError = () => {
-    setError(null);
-  };
-
-  const refreshAuth = async () => {
-    try {
-      const response = await fetch('/auth/status');
-      const data = await response.json();
-      
-      setUser(data.user || null);
-      setIsAuthenticated(Boolean(data.isAuthenticated && data.user));
-      setError(null);
-    } catch (err) {
-      console.error('Auth refresh failed:', err);
-      setUser(null);
-      setIsAuthenticated(false);
+      window.location.href = '/';
     }
   };
 
   return {
     user,
-    isAuthenticated,
     isLoading,
-    error,
-    login,
-    register,
-    logout,
-    clearError,
-    refreshAuth
+    isAuthenticated,
+    checkAuthStatus,
+    updateDisplayName,
+    logout
   };
 }

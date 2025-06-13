@@ -151,11 +151,61 @@ export function registerAuthRoutes(app: Express) {
           username: user.username,
           email: user.email,
           displayName: user.displayName,
-          avatar: user.avatar
+          avatar: user.avatar,
+          provider: user.provider
         }
       });
     } else {
       res.status(401).json({ message: 'Not authenticated' });
+    }
+  });
+
+  // Update display name endpoint
+  app.post('/auth/update-display-name', async (req: Request, res: Response) => {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    try {
+      const { displayName } = req.body;
+      
+      if (!displayName || typeof displayName !== 'string') {
+        return res.status(400).json({ message: 'Display name is required' });
+      }
+
+      const trimmedDisplayName = displayName.trim();
+      
+      if (trimmedDisplayName.length < 2 || trimmedDisplayName.length > 50) {
+        return res.status(400).json({ message: 'Display name must be between 2 and 50 characters' });
+      }
+
+      const user = req.user as any;
+      
+      // Update the user in the database
+      const updatedUser = await storage.updateUserDisplayName(user.id, trimmedDisplayName);
+      
+      if (!updatedUser) {
+        return res.status(500).json({ message: 'Failed to update display name' });
+      }
+
+      // Update the session user object
+      req.user = updatedUser;
+
+      res.json({ 
+        message: 'Display name updated successfully',
+        user: {
+          id: updatedUser.id,
+          username: updatedUser.username,
+          email: updatedUser.email,
+          displayName: updatedUser.displayName,
+          avatar: updatedUser.avatar,
+          provider: updatedUser.provider
+        }
+      });
+
+    } catch (error) {
+      console.error('Update display name error:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
   });
 
