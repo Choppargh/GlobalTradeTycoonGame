@@ -45,6 +45,7 @@ interface GameState {
   sellProduct: (productId: number, quantity: number, price: number) => void;
   handleBankAction: (action: 'deposit' | 'withdraw' | 'loan' | 'repay', amount: number) => void;
   endGame: () => Promise<void>;
+  finishGame: () => Promise<void>;
   restartGame: () => void;
   
   // UI states
