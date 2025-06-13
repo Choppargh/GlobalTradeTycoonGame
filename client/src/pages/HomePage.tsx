@@ -1,6 +1,7 @@
 import React from 'react';
 import { ImprovedAuthPage } from '@/components/auth/ImprovedAuthPage';
 import { DisplayNameSetup } from '@/components/auth/DisplayNameSetup';
+import { UserAvatar } from '@/components/ui/UserAvatar';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function HomePage() {
@@ -32,8 +33,8 @@ export default function HomePage() {
     setShowDisplayNameSetup(false);
   };
 
-  const handleLogout = async () => {
-    await logout();
+  const handleChangeDisplayName = () => {
+    setShowDisplayNameSetup(true);
   };
 
   // Show auth page for unauthenticated users or when auth modal is requested
@@ -109,15 +110,9 @@ export default function HomePage() {
           </button>
         </div>
         
-        {/* User info and logout button for mobile */}
-        <div className="text-center text-white">
-          <p className="mb-2">Welcome, {user?.displayName || user?.username}</p>
-          <button 
-            onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white text-sm"
-          >
-            Logout
-          </button>
+        {/* Mobile User Avatar */}
+        <div className="absolute top-4 right-4 z-10">
+          <UserAvatar onChangeDisplayName={handleChangeDisplayName} />
         </div>
       </div>
 
@@ -175,17 +170,9 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* User info and logout button for desktop */}
-      <div className="hidden lg:block absolute top-4 right-4">
-        <div className="text-white text-right">
-          <p className="mb-2">Welcome, {user?.displayName || user?.username}</p>
-          <button 
-            onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white text-sm"
-          >
-            Logout
-          </button>
-        </div>
+      {/* Desktop User Avatar */}
+      <div className="hidden lg:block absolute top-4 right-4 z-10">
+        <UserAvatar onChangeDisplayName={handleChangeDisplayName} />
       </div>
       
       {/* Footer with legal links */}
