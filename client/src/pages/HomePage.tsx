@@ -105,44 +105,46 @@ export default function HomePage() {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:flex min-h-screen items-center justify-between px-8">
-        <div className="flex-1">
-          <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-80" />
-        </div>
-        
-        <div className="flex flex-col gap-4">
-          <button 
-            onClick={() => window.location.href = '/game'}
-            className="transition-transform hover:scale-105 focus:outline-none"
-          >
-            <img 
-              src="/images/GTC_Play.png" 
-              alt="Play" 
-              style={{ width: '200px', height: 'auto' }}
-            />
-          </button>
+      <div className="hidden md:flex min-h-screen items-center justify-center px-8">
+        <div className="flex items-center gap-16">
+          <div>
+            <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-80" />
+          </div>
           
-          <button 
-            onClick={() => window.location.href = '/leaderboard'}
-            className="transition-transform hover:scale-105 focus:outline-none"
-          >
-            <img 
-              src="/images/GTC_Leaderboard.png" 
-              alt="Leaderboard" 
-              style={{ width: '200px', height: 'auto' }}
-            />
-          </button>
-          
-          <button 
-            onClick={() => window.location.href = '/rules'}
-            className="transition-transform hover:scale-105 focus:outline-none"
-          >
-            <img 
-              src="/images/GTC_Rules.png" 
-              alt="Rules" 
-              style={{ width: '200px', height: 'auto' }}
-            />
-          </button>
+            <div className="flex flex-col gap-4">
+            <button 
+              onClick={() => window.location.href = '/game'}
+              className="transition-transform hover:scale-105 focus:outline-none"
+            >
+              <img 
+                src="/images/GTC_Play.png" 
+                alt="Play" 
+                style={{ width: '200px', height: 'auto' }}
+              />
+            </button>
+            
+            <button 
+              onClick={() => window.location.href = '/leaderboard'}
+              className="transition-transform hover:scale-105 focus:outline-none"
+            >
+              <img 
+                src="/images/GTC_Leaderboard.png" 
+                alt="Leaderboard" 
+                style={{ width: '200px', height: 'auto' }}
+              />
+            </button>
+            
+            <button 
+              onClick={() => window.location.href = '/rules'}
+              className="transition-transform hover:scale-105 focus:outline-none"
+            >
+              <img 
+                src="/images/GTC_Rules.png" 
+                alt="Rules" 
+                style={{ width: '200px', height: 'auto' }}
+              />
+            </button>
+          </div>
         </div>
       </div>
       
