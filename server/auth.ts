@@ -51,18 +51,17 @@ passport.use(new LocalStrategy(
   }
 ));
 
-// Google OAuth Strategy - Configure for primary domain
+// Google OAuth Strategy - Configure dynamically based on environment
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-  // Use the primary domain for OAuth callback
-  const isProduction = process.env.REPLIT_DOMAINS || process.env.NODE_ENV === 'production';
-  const baseURL = isProduction 
-    ? 'https://globaltradingtycoon.app' 
+  // Always use production domain for OAuth to avoid Google Console configuration issues
+  // Development environments will redirect to production for OAuth, then back to dev
+  const baseURL = process.env.NODE_ENV === 'production' || process.env.REPLIT_DOMAINS
+    ? 'https://globaltradingtycoon.app'
     : 'http://localhost:5000';
   
   console.log('Environment check:', {
     NODE_ENV: process.env.NODE_ENV,
     REPLIT_DOMAINS: process.env.REPLIT_DOMAINS,
-    isProduction,
     baseURL
   });
   console.log('Registering Google OAuth strategy with callback URL:', `${baseURL}/auth/google/callback`);
