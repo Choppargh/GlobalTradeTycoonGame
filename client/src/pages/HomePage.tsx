@@ -105,43 +105,53 @@ export default function HomePage() {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:flex min-h-screen items-center justify-center px-8">
-        <div className="flex items-center gap-16">
-          <div>
-            <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-80" />
+      <div className="hidden lg:flex min-h-screen items-center justify-center">
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          width: '800px', 
+          margin: '0 auto' 
+        }}>
+          {/* Logo Section */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <img 
+              src="/images/GTC_Logo.png" 
+              alt="Global Trading Tycoon" 
+              style={{ width: '280px', height: 'auto' }}
+            />
           </div>
           
-            <div className="flex flex-col gap-4">
-            <button 
+          {/* Buttons Section */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <button
               onClick={() => window.location.href = '/game'}
-              className="transition-transform hover:scale-105 focus:outline-none"
+              className="transition-transform hover:scale-105"
             >
               <img 
                 src="/images/GTC_Play.png" 
                 alt="Play" 
-                style={{ width: '200px', height: 'auto' }}
+                style={{ width: '160px', height: 'auto' }}
               />
             </button>
-            
-            <button 
+            <button
               onClick={() => window.location.href = '/leaderboard'}
-              className="transition-transform hover:scale-105 focus:outline-none"
+              className="transition-transform hover:scale-105"
             >
               <img 
                 src="/images/GTC_Leaderboard.png" 
                 alt="Leaderboard" 
-                style={{ width: '200px', height: 'auto' }}
+                style={{ width: '160px', height: 'auto' }}
               />
             </button>
-            
-            <button 
+            <button
               onClick={() => window.location.href = '/rules'}
-              className="transition-transform hover:scale-105 focus:outline-none"
+              className="transition-transform hover:scale-105"
             >
               <img 
                 src="/images/GTC_Rules.png" 
                 alt="Rules" 
-                style={{ width: '200px', height: 'auto' }}
+                style={{ width: '160px', height: 'auto' }}
               />
             </button>
           </div>
