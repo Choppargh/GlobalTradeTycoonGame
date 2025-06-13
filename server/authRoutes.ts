@@ -6,6 +6,7 @@ import { insertUserSchema } from '@shared/schema';
 import { ZodError } from 'zod';
 
 export function registerAuthRoutes(app: Express) {
+  console.log('Registering auth routes...');
   
   // Local registration endpoint
   app.post('/auth/register', async (req: Request, res: Response) => {
@@ -94,8 +95,10 @@ export function registerAuthRoutes(app: Express) {
   });
 
   // Google OAuth routes
+  console.log('Registering Google OAuth routes...');
   app.get('/auth/google', (req, res, next) => {
     console.log('Google OAuth route accessed');
+    console.log('Passport strategies available:', Object.keys(passport._strategies || {}));
     passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
   });
 
