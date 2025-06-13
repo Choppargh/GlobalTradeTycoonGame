@@ -5,6 +5,9 @@ import { storage } from './db';
 import { insertUserSchema } from '@shared/schema';
 import { ZodError } from 'zod';
 
+// In-memory storage for OAuth states
+const oauthStates = new Map<string, { returnTo: string; timestamp: number }>();
+
 export function registerAuthRoutes(app: Express) {
   console.log('Registering auth routes...');
   
@@ -138,32 +141,47 @@ export function registerAuthRoutes(app: Express) {
     const finalReturnTo = returnTo || `${protocol}://${host}`;
     console.log('Final return URL for OAuth:', finalReturnTo);
     
-    // Use OAuth state parameter to pass return URL
-    const state = Buffer.from(JSON.stringify({ returnTo: finalReturnTo })).toString('base64');
+    // Generate a unique state ID and store return URL in memory/session
+    const stateId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    
+    // Store in memory for cross-domain access
+    oauthStates.set(stateId, {
+      returnTo: finalReturnTo,
+      timestamp: Date.now()
+    });
+    
+    console.log('Storing OAuth state:', stateId, 'with returnTo:', finalReturnTo);
     
     passport.authenticate('google', { 
       scope: ['profile', 'email'],
-      state: state
+      state: stateId
     })(req, res, next);
   });
 
   app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
     (req: Request, res: Response) => {
-      // Extract return URL from OAuth state parameter
+      // Extract return URL from stored OAuth state
       let returnTo = '/';
       
-      try {
-        const state = req.query.state as string;
-        if (state) {
-          const decoded = JSON.parse(Buffer.from(state, 'base64').toString());
-          returnTo = decoded.returnTo || '/';
-          console.log('OAuth callback - Decoded state returnTo:', returnTo);
-        }
-      } catch (error) {
-        console.log('OAuth callback - Error decoding state:', error);
+      console.log('OAuth callback - Raw query params:', req.query);
+      
+      const stateId = req.query.state as string;
+      console.log('OAuth callback - State ID:', stateId);
+      
+      if (stateId && global.oauthStates && global.oauthStates.has(stateId)) {
+        const stateData = global.oauthStates.get(stateId);
+        returnTo = stateData.returnTo;
+        
+        // Clean up stored state
+        global.oauthStates.delete(stateId);
+        
+        console.log('OAuth callback - Retrieved returnTo from stored state:', returnTo);
+      } else {
+        console.log('OAuth callback - No stored state found for ID:', stateId);
         // Fallback to query parameter
         returnTo = req.query.return_to as string || '/';
+        console.log('OAuth callback - Fallback returnTo:', returnTo);
       }
       
       console.log('OAuth callback - Final returnTo:', returnTo);
