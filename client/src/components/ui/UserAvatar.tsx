@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useGameStore } from '@/lib/stores/useGameStore';
 
 interface UserAvatarProps {
   onChangeDisplayName: () => void;
@@ -9,6 +10,7 @@ export function UserAvatar({ onChangeDisplayName }: UserAvatarProps) {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const refreshUserInfo = useGameStore(state => state.refreshUserInfo);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -28,9 +30,11 @@ export function UserAvatar({ onChangeDisplayName }: UserAvatarProps) {
     await logout();
   };
 
-  const handleChangeDisplayName = () => {
+  const handleChangeDisplayName = async () => {
     setIsMenuOpen(false);
     onChangeDisplayName();
+    // Refresh the game username after display name change
+    await refreshUserInfo();
   };
 
   const getAvatarContent = () => {

@@ -715,23 +715,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   setAutoSaveEnabled: (enabled) => {
     set({ autoSaveEnabled: enabled });
   },
-
-  refreshUserInfo: async () => {
-    try {
-      const response = await fetch('/auth/status', {
-        credentials: 'include'
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.isAuthenticated && data.user) {
-          set({ username: data.user.displayName || data.user.username || data.user.email || 'Trader' });
-        }
-      }
-    } catch (error) {
-      console.error('Failed to refresh user info:', error);
-    }
-  },
   
   // Game state persistence methods for PWA
   saveGameState: () => {

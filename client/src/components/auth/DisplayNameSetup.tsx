@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useGameStore } from '@/lib/stores/useGameStore';
 
 interface DisplayNameSetupProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ export function DisplayNameSetup({ isOpen, onComplete, currentDisplayName }: Dis
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const { updateDisplayName } = useAuth();
+  const refreshUserInfo = useGameStore(state => state.refreshUserInfo);
 
   if (!isOpen) return null;
 
