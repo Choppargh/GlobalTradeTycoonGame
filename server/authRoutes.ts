@@ -169,12 +169,12 @@ export function registerAuthRoutes(app: Express) {
       const stateId = req.query.state as string;
       console.log('OAuth callback - State ID:', stateId);
       
-      if (stateId && global.oauthStates && global.oauthStates.has(stateId)) {
-        const stateData = global.oauthStates.get(stateId);
+      if (stateId && oauthStates.has(stateId)) {
+        const stateData = oauthStates.get(stateId)!;
         returnTo = stateData.returnTo;
         
         // Clean up stored state
-        global.oauthStates.delete(stateId);
+        oauthStates.delete(stateId);
         
         console.log('OAuth callback - Retrieved returnTo from stored state:', returnTo);
       } else {
