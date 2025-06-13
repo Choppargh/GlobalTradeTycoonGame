@@ -97,16 +97,43 @@ export function registerAuthRoutes(app: Express) {
   // Google OAuth routes
   console.log('Registering Google OAuth routes...');
   app.get('/auth/google', (req, res, next) => {
-    console.log('Google OAuth route accessed');
-    console.log('Passport strategies available:', Object.keys((passport as any)._strategies || {}));
+    console.log('Google OAuth route accessed from:', req.get('Host'));
+    
+    // Determine the correct callback URL based on the requesting domain
+    const host = req.get('Host');
+    const protocol = req.secure || req.get('X-Forwarded-Proto') === 'https' ? 'https' : 'http';
+    
+    // Map domains to their correct OAuth configurations
+    let redirectDomain = 'globaltradingtycoon.app'; // default
+    
+    if (host?.includes('global-trade-tycoon.replit.app')) {
+      redirectDomain = 'global-trade-tycoon.replit.app';
+    } else if (host?.includes('globaltradertycoon.app')) {
+      redirectDomain = 'globaltradertycoon.app';
+    } else if (host?.includes('globaltradetycoon.app')) {
+      redirectDomain = 'globaltradetycoon.app';
+    }
+    
+    // Redirect to the primary domain for OAuth to maintain consistency
+    const oauthURL = `https://globaltradingtycoon.app/auth/google?return_to=${encodeURIComponent(`${protocol}://${host}`)}`;
+    
+    if (host !== 'globaltradingtycoon.app') {
+      return res.redirect(oauthURL);
+    }
+    
     passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
   });
 
   app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
     (req: Request, res: Response) => {
-      // Successful authentication - redirect to homepage/dashboard
-      res.redirect('/');
+      // Successful authentication - redirect back to original domain
+      const returnTo = req.query.return_to as string;
+      if (returnTo && returnTo.startsWith('https://')) {
+        res.redirect(returnTo);
+      } else {
+        res.redirect('/');
+      }
     }
   );
 

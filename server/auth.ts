@@ -51,13 +51,12 @@ passport.use(new LocalStrategy(
   }
 ));
 
-// Google OAuth Strategy
+// Google OAuth Strategy - Configure for primary domain
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-  const baseURL = process.env.REPLIT_DOMAINS 
-    ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
-    : (process.env.NODE_ENV === 'production' 
-        ? 'https://globaltradingtycoon.app' 
-        : 'http://localhost:5000');
+  // Use the primary domain for OAuth callback
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? 'https://globaltradingtycoon.app' 
+    : 'http://localhost:5000';
   
   console.log('Registering Google OAuth strategy with callback URL:', `${baseURL}/auth/google/callback`);
     
