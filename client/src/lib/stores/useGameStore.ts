@@ -39,6 +39,7 @@ interface GameState {
   
   // Game actions
   setUsername: (username: string) => void;
+  refreshUserInfo: () => Promise<void>;
   startGame: () => Promise<void>;
   travel: (destination: Location) => void;
   buyProduct: (productId: number, quantity: number, price: number) => void;
@@ -87,6 +88,23 @@ export const useGameStore = create<GameState>((set, get) => ({
   setUsername: (username) => {
     set({ username });
   },
+
+  refreshUserInfo: async () => {
+    try {
+      const response = await fetch('/auth/status', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isAuthenticated && data.user) {
+          set({ username: data.user.displayName || data.user.username || data.user.email || 'Trader' });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to refresh user info:', error);
+    }
+  },
   
   startGame: async () => {
     // Fetch current user information
@@ -98,7 +116,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       if (response.ok) {
         const data = await response.json();
         if (data.isAuthenticated && data.user) {
-          set({ username: data.user.username || data.user.email || 'Trader' });
+          set({ username: data.user.displayName || data.user.username || data.user.email || 'Trader' });
         }
       }
     } catch (error) {
@@ -696,6 +714,23 @@ export const useGameStore = create<GameState>((set, get) => ({
   // Control auto-save feature
   setAutoSaveEnabled: (enabled) => {
     set({ autoSaveEnabled: enabled });
+  },
+
+  refreshUserInfo: async () => {
+    try {
+      const response = await fetch('/auth/status', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.isAuthenticated && data.user) {
+          set({ username: data.user.displayName || data.user.username || data.user.email || 'Trader' });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to refresh user info:', error);
+    }
   },
   
   // Game state persistence methods for PWA
