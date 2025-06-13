@@ -51,14 +51,14 @@ export function GameHeader() {
 
   return (
     <div className="bg-amber-50 border-b border-gray-200 shadow-sm">
-      <div className="container mx-auto px-4 py-2">
+      <div className="w-full px-2 py-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex">
-            <div className="flex items-center mr-6">
+            <div className="flex items-center mr-4">
               <img 
                 src="/images/GTC_Logo-512x512.png" 
                 alt="Global Trade Tycoon" 
-                className="w-12 h-12 mr-3"
+                className="w-12 h-12 mr-2"
               />
               <div>
                 <div className="text-lg font-bold">Trader</div>
