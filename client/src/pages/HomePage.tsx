@@ -62,12 +62,11 @@ export default function HomePage() {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat'
     }}>
-      <div className="flex flex-col items-center justify-center min-h-screen space-y-6 px-4">
+      {/* Mobile Layout */}
+      <div className="flex md:hidden flex-col items-center justify-center min-h-screen space-y-6 px-4">
         <div className="mb-8">
-          <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-64 sm:w-80" />
+          <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-64" />
         </div>
-        
-
         
         <div className="flex flex-col items-center gap-4 w-full">
           <button 
@@ -100,6 +99,48 @@ export default function HomePage() {
               src="/images/GTC_Rules.png" 
               alt="Rules" 
               style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
+            />
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex min-h-screen items-center justify-between px-8">
+        <div className="flex-1">
+          <img src="/images/GTC_Logo-512x512.png" alt="Global Trading Tycoon" className="w-80" />
+        </div>
+        
+        <div className="flex flex-col gap-4">
+          <button 
+            onClick={() => window.location.href = '/game'}
+            className="transition-transform hover:scale-105 focus:outline-none"
+          >
+            <img 
+              src="/images/GTC_Play.png" 
+              alt="Play" 
+              style={{ width: '200px', height: 'auto' }}
+            />
+          </button>
+          
+          <button 
+            onClick={() => window.location.href = '/leaderboard'}
+            className="transition-transform hover:scale-105 focus:outline-none"
+          >
+            <img 
+              src="/images/GTC_Leaderboard.png" 
+              alt="Leaderboard" 
+              style={{ width: '200px', height: 'auto' }}
+            />
+          </button>
+          
+          <button 
+            onClick={() => window.location.href = '/rules'}
+            className="transition-transform hover:scale-105 focus:outline-none"
+          >
+            <img 
+              src="/images/GTC_Rules.png" 
+              alt="Rules" 
+              style={{ width: '200px', height: 'auto' }}
             />
           </button>
         </div>

@@ -64,8 +64,18 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
   };
 
   handleEndGameConfirm = async () => {
-    const { endGame } = useGameStore.getState();
-    await endGame();
+    const { daysRemaining } = useGameStore.getState();
+    
+    if (daysRemaining <= 1) {
+      // Last day - finish game and submit score
+      const { finishGame } = useGameStore.getState();
+      await finishGame();
+    } else {
+      // Early quit - don't submit score, return to homepage
+      const { endGame } = useGameStore.getState();
+      await endGame();
+    }
+    
     this.setState({ isEndGameDialogOpen: false });
   };
 

@@ -500,16 +500,40 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   
   endGame: async () => {
-    console.log("endGame function called");
+    console.log("endGame function called - quitting game without score submission");
     const state = get();
     if (!state.username) return;
     
-    // Skip the confirmation check entirely since we're handling it in the UI components
-    // Reset this value to ensure we don't get in a confirmation loop
-    set({ isEndGameConfirmationOpen: false });
+    // Clear saved game state to remove any progress
+    get().clearSavedGameState();
     
-    // Continue with end game process
-    console.log("Proceeding with end game (dialog was confirmed)");
+    // Reset game state completely
+    set({
+      currentLocation: null,
+      cash: 0,
+      bankBalance: 0,
+      loanAmount: 0,
+      daysRemaining: 31,
+      inventory: [],
+      marketListings: [],
+      priceChanges: {},
+      boughtProducts: new Set<number>(),
+      soldProducts: new Set<number>(),
+      gamePhase: 'intro',
+      isBankModalOpen: false,
+      currentEvent: null,
+      isEndGameConfirmationOpen: false,
+      isTravelRiskDialogOpen: false
+    });
+    
+    // Redirect to homepage
+    window.location.href = '/';
+  },
+
+  finishGame: async () => {
+    console.log("finishGame function called - completing game with score submission");
+    const state = get();
+    if (!state.username) return;
     
     // For net worth calculation (for display), properly rounded to the nearest cent
     const inventoryValue = Math.round(state.inventory.reduce(
