@@ -29,7 +29,7 @@ passport.use(new LocalStrategy(
   },
   async (email, password, done) => {
     try {
-      const user = await storage.getUserByEmail(email);
+      const user = await storage.getUserByEmail(email.toLowerCase());
       
       if (!user) {
         return done(null, false, { message: 'No user found with this email' });

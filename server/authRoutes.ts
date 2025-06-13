@@ -17,8 +17,8 @@ export function registerAuthRoutes(app: Express) {
         return res.status(400).json({ message: 'Username, email, and password are required' });
       }
 
-      // Check if user already exists
-      const existingUser = await storage.getUserByEmail(email);
+      // Check if user already exists (case-insensitive)
+      const existingUser = await storage.getUserByEmail(email.toLowerCase());
       if (existingUser) {
         return res.status(400).json({ message: 'User with this email already exists' });
       }
@@ -31,10 +31,10 @@ export function registerAuthRoutes(app: Express) {
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 12);
 
-      // Create user
+      // Create user (store email in lowercase)
       const newUser = await storage.createUser({
         username,
-        email,
+        email: email.toLowerCase(),
         password: hashedPassword,
         provider: 'local',
         providerId: null,
