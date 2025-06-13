@@ -1,151 +1,108 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from './button';
-import { 
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter 
-} from './dialog';
 
-// Define the interface for the BeforeInstallPromptEvent
 interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
-
-// Declare global for TypeScript
-declare global {
-  interface WindowEventMap {
-    beforeinstallprompt: BeforeInstallPromptEvent;
-  }
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
 }
 
 export function InstallPrompt() {
-  // Only show on mobile devices
-  const [isMobile, setIsMobile] = useState(false);
-  const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isAlreadyInstalled, setIsAlreadyInstalled] = useState(false);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
-  // Check if the user is on a mobile device
   useEffect(() => {
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent.toLowerCase();
-      setIsMobile(
-        /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent)
-      );
-    };
-
-    checkMobile();
-  }, []);
-
-  // Check if the app is already installed
-  useEffect(() => {
-    // Check if app is running in standalone mode (installed PWA)
-    if (window.matchMedia('(display-mode: standalone)').matches || 
-        (window.navigator as any).standalone === true) {
-      setIsAlreadyInstalled(true);
-    }
-  }, []);
-
-  // Handle the beforeinstallprompt event
-  useEffect(() => {
-    // Don't capture install prompt if already installed or not on mobile
-    if (isAlreadyInstalled) return;
-
-    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
-      // Prevent Chrome from automatically showing the prompt
+    const handleBeforeInstallPrompt = (e: Event) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
-      
-      // Save the event for later use
-      setDeferredPrompt(e);
-      
-      // Only show for mobile users after a delay
-      if (isMobile) {
-        setTimeout(() => {
-          setShowPrompt(true);
-        }, 5000); // 5 second delay
-      }
+      // Stash the event so it can be triggered later
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      setShowInstallPrompt(true);
     };
 
-    // Add event listener
-    try {
-      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    } catch (err) {
-      console.error('Error setting up install prompt listener:', err);
-    }
+    const handleAppInstalled = () => {
+      console.log('PWA was installed');
+      setShowInstallPrompt(false);
+      setDeferredPrompt(null);
+    };
 
-    // Cleanup
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
     return () => {
-      try {
-        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      } catch (err) {
-        console.error('Error removing install prompt listener:', err);
-      }
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, [isMobile, isAlreadyInstalled]);
+  }, []);
 
-  // Handle installing the PWA
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      console.log('No installation prompt available');
-      return;
-    }
+    if (!deferredPrompt) return;
 
-    try {
-      // Show the install prompt
-      await deferredPrompt.prompt();
+    // Show the install prompt
+    deferredPrompt.prompt();
 
-      // Wait for the user to respond
-      const choiceResult = await deferredPrompt.userChoice;
-      
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the install prompt');
-        setIsAlreadyInstalled(true);
-      } else {
-        console.log('User dismissed the install prompt');
-      }
-    } catch (err) {
-      console.error('Error during installation:', err);
-    }
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to the install prompt: ${outcome}`);
 
-    // Reset the deferred prompt - it can only be used once
+    // Clear the deferredPrompt for next time
     setDeferredPrompt(null);
-    setShowPrompt(false);
+    setShowInstallPrompt(false);
   };
 
-  // Don't render anything if already installed or no prompt to show
-  if (isAlreadyInstalled || !showPrompt) {
+  const handleDismiss = () => {
+    setShowInstallPrompt(false);
+  };
+
+  if (!showInstallPrompt) {
     return null;
   }
 
   return (
-    <Dialog open={showPrompt} onOpenChange={setShowPrompt}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Install Global Trade Tycoon</DialogTitle>
-          <DialogDescription>
-            Install the game on your device to play offline and get a better experience!
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex justify-center my-4">
-          <img 
-            src="/icons/icon-192x192.png" 
-            alt="Global Trade Tycoon"
-            className="w-24 h-24" 
-          />
+    <div className="fixed bottom-4 left-4 right-4 z-50 lg:left-auto lg:right-4 lg:max-w-sm">
+      <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border p-4">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0">
+            <img 
+              src="/icons/icon-192x192.png" 
+              alt="Global Trade Tycoon" 
+              className="w-12 h-12 rounded-lg"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-gray-900">
+              Install Global Trade Tycoon
+            </h3>
+            <p className="text-xs text-gray-600 mt-1">
+              Add to your home screen for easy access and offline play
+            </p>
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={handleInstallClick}
+                className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors"
+              >
+                Install
+              </button>
+              <button
+                onClick={handleDismiss}
+                className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300 transition-colors"
+              >
+                Later
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={handleDismiss}
+            className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setShowPrompt(false)}>
-            Later
-          </Button>
-          <Button onClick={handleInstallClick}>
-            Install Now
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }
