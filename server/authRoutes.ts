@@ -94,9 +94,10 @@ export function registerAuthRoutes(app: Express) {
   });
 
   // Google OAuth routes
-  app.get('/auth/google', 
-    passport.authenticate('google', { scope: ['profile', 'email'] })
-  );
+  app.get('/auth/google', (req, res, next) => {
+    console.log('Google OAuth route accessed');
+    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+  });
 
   app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
