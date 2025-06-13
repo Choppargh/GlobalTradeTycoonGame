@@ -27,7 +27,7 @@ export default function RulesPage() {
             <div className="p-6">
               <p className="text-gray-700">
                 Build your trading empire by buying and selling products across different global markets. 
-                Maximize your net worth (cash + bank balance - loan amount) within 7 days to compete on the global leaderboard.
+                Maximize your net worth (cash + bank balance - loan amount) within 31 days to compete on the global leaderboard.
               </p>
             </div>
           </div>
