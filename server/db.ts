@@ -24,6 +24,11 @@ export class DbStorage {
     return result[0];
   }
 
+  async getUserByDisplayName(displayName: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.displayName, displayName));
+    return result[0];
+  }
+
   async getUserByProvider(provider: string, providerId: string): Promise<User | undefined> {
     const result = await db.select().from(users)
       .where(and(eq(users.provider, provider), eq(users.providerId, providerId)));

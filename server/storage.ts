@@ -5,6 +5,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByDisplayName(displayName: string): Promise<User | undefined>;
   getUserByProvider(provider: string, providerId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserDisplayName(id: number, displayName: string): Promise<User | undefined>;
@@ -81,6 +82,13 @@ export class MemStorage implements IStorage {
     };
     this.scores.set(id, score);
     return score;
+  }
+
+  async getUserByDisplayName(displayName: string): Promise<User | undefined> {
+    const usersArray = Array.from(this.users.values());
+    return usersArray.find(user => 
+      user.displayName?.toLowerCase() === displayName.toLowerCase()
+    );
   }
 
   async updateUserDisplayName(id: number, displayName: string): Promise<User | undefined> {

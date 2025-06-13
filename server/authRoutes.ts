@@ -180,6 +180,12 @@ export function registerAuthRoutes(app: Express) {
       }
 
       const user = req.user as any;
+
+      // Check if another user already has this display name
+      const existingUserWithDisplayName = await storage.getUserByDisplayName(trimmedDisplayName);
+      if (existingUserWithDisplayName && existingUserWithDisplayName.id !== user.id) {
+        return res.status(400).json({ message: 'This trader name is already taken. Please choose a different one.' });
+      }
       
       // Update the user in the database
       const updatedUser = await storage.updateUserDisplayName(user.id, trimmedDisplayName);
