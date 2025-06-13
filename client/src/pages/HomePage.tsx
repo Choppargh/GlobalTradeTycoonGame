@@ -145,6 +145,24 @@ export default function HomePage() {
           </button>
         </div>
       </div>
+      
+      {/* Footer with legal links */}
+      <footer className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+        <div className="flex gap-4 text-sm">
+          <a 
+            href="/privacy" 
+            className="text-white/80 hover:text-white underline bg-black/20 px-3 py-1 rounded backdrop-blur-sm"
+          >
+            Privacy Policy
+          </a>
+          <a 
+            href="/terms" 
+            className="text-white/80 hover:text-white underline bg-black/20 px-3 py-1 rounded backdrop-blur-sm"
+          >
+            Terms of Service
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }

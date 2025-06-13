@@ -6,6 +6,8 @@ import HomePage from "./pages/HomePage";
 import GamePage from "./pages/GamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import RulesPage from "./pages/RulesPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
 import NotFound from "./pages/not-found";
 import { Loading } from "./components/ui/loading";
 import { Toaster } from "./components/ui/sonner";
@@ -25,6 +27,8 @@ function App() {
           <Route path="/game" element={<GamePage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/rules" element={<RulesPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
