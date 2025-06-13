@@ -45,15 +45,13 @@ export function UserAvatar({ onChangeDisplayName }: UserAvatarProps) {
       );
     }
 
-    // Fallback to initials
-    const initials = user?.displayName 
-      ? user.displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-      : user?.username?.slice(0, 2).toUpperCase() || 'U';
-
+    // Use default avatar image
     return (
-      <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white font-medium">
-        {initials}
-      </div>
+      <img 
+        src="/images/GTC_Default_Avatar.png" 
+        alt="Default Avatar" 
+        className="w-full h-full object-cover"
+      />
     );
   };
 
@@ -81,11 +79,11 @@ export function UserAvatar({ onChangeDisplayName }: UserAvatarProps) {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-2xl font-medium">
-                    {user?.displayName 
-                      ? user.displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-                      : user?.username?.slice(0, 2).toUpperCase() || 'U'}
-                  </div>
+                  <img 
+                    src="/images/GTC_Default_Avatar.png" 
+                    alt="Default Avatar" 
+                    className="w-full h-full object-cover"
+                  />
                 )}
               </div>
               <h3 className="font-bold text-gray-900 text-lg mb-1">
