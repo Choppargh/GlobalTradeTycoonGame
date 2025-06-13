@@ -40,7 +40,7 @@ export default function RulesPage() {
               <ul className="space-y-2 text-gray-700">
                 <li>• You start with $2,000 cash (from an initial loan)</li>
                 <li>• You have $2,000 in loan debt (5% interest per day)</li>
-                <li>• You have 7 days to trade</li>
+                <li>• You have 31 days to trade</li>
                 <li>• You start in a random location</li>
               </ul>
             </div>
