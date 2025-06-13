@@ -117,10 +117,20 @@ export function registerAuthRoutes(app: Express) {
     // Handle return URL for cross-domain OAuth
     const returnTo = req.query.return_to as string;
     
-    if (host !== 'globaltradingtycoon.app') {
-      // Redirect to primary domain with return URL
+    // Check if this is a development/staging environment
+    const isDev = host?.includes('replit.dev') || host?.includes('localhost') || protocol === 'http';
+    
+    if (!isDev && host !== 'globaltradingtycoon.app') {
+      // Only redirect production domains to primary domain for OAuth
       const oauthURL = `https://globaltradingtycoon.app/auth/google?return_to=${encodeURIComponent(`${protocol}://${host}`)}`;
       console.log('Redirecting to primary domain for OAuth:', oauthURL);
+      return res.redirect(oauthURL);
+    }
+    
+    if (isDev) {
+      // For development, redirect to production for OAuth but preserve return URL
+      const oauthURL = `https://globaltradingtycoon.app/auth/google?return_to=${encodeURIComponent(`${protocol}://${host}`)}`;
+      console.log('Development environment - redirecting to production for OAuth:', oauthURL);
       return res.redirect(oauthURL);
     }
     
