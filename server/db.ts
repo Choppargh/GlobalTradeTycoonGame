@@ -50,6 +50,14 @@ export class DbStorage {
     return result[0];
   }
 
+  async updateUserDisplayName(id: number, displayName: string): Promise<User | undefined> {
+    const result = await db.update(users)
+      .set({ displayName })
+      .where(eq(users.id, id))
+      .returning();
+    return result[0];
+  }
+
   // Weekly reset function - truncates scores every Monday at 00:01
   async resetWeeklyScores(): Promise<void> {
     await db.delete(scores);
