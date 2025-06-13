@@ -67,33 +67,56 @@ export function UserAvatar({ onChangeDisplayName }: UserAvatarProps) {
         {getAvatarContent()}
       </button>
 
-      {/* Dropdown Menu */}
+      {/* Modal */}
       {isMenuOpen && (
-        <div className="absolute right-0 top-12 bg-white rounded-lg shadow-xl border border-gray-200 py-2 w-48 z-50">
-          {/* User Info */}
-          <div className="px-4 py-2 border-b border-gray-100">
-            <p className="font-medium text-gray-900 truncate">
-              {user?.displayName || user?.username}
-            </p>
-            {user?.email && (
-              <p className="text-sm text-gray-500 truncate">{user.email}</p>
-            )}
-          </div>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm">
+            {/* User Info Header */}
+            <div className="p-6 text-center border-b border-gray-200">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-200">
+                {user?.avatar ? (
+                  <img 
+                    src={user.avatar} 
+                    alt="User Avatar" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-2xl font-medium">
+                    {user?.displayName 
+                      ? user.displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                      : user?.username?.slice(0, 2).toUpperCase() || 'U'}
+                  </div>
+                )}
+              </div>
+              <h3 className="font-bold text-gray-900 text-lg mb-1">
+                {user?.displayName || user?.username}
+              </h3>
+              {user?.email && (
+                <p className="text-sm text-gray-500">{user.email}</p>
+              )}
+            </div>
 
-          {/* Menu Items */}
-          <div className="py-1">
-            <button
-              onClick={handleChangeDisplayName}
-              className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-            >
-              Change Trader Name
-            </button>
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors duration-150"
-            >
-              Logout
-            </button>
+            {/* Menu Items */}
+            <div className="p-4 space-y-2">
+              <button
+                onClick={handleChangeDisplayName}
+                className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-3 rounded-lg font-medium transition-colors duration-150"
+              >
+                Change Trader Name
+              </button>
+              <button
+                onClick={handleLogout}
+                className="w-full bg-red-50 hover:bg-red-100 text-red-700 px-4 py-3 rounded-lg font-medium transition-colors duration-150"
+              >
+                Logout
+              </button>
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="w-full bg-gray-50 hover:bg-gray-100 text-gray-700 px-4 py-3 rounded-lg font-medium transition-colors duration-150"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
