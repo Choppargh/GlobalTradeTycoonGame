@@ -37,7 +37,14 @@ export function DisplayNameSetup({ isOpen, onComplete, currentDisplayName }: Dis
     if (result.success) {
       onComplete();
     } else {
-      setError(result.error || 'Failed to update display name');
+      // Show specific error messages for different validation failures
+      if (result.error?.includes('already taken')) {
+        setError('This trader name is already taken. Please choose a different one.');
+      } else if (result.error?.includes('between 2 and 50 characters')) {
+        setError('Trader name must be between 2 and 50 characters.');
+      } else {
+        setError(result.error || 'Failed to update trader name');
+      }
     }
     
     setIsSubmitting(false);
