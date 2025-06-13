@@ -37,6 +37,8 @@ export function DisplayNameSetup({ isOpen, onComplete, currentDisplayName }: Dis
     const result = await updateDisplayName(displayName.trim());
     
     if (result.success) {
+      // Refresh the game username after display name change
+      await refreshUserInfo();
       onComplete();
     } else {
       // Show specific error messages for different validation failures
