@@ -114,6 +114,13 @@ Global Trade Tycoon is a web-based trading simulation game built with React, Typ
 ```
 Changelog:
 - June 14, 2025. Initial setup
+- June 14, 2025. Fixed deployment configuration:
+  * Updated replit.toml with production build and start commands
+  * Created deployment scripts (deploy.sh, start-production.sh)
+  * Added production environment detection in server
+  * Implemented security fixes for production deployment
+  * Separated build and run phases for CloudRun deployment
+  * Added comprehensive deployment documentation
 ```
 
 ## User Preferences
