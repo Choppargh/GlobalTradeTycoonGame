@@ -99,139 +99,17 @@ export function registerAuthRoutes(app: Express) {
 
   // Google OAuth routes
   console.log('Registering Google OAuth routes...');
-  app.get('/auth/google', (req, res, next) => {
-    console.log('Google OAuth route accessed from:', req.get('Host'));
-    
-    // Determine the correct callback URL based on the requesting domain
-    const host = req.get('Host');
-    const protocol = req.secure || req.get('X-Forwarded-Proto') === 'https' ? 'https' : 'http';
-    
-    // Map domains to their correct OAuth configurations
-    let redirectDomain = 'globaltradingtycoon.app'; // default
-    
-    if (host?.includes('global-trade-tycoon.replit.app')) {
-      redirectDomain = 'global-trade-tycoon.replit.app';
-    } else if (host?.includes('globaltradertycoon.app')) {
-      redirectDomain = 'globaltradertycoon.app';
-    } else if (host?.includes('globaltradetycoon.app')) {
-      redirectDomain = 'globaltradetycoon.app';
-    }
-    
-    // Handle return URL for cross-domain OAuth
-    const returnTo = req.query.return_to as string;
-    
-    // Check if this is a development/staging environment
-    const isDev = host?.includes('replit.dev') || host?.includes('localhost') || protocol === 'http';
-    
-    if (!isDev && host !== 'globaltradingtycoon.app') {
-      // Only redirect production domains to primary domain for OAuth
-      const oauthURL = `https://globaltradingtycoon.app/auth/google?return_to=${encodeURIComponent(`${protocol}://${host}`)}`;
-      console.log('Redirecting to primary domain for OAuth:', oauthURL);
-      return res.redirect(oauthURL);
-    }
-    
-    if (isDev) {
-      // For development, redirect to production for OAuth but preserve return URL
-      const oauthURL = `https://globaltradingtycoon.app/auth/google?return_to=${encodeURIComponent(`${protocol}://${host}`)}`;
-      console.log('Development environment - redirecting to production for OAuth:', oauthURL);
-      return res.redirect(oauthURL);
-    }
-    
-    // Determine the final return URL
-    const finalReturnTo = returnTo || `${protocol}://${host}`;
-    console.log('Final return URL for OAuth:', finalReturnTo);
-    
-    // Generate a unique state ID and store return URL in memory/session
-    const stateId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-    
-    // Store in memory for cross-domain access
-    oauthStates.set(stateId, {
-      returnTo: finalReturnTo,
-      timestamp: Date.now()
-    });
-    
-    console.log('Storing OAuth state:', stateId, 'with returnTo:', finalReturnTo);
-    
-    passport.authenticate('google', { 
-      scope: ['profile', 'email'],
-      state: stateId
-    })(req, res, next);
-  });
+  app.get('/auth/google', passport.authenticate('google', { 
+    scope: ['profile', 'email']
+  }));
 
-  app.get('/auth/google/callback', (req: Request, res: Response, next) => {
-    console.log('=== GOOGLE OAUTH CALLBACK ROUTE START ===');
-    console.log('Callback received with query:', req.query);
-    console.log('Request headers:', req.headers);
-    console.log('Request host:', req.get('Host'));
-    console.log('Request protocol:', req.protocol);
-    
-    // Check for OAuth errors first
-    if (req.query.error) {
-      console.error('Google OAuth error:', req.query.error, req.query.error_description);
-      return res.redirect('/?error=google_auth_failed');
+  app.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
+    (req: Request, res: Response) => {
+      console.log('Google OAuth successful - user logged in');
+      res.redirect('/');
     }
-    
-    passport.authenticate('google', { 
-      failureRedirect: '/?error=google_auth_failed',
-      failureFlash: false 
-    }, (err: any, user: any, info: any) => {
-      console.log('Google OAuth authenticate result:');
-      console.log('- Error:', err);
-      console.log('- User:', user ? { id: user.id, email: user.email } : null);
-      console.log('- Info:', info);
-      
-      if (err) {
-        console.error('Google OAuth authentication error:', err);
-        return res.redirect('/?error=google_oauth_error');
-      }
-      
-      if (!user) {
-        console.error('Google OAuth failed - no user returned');
-        return res.redirect('/?error=google_user_not_found');
-      }
-      
-      // Log the user in
-      req.login(user, (loginErr) => {
-        if (loginErr) {
-          console.error('Login error after Google OAuth:', loginErr);
-          return res.redirect('/?error=login_failed');
-        }
-        
-        console.log('Google OAuth successful - user logged in:', { id: user.id, email: user.email });
-        
-        // Extract return URL from stored OAuth state
-        let returnTo = '/';
-        const stateId = req.query.state as string;
-        
-        if (stateId && oauthStates.has(stateId)) {
-          const stateData = oauthStates.get(stateId)!;
-          returnTo = stateData.returnTo;
-          oauthStates.delete(stateId);
-          console.log('Retrieved returnTo from stored state:', returnTo);
-        } else {
-          returnTo = req.query.return_to as string || '/';
-          console.log('Using fallback returnTo:', returnTo);
-        }
-        
-        // Ensure session is saved before redirect
-        req.session.save((saveErr) => {
-          if (saveErr) {
-            console.error('Session save error:', saveErr);
-          } else {
-            console.log('Session saved successfully');
-          }
-          
-          if (returnTo && (returnTo.startsWith('https://') || returnTo.startsWith('http://'))) {
-            console.log('Redirecting to original domain:', returnTo);
-            res.redirect(returnTo);
-          } else {
-            console.log('Redirecting to root');
-            res.redirect('/');
-          }
-        });
-      });
-    })(req, res, next);
-  });
+  );
 
   // Facebook OAuth routes
   app.get('/auth/facebook',
