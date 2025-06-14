@@ -121,6 +121,13 @@ Changelog:
   * Implemented security fixes for production deployment
   * Separated build and run phases for CloudRun deployment
   * Added comprehensive deployment documentation
+- June 14, 2025. Resolved deployment command conflicts:
+  * Fixed .replit vs replit.toml configuration conflicts
+  * Created production-deploy.js as deployment wrapper
+  * Added automatic frontend build handling
+  * Ensured NODE_ENV=production enforcement
+  * Fixed dependency resolution for production builds
+  * Updated replit.toml to use production deployment script
 ```
 
 ## User Preferences

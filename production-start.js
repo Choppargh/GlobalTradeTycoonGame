@@ -47,8 +47,8 @@ function startDevelopmentWithProductionEnv() {
     handleProcessEvents(devProcess);
 }
 
-function handleProcessEvents(process) {
-    process.on('close', (code) => {
+function handleProcessEvents(childProcess) {
+    childProcess.on('close', (code) => {
         console.log(`Server exited with code: ${code}`);
         process.exit(code);
     });
@@ -57,7 +57,7 @@ function handleProcessEvents(process) {
     ['SIGTERM', 'SIGINT'].forEach(signal => {
         process.on(signal, () => {
             console.log(`Received ${signal}, shutting down gracefully...`);
-            process.kill(signal);
+            childProcess.kill(signal);
         });
     });
 }
