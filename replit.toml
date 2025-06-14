@@ -1,6 +1,6 @@
 [deployment]
 build = ["npm", "run", "build"]
-run = ["node", "start-production.js"]
+run = ["node", "production.js"]
 deploymentTarget = "cloudrun"
 
 [env]
