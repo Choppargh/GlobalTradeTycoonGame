@@ -254,19 +254,23 @@ export function ImprovedAuthPage() {
         </div>
       </div>
 
-      {/* Authentication Modal for Desktop */}
-      {showAuthModal && (
-        <div className="hidden lg:block fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm border border-gray-200">
-            <div className="text-center mb-8">
-              <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-20 h-20 mx-auto mb-4 rounded-lg shadow-md" />
-              <h1 className="text-2xl font-bold text-gray-800">Global Trading Tycoon</h1>
-              <p className="text-gray-600 text-sm">Choose your path to trading success</p>
+      {/* Authentication Modal for Desktop Only */}
+      <div className="hidden lg:block">
+        {showAuthModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+            <div className="absolute inset-0 flex items-center justify-center p-4">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm border border-gray-200 mx-auto">
+                <div className="text-center mb-8">
+                  <img src="/images/GTC_Logo.png" alt="Global Trading Tycoon" className="w-20 h-20 mx-auto mb-4 rounded-lg shadow-md" />
+                  <h1 className="text-2xl font-bold text-gray-800">Global Trading Tycoon</h1>
+                  <p className="text-gray-600 text-sm">Choose your path to trading success</p>
+                </div>
+                {renderAuthForm(isRegisterMode ? 'register' : 'login')}
+              </div>
             </div>
-            {renderAuthForm(isRegisterMode ? 'register' : 'login')}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
