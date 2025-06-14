@@ -144,6 +144,12 @@ Changelog:
   * Simplified replit.toml to use direct shell commands avoiding variable conflicts
   * Updated deployment commands to prevent environment variable parsing errors
   * Authentication fixes ready for production deployment with working database connection
+- June 14, 2025. Fixed critical session persistence issue:
+  * Identified root cause: application using MemStorage instead of PostgreSQL database for sessions
+  * Switched storage from in-memory to DbStorage for proper session management
+  * Added comprehensive debugging to Google OAuth callback flow
+  * Verified authentication flow works completely with persistent sessions
+  * Both Google OAuth and email/password authentication now fully functional
 ```
 
 ## User Preferences
