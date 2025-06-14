@@ -12,6 +12,7 @@ import { saveGameState, loadGameState, clearSavedGameState } from "../autoSave";
 
 interface GameState {
   // Player state
+  userId: number | null;  // Add user ID for storage isolation
   username: string | null;
   currentLocation: Location | null;
   cash: number;
