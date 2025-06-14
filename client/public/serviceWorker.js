@@ -1,5 +1,5 @@
 // Service Worker for Global Trading Tycoon PWA
-const CACHE_NAME = 'global-trading-tycoon-v6'; // Fixed auth routes caching issue
+const CACHE_NAME = 'global-trading-tycoon-v7'; // Fixed PWA manifest and modal issues
 const urlsToCache = [
   '/',
   '/index.html',
