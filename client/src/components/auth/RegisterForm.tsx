@@ -37,6 +37,7 @@ export function RegisterForm({ onToggleMode, onSuccess }: RegisterFormProps) {
       const response = await fetch('/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           username: formData.username,
           email: formData.email,
