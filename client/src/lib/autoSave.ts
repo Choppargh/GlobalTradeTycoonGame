@@ -9,14 +9,21 @@ import { GameState } from "@shared/schema";
 import { InventoryItem, ProductListing } from "@shared/schema";
 
 // Constants
-const STORAGE_KEY = 'globalTradeTycoon_savedGame';
-const VERSION_KEY = 'globalTradeTycoon_savedGameVersion';
 const CURRENT_VERSION = '1.0.0'; // Increment this when save format changes
 
+// Generate user-specific storage keys
+function getStorageKey(userId?: number): string {
+  return userId ? `globalTradeTycoon_savedGame_user_${userId}` : 'globalTradeTycoon_savedGame_guest';
+}
+
+function getVersionKey(userId?: number): string {
+  return userId ? `globalTradeTycoon_savedGameVersion_user_${userId}` : 'globalTradeTycoon_savedGameVersion_guest';
+}
+
 /**
- * Saves the current game state to localStorage
+ * Saves the current game state to localStorage with user isolation
  */
-export function saveGameState(state: any): boolean {
+export function saveGameState(state: any, userId?: number): boolean {
   try {
     // Create serializable version of state (converting Sets to arrays)
     const serializableState = {
@@ -35,9 +42,9 @@ export function saveGameState(state: any): boolean {
       gamePhase: state.gamePhase
     };
     
-    // Save state and version
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializableState));
-    localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+    // Save state and version with user-specific keys
+    localStorage.setItem(getStorageKey(userId), JSON.stringify(serializableState));
+    localStorage.setItem(getVersionKey(userId), CURRENT_VERSION);
     
     console.log('Game state saved successfully');
     return true;
@@ -48,12 +55,12 @@ export function saveGameState(state: any): boolean {
 }
 
 /**
- * Loads the saved game state from localStorage
+ * Loads the saved game state from localStorage with user isolation
  */
-export function loadGameState(): {success: boolean, savedState?: any} {
+export function loadGameState(userId?: number): {success: boolean, savedState?: any} {
   try {
-    const savedVersion = localStorage.getItem(VERSION_KEY);
-    const savedStateJson = localStorage.getItem(STORAGE_KEY);
+    const savedVersion = localStorage.getItem(getVersionKey(userId));
+    const savedStateJson = localStorage.getItem(getStorageKey(userId));
     
     if (!savedStateJson || !savedVersion) {
       console.log('No saved game state found');
@@ -83,12 +90,12 @@ export function loadGameState(): {success: boolean, savedState?: any} {
 }
 
 /**
- * Clears any saved game state
+ * Clears any saved game state with user isolation
  */
-export function clearSavedGameState(): boolean {
+export function clearSavedGameState(userId?: number): boolean {
   try {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(VERSION_KEY);
+    localStorage.removeItem(getStorageKey(userId));
+    localStorage.removeItem(getVersionKey(userId));
     console.log('Saved game cleared successfully');
     return true;
   } catch (err) {
