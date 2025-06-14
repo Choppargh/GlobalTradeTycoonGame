@@ -93,9 +93,11 @@ Global Trade Tycoon is a web-based trading simulation game built with React, Typ
 ### Production Environment
 - **Platform**: Replit with Cloud Run deployment target
 - **Port Configuration**: Internal port 5000, external port 80
-- **Environment Variables**: OAuth credentials and database URLs
+- **Environment Variables**: OAuth credentials and database URLs, NODE_ENV=production
 - **Build Process**: Vite build for frontend, esbuild for backend
 - **Static Assets**: Served from dist/public directory
+- **Deployment Configuration**: replit.toml with production build and start commands
+- **Security**: Production deployment uses npm start instead of npm run dev
 
 ### Database Configuration
 - **Provider**: Neon PostgreSQL serverless

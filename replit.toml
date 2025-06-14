@@ -1,0 +1,10 @@
+[deployment]
+run = ["sh", "-c", "NODE_ENV=production npm run build && NODE_ENV=production npm start"]
+deploymentTarget = "cloudrun"
+
+[env]
+NODE_ENV = "production"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
