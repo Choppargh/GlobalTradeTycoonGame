@@ -128,6 +128,11 @@ Changelog:
   * Ensured NODE_ENV=production enforcement
   * Fixed dependency resolution for production builds
   * Updated replit.toml to use production deployment script
+- June 14, 2025. Successfully deployed via manual configuration:
+  * Bypassed .replit file conflicts using manual deployment settings
+  * Set build command: npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+  * Set run command: NODE_ENV=production node dist/index.js
+  * Deployment successful with production configuration
 ```
 
 ## User Preferences
