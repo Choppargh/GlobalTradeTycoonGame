@@ -101,7 +101,10 @@ export const useGameStore = create<GameState>((set, get) => ({
       if (response.ok) {
         const data = await response.json();
         if (data.isAuthenticated && data.user) {
-          set({ username: data.user.displayName || data.user.username || data.user.email || 'Trader' });
+          set({ 
+            userId: data.user.id,
+            username: data.user.displayName || data.user.username || data.user.email || 'Trader' 
+          });
         }
       }
     } catch (error) {
@@ -119,7 +122,10 @@ export const useGameStore = create<GameState>((set, get) => ({
       if (response.ok) {
         const data = await response.json();
         if (data.isAuthenticated && data.user) {
-          set({ username: data.user.displayName || data.user.username || data.user.email || 'Trader' });
+          set({ 
+            userId: data.user.id,
+            username: data.user.displayName || data.user.username || data.user.email || 'Trader' 
+          });
         }
       }
     } catch (error) {
@@ -761,9 +767,11 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   loadGameState: () => {
     try {
-      // Check if we have a saved game
-      const savedGame = localStorage.getItem('globalTradeTycoon_savedGame');
-      const savedVersion = localStorage.getItem('globalTradeTycoon_savedGameVersion');
+      // Check if we have a saved game with user-specific storage
+      const state = get();
+      const userId = state.userId || undefined;
+      const savedGame = localStorage.getItem(userId ? `globalTradeTycoon_savedGame_user_${userId}` : 'globalTradeTycoon_savedGame_guest');
+      const savedVersion = localStorage.getItem(userId ? `globalTradeTycoon_savedGameVersion_user_${userId}` : 'globalTradeTycoon_savedGameVersion_guest');
       
       if (!savedGame || !savedVersion) {
         console.log('No saved game found');
@@ -834,14 +842,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   
   clearSavedGameState: () => {
-    try {
-      localStorage.removeItem('globalTradeTycoon_savedGame');
-      localStorage.removeItem('globalTradeTycoon_savedGameVersion');
-      console.log('Saved game cleared successfully');
-      return true;
-    } catch (err) {
-      console.error('Failed to clear saved game:', err);
-      return false;
-    }
+    const state = get();
+    return clearSavedGameState(state.userId || undefined);
   }
 }));
