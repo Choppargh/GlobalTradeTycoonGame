@@ -161,10 +161,12 @@ export function registerAuthRoutes(app: Express) {
   app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
     (req: Request, res: Response) => {
+      console.log('OAuth callback - User authenticated:', req.user ? 'YES' : 'NO');
+      console.log('OAuth callback - Session ID:', req.sessionID);
+      console.log('OAuth callback - User details:', req.user ? { id: (req.user as any).id, email: (req.user as any).email } : 'None');
+      
       // Extract return URL from stored OAuth state
       let returnTo = '/';
-      
-      console.log('OAuth callback - Raw query params:', req.query);
       
       const stateId = req.query.state as string;
       console.log('OAuth callback - State ID:', stateId);
@@ -172,27 +174,32 @@ export function registerAuthRoutes(app: Express) {
       if (stateId && oauthStates.has(stateId)) {
         const stateData = oauthStates.get(stateId)!;
         returnTo = stateData.returnTo;
-        
-        // Clean up stored state
         oauthStates.delete(stateId);
-        
         console.log('OAuth callback - Retrieved returnTo from stored state:', returnTo);
       } else {
         console.log('OAuth callback - No stored state found for ID:', stateId);
-        // Fallback to query parameter
         returnTo = req.query.return_to as string || '/';
         console.log('OAuth callback - Fallback returnTo:', returnTo);
       }
       
       console.log('OAuth callback - Final returnTo:', returnTo);
       
-      if (returnTo && (returnTo.startsWith('https://') || returnTo.startsWith('http://'))) {
-        console.log('Redirecting user back to original domain:', returnTo);
-        res.redirect(returnTo);
-      } else {
-        console.log('No valid return URL, redirecting to root');
-        res.redirect('/');
-      }
+      // Ensure session is saved before redirect
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+        } else {
+          console.log('Session saved successfully');
+        }
+        
+        if (returnTo && (returnTo.startsWith('https://') || returnTo.startsWith('http://'))) {
+          console.log('Redirecting user back to original domain:', returnTo);
+          res.redirect(returnTo);
+        } else {
+          console.log('No valid return URL, redirecting to root');
+          res.redirect('/');
+        }
+      });
     }
   );
 
@@ -233,8 +240,15 @@ export function registerAuthRoutes(app: Express) {
 
   // Get current user endpoint
   app.get('/auth/me', (req: Request, res: Response) => {
+    console.log('Auth check - Session ID:', req.sessionID);
+    console.log('Auth check - Is authenticated:', req.isAuthenticated());
+    console.log('Auth check - User exists:', !!req.user);
+    console.log('Auth check - Session data:', req.session);
+    console.log('Auth check - Host:', req.get('Host'));
+    
     if (req.isAuthenticated() && req.user) {
       const user = req.user as any;
+      console.log('Auth check - User details:', { id: user.id, email: user.email, provider: user.provider });
       res.json({
         user: {
           id: user.id,
@@ -246,6 +260,7 @@ export function registerAuthRoutes(app: Express) {
         }
       });
     } else {
+      console.log('Auth check - Not authenticated, sending 401');
       res.status(401).json({ message: 'Not authenticated' });
     }
   });
