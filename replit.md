@@ -139,6 +139,10 @@ Changelog:
   * Fixed Google OAuth callback with improved error handling
   * Configured production OAuth with user's Google credentials
   * Both email/password and Google OAuth now functional
+- June 14, 2025. Fixed deployment environment variable issues:
+  * Resolved GraphQL __typename metadata error in deployment configuration
+  * Simplified replit.toml to use direct shell commands avoiding variable conflicts
+  * Updated deployment commands to prevent environment variable parsing errors
 ```
 
 ## User Preferences
