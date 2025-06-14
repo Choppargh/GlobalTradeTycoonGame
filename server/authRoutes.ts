@@ -158,50 +158,76 @@ export function registerAuthRoutes(app: Express) {
     })(req, res, next);
   });
 
-  app.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' }),
-    (req: Request, res: Response) => {
-      console.log('OAuth callback - User authenticated:', req.user ? 'YES' : 'NO');
-      console.log('OAuth callback - Session ID:', req.sessionID);
-      console.log('OAuth callback - User details:', req.user ? { id: (req.user as any).id, email: (req.user as any).email } : 'None');
+  app.get('/auth/google/callback', (req: Request, res: Response, next) => {
+    console.log('Google OAuth callback received with query:', req.query);
+    
+    // Check for OAuth errors first
+    if (req.query.error) {
+      console.error('Google OAuth error:', req.query.error, req.query.error_description);
+      return res.redirect('/?error=google_auth_failed');
+    }
+    
+    passport.authenticate('google', { 
+      failureRedirect: '/?error=google_auth_failed',
+      failureFlash: false 
+    }, (err: any, user: any, info: any) => {
+      console.log('Google OAuth authenticate result:');
+      console.log('- Error:', err);
+      console.log('- User:', user ? { id: user.id, email: user.email } : null);
+      console.log('- Info:', info);
       
-      // Extract return URL from stored OAuth state
-      let returnTo = '/';
-      
-      const stateId = req.query.state as string;
-      console.log('OAuth callback - State ID:', stateId);
-      
-      if (stateId && oauthStates.has(stateId)) {
-        const stateData = oauthStates.get(stateId)!;
-        returnTo = stateData.returnTo;
-        oauthStates.delete(stateId);
-        console.log('OAuth callback - Retrieved returnTo from stored state:', returnTo);
-      } else {
-        console.log('OAuth callback - No stored state found for ID:', stateId);
-        returnTo = req.query.return_to as string || '/';
-        console.log('OAuth callback - Fallback returnTo:', returnTo);
+      if (err) {
+        console.error('Google OAuth authentication error:', err);
+        return res.redirect('/?error=google_oauth_error');
       }
       
-      console.log('OAuth callback - Final returnTo:', returnTo);
+      if (!user) {
+        console.error('Google OAuth failed - no user returned');
+        return res.redirect('/?error=google_user_not_found');
+      }
       
-      // Ensure session is saved before redirect
-      req.session.save((err) => {
-        if (err) {
-          console.error('Session save error:', err);
-        } else {
-          console.log('Session saved successfully');
+      // Log the user in
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          console.error('Login error after Google OAuth:', loginErr);
+          return res.redirect('/?error=login_failed');
         }
         
-        if (returnTo && (returnTo.startsWith('https://') || returnTo.startsWith('http://'))) {
-          console.log('Redirecting user back to original domain:', returnTo);
-          res.redirect(returnTo);
+        console.log('Google OAuth successful - user logged in:', { id: user.id, email: user.email });
+        
+        // Extract return URL from stored OAuth state
+        let returnTo = '/';
+        const stateId = req.query.state as string;
+        
+        if (stateId && oauthStates.has(stateId)) {
+          const stateData = oauthStates.get(stateId)!;
+          returnTo = stateData.returnTo;
+          oauthStates.delete(stateId);
+          console.log('Retrieved returnTo from stored state:', returnTo);
         } else {
-          console.log('No valid return URL, redirecting to root');
-          res.redirect('/');
+          returnTo = req.query.return_to as string || '/';
+          console.log('Using fallback returnTo:', returnTo);
         }
+        
+        // Ensure session is saved before redirect
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error('Session save error:', saveErr);
+          } else {
+            console.log('Session saved successfully');
+          }
+          
+          if (returnTo && (returnTo.startsWith('https://') || returnTo.startsWith('http://'))) {
+            console.log('Redirecting to original domain:', returnTo);
+            res.redirect(returnTo);
+          } else {
+            console.log('Redirecting to root');
+            res.redirect('/');
+          }
+        });
       });
-    }
-  );
+    })(req, res, next);
+  });
 
   // Facebook OAuth routes
   app.get('/auth/facebook',
