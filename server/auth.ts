@@ -109,10 +109,21 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         }
       }
 
-      // Create new user
+      // Create new user with unique username
       console.log('Creating new Google user...');
+      let username = profile.displayName || `google_${profile.id}`;
+      
+      // Check if username already exists and make it unique
+      let existingUser = await storage.getUserByUsername(username);
+      let counter = 1;
+      while (existingUser) {
+        username = `${profile.displayName || `google_${profile.id}`}_${counter}`;
+        existingUser = await storage.getUserByUsername(username);
+        counter++;
+      }
+      
       const newUserData = {
-        username: profile.displayName || `google_${profile.id}`,
+        username: username,
         email: email || null,
         password: null, // No password for OAuth users
         provider: 'google',
@@ -120,7 +131,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         displayName: profile.displayName || null,
         avatar: profile.photos?.[0]?.value || null
       };
-      console.log('New user data:', newUserData);
+      console.log('New user data with unique username:', newUserData);
       
       const newUser = await storage.createUser(newUserData);
       console.log('Created new user:', newUser.id);
