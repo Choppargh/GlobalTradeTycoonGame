@@ -5,9 +5,12 @@
  * Ensures production environment is properly configured before startup
  */
 
-const { spawn } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 console.log('🚀 Global Trade Tycoon - Production Deployment Wrapper');
 
