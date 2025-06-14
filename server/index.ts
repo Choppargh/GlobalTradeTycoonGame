@@ -43,10 +43,11 @@ app.use(session({
   saveUninitialized: false,
   name: 'sessionId',
   cookie: {
-    secure: process.env.NODE_ENV === 'production' ? true : false,
+    secure: false, // Keep false for Cloud Run deployment
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax'
+    sameSite: 'lax',
+    domain: process.env.NODE_ENV === 'production' ? '.globaltradingtycoon.app' : undefined
   }
 }));
 
