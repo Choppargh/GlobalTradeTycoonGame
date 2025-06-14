@@ -753,9 +753,10 @@ export const useGameStore = create<GameState>((set, get) => ({
         savedAt: new Date().toISOString(),
       };
       
-      // Save to local storage
-      localStorage.setItem('globalTradeTycoon_savedGame', JSON.stringify(serializableState));
-      localStorage.setItem('globalTradeTycoon_savedGameVersion', '1.0');
+      // Save to user-specific storage
+      const userId = state.userId || undefined;
+      localStorage.setItem(userId ? `globalTradeTycoon_savedGame_user_${userId}` : 'globalTradeTycoon_savedGame_guest', JSON.stringify(serializableState));
+      localStorage.setItem(userId ? `globalTradeTycoon_savedGameVersion_user_${userId}` : 'globalTradeTycoon_savedGameVersion_guest', '1.0');
       
       console.log('Game state saved successfully');
       return true;
@@ -768,8 +769,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   loadGameState: () => {
     try {
       // Check if we have a saved game with user-specific storage
-      const state = get();
-      const userId = state.userId || undefined;
+      const currentState = get();
+      const userId = currentState.userId || undefined;
       const savedGame = localStorage.getItem(userId ? `globalTradeTycoon_savedGame_user_${userId}` : 'globalTradeTycoon_savedGame_guest');
       const savedVersion = localStorage.getItem(userId ? `globalTradeTycoon_savedGameVersion_user_${userId}` : 'globalTradeTycoon_savedGameVersion_guest');
       
@@ -829,9 +830,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       });
       
       // Then manually add items to the sets
-      const state = get();
-      savedState.boughtProducts.forEach((id: number) => state.boughtProducts.add(id));
-      savedState.soldProducts.forEach((id: number) => state.soldProducts.add(id));
+      const gameState = get();
+      savedState.boughtProducts.forEach((id: number) => gameState.boughtProducts.add(id));
+      savedState.soldProducts.forEach((id: number) => gameState.soldProducts.add(id));
       
       console.log('Game loaded successfully from saved state');
       return true;

@@ -150,6 +150,12 @@ Changelog:
   * Added comprehensive debugging to Google OAuth callback flow
   * Verified authentication flow works completely with persistent sessions
   * Both Google OAuth and email/password authentication now fully functional
+- June 14, 2025. Fixed cross-session data contamination bug:
+  * Root cause: game data stored with shared localStorage keys causing trader name mixing
+  * Implemented user-specific storage keys (globalTradeTycoon_savedGame_user_X)
+  * Added userId tracking to game state for proper data isolation
+  * Created cleanup utility to clear contaminated cross-session data
+  * Each user's game progress now completely isolated from other users
 ```
 
 ## User Preferences
