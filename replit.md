@@ -156,6 +156,11 @@ Changelog:
   * Added userId tracking to game state for proper data isolation
   * Created cleanup utility to clear contaminated cross-session data
   * Each user's game progress now completely isolated from other users
+- June 14, 2025. Fixed Google OAuth login reliability issues:
+  * Simplified OAuth flow by removing complex redirect chains between environments
+  * Streamlined callback handling for better success/failure management
+  * Removed unnecessary state management that was causing authentication failures
+  * Google OAuth now works reliably alongside email/password authentication
 ```
 
 ## User Preferences
