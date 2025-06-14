@@ -9,6 +9,7 @@ import {
   GameEvent 
 } from "../gameLogic";
 import { saveGameState, loadGameState, clearSavedGameState } from "../autoSave";
+import { clearAllGameData } from "../clearCrossSessionData";
 
 interface GameState {
   // Player state
@@ -66,6 +67,7 @@ interface GameState {
 
 export const useGameStore = create<GameState>((set, get) => ({
   // Initial game state
+  userId: null,
   username: null,
   currentLocation: null,
   cash: 0,
