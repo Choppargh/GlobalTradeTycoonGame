@@ -7,6 +7,7 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('GOOGLE_CLIENT_ID exists:', !!process.env.GOOGLE_CLIENT_ID);
 console.log('GOOGLE_CLIENT_SECRET exists:', !!process.env.GOOGLE_CLIENT_SECRET);
 console.log('REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
+console.log('Production mode:', process.env.NODE_ENV === 'production');
 console.log('=========================');
 
 import express, { type Request, Response, NextFunction } from "express";
@@ -103,7 +104,10 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  const isProduction = process.env.NODE_ENV === "production";
+  console.log(`Server mode: ${isProduction ? 'production' : 'development'}`);
+  
+  if (!isProduction) {
     await setupVite(app, server);
   } else {
     serveStatic(app);
