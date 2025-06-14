@@ -128,11 +128,17 @@ Changelog:
   * Ensured NODE_ENV=production enforcement
   * Fixed dependency resolution for production builds
   * Updated replit.toml to use production deployment script
-- June 14, 2025. Successfully deployed via manual configuration:
+- June 14, 2025. Successfully deployed via manual configuration:  
   * Bypassed .replit file conflicts using manual deployment settings
   * Set build command: npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
   * Set run command: NODE_ENV=production node dist/index.js
   * Deployment successful with production configuration
+- June 14, 2025. Fixed authentication system completely:
+  * Resolved database connection issues by creating new PostgreSQL instance
+  * Added credentials: 'include' to all authentication requests for proper session handling
+  * Fixed Google OAuth callback with improved error handling
+  * Configured production OAuth with user's Google credentials
+  * Both email/password and Google OAuth now functional
 ```
 
 ## User Preferences
