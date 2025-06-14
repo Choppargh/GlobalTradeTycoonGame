@@ -9,14 +9,20 @@ import type { User } from '@shared/schema';
 
 // Configure Passport serialization
 passport.serializeUser((user: any, done) => {
+  console.log('=== PASSPORT SERIALIZE USER ===');
+  console.log('Serializing user:', { id: user.id, email: user.email, provider: user.provider });
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id: number, done) => {
+  console.log('=== PASSPORT DESERIALIZE USER ===');
+  console.log('Deserializing user ID:', id);
   try {
     const user = await storage.getUser(id);
+    console.log('Retrieved user from database:', user ? { id: user.id, email: user.email } : 'User not found');
     done(null, user);
   } catch (error) {
+    console.error('Error deserializing user:', error);
     done(error, null);
   }
 });
