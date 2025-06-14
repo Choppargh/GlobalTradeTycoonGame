@@ -159,7 +159,11 @@ export function registerAuthRoutes(app: Express) {
   });
 
   app.get('/auth/google/callback', (req: Request, res: Response, next) => {
-    console.log('Google OAuth callback received with query:', req.query);
+    console.log('=== GOOGLE OAUTH CALLBACK ROUTE START ===');
+    console.log('Callback received with query:', req.query);
+    console.log('Request headers:', req.headers);
+    console.log('Request host:', req.get('Host'));
+    console.log('Request protocol:', req.protocol);
     
     // Check for OAuth errors first
     if (req.query.error) {
