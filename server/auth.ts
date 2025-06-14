@@ -73,26 +73,39 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
+      console.log('=== GOOGLE OAUTH CALLBACK START ===');
+      console.log('Profile received:', JSON.stringify(profile, null, 2));
+      console.log('Access token received:', !!accessToken);
+      console.log('Profile ID:', profile.id);
+      console.log('Profile emails:', profile.emails);
+      console.log('Profile displayName:', profile.displayName);
+      
       // Check if user exists with this Google ID
       let user = await storage.getUserByProvider('google', profile.id);
+      console.log('Existing user with Google ID:', user ? `Found user ${user.id}` : 'Not found');
       
       if (user) {
+        console.log('Returning existing user:', user.id);
         return done(null, user);
       }
 
       // Check if user exists with this email
       const email = profile.emails?.[0]?.value;
+      console.log('Email from profile:', email);
+      
       if (email) {
         user = await storage.getUserByEmail(email);
+        console.log('Existing user with email:', user ? `Found user ${user.id}` : 'Not found');
+        
         if (user) {
-          // Link Google account to existing user
-          // Note: In production, you might want to ask for user confirmation
+          console.log('Linking Google account to existing user:', user.id);
           return done(null, user);
         }
       }
 
       // Create new user
-      const newUser = await storage.createUser({
+      console.log('Creating new Google user...');
+      const newUserData = {
         username: profile.displayName || `google_${profile.id}`,
         email: email || null,
         password: null, // No password for OAuth users
@@ -100,11 +113,19 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         providerId: profile.id,
         displayName: profile.displayName || null,
         avatar: profile.photos?.[0]?.value || null
-      });
+      };
+      console.log('New user data:', newUserData);
+      
+      const newUser = await storage.createUser(newUserData);
+      console.log('Created new user:', newUser.id);
+      console.log('=== GOOGLE OAUTH CALLBACK END ===');
 
       return done(null, newUser);
     } catch (error) {
-      return done(error);
+      console.error('=== GOOGLE OAUTH ERROR ===');
+      console.error('Error in Google OAuth callback:', error);
+      console.error('Error stack:', (error as Error).stack);
+      return done(error as Error);
     }
   }));
 }
