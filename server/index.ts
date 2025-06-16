@@ -1,5 +1,5 @@
-import { loadEnvironmentConfig } from './config/env';
-loadEnvironmentConfig(); // Load environment-specific configuration
+import { config } from 'dotenv';
+config(); // Load environment variables
 
 // Debug environment variables for production OAuth issues
 console.log('=== ENVIRONMENT DEBUG ===');

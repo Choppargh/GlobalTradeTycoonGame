@@ -11,6 +11,7 @@ vite.config.ts.*
 .env.development
 .env.production
 .env.test
+.env.common
 
 # Configuration files that may contain secrets
 *.key

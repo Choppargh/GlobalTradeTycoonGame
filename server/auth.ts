@@ -57,24 +57,36 @@ passport.use(new LocalStrategy(
   }
 ));
 
-import { getOAuthConfig, getUrlConfig } from './config/env';
-
 // Google OAuth Strategy - Configure dynamically based on environment
-const oauthConfig = getOAuthConfig();
-const urlConfig = getUrlConfig();
 
-if (oauthConfig.google.clientId && oauthConfig.google.clientSecret) {
+// Get environment-specific credentials
+const isProduction = process.env.NODE_ENV === 'production';
+const googleClientId = isProduction ? process.env.GOOGLE_CLIENT_ID_PROD : process.env.GOOGLE_CLIENT_ID_DEV;
+const googleClientSecret = isProduction ? process.env.GOOGLE_CLIENT_SECRET_PROD : process.env.GOOGLE_CLIENT_SECRET_DEV;
+
+// Fallback to current env vars for backwards compatibility
+const finalGoogleClientId = googleClientId || process.env.GOOGLE_CLIENT_ID;
+const finalGoogleClientSecret = googleClientSecret || process.env.GOOGLE_CLIENT_SECRET;
+
+// Get environment-specific URL
+const baseURL = isProduction 
+  ? 'https://globaltradingtycoon.app'
+  : process.env.REPLIT_DOMAINS 
+    ? `https://${process.env.REPLIT_DOMAINS}`
+    : 'http://localhost:5000';
+
+if (finalGoogleClientId && finalGoogleClientSecret) {
   console.log('Environment check:', {
     NODE_ENV: process.env.NODE_ENV,
     REPLIT_DOMAINS: process.env.REPLIT_DOMAINS,
-    baseURL: urlConfig.baseUrl
+    baseURL
   });
-  console.log('Registering Google OAuth strategy with callback URL:', `${urlConfig.baseUrl}/auth/google/callback`);
+  console.log('Registering Google OAuth strategy with callback URL:', `${baseURL}/auth/google/callback`);
     
   passport.use(new GoogleStrategy({
-    clientID: oauthConfig.google.clientId,
-    clientSecret: oauthConfig.google.clientSecret,
-    callbackURL: `${urlConfig.baseUrl}/auth/google/callback`
+    clientID: finalGoogleClientId,
+    clientSecret: finalGoogleClientSecret,
+    callbackURL: `${baseURL}/auth/google/callback`
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
