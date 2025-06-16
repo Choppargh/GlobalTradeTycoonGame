@@ -211,21 +211,20 @@ if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
   }));
 }
 
-// Twitter OAuth Strategy - Use hardcoded credentials
-const twitterConsumerKey = 'SGVOX05hODNtcWgyMV9rd1JweW86MTpjaQ';
-const twitterConsumerSecret = 'SPU5151LaUzZbbGW95iAFyyHIZbt_VGzGW1TQyurxxlhZTCapT';
+// Twitter OAuth Strategy  
+const twitterConsumerKey = isProduction ? process.env.TWITTER_CONSUMER_KEY_PROD : process.env.TWITTER_CONSUMER_KEY_DEV;
+const twitterConsumerSecret = isProduction ? process.env.TWITTER_CONSUMER_SECRET_PROD : process.env.TWITTER_CONSUMER_SECRET_DEV;
 
-if (twitterConsumerKey && twitterConsumerSecret) {
-  console.log('Registering Twitter OAuth strategy...');
-  const baseURL = process.env.REPLIT_DOMAINS 
-    ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
-    : (process.env.NODE_ENV === 'production' 
-        ? 'https://globaltradingtycoon.app' 
-        : 'http://localhost:5000');
+// Fallback to current env vars for backwards compatibility
+const finalTwitterConsumerKey = twitterConsumerKey || process.env.TWITTER_CONSUMER_KEY;
+const finalTwitterConsumerSecret = twitterConsumerSecret || process.env.TWITTER_CONSUMER_SECRET;
+
+if (finalTwitterConsumerKey && finalTwitterConsumerSecret) {
+  console.log('Registering Twitter OAuth strategy with callback URL:', `${baseURL}/auth/twitter/callback`);
     
   passport.use(new TwitterStrategy({
-    consumerKey: twitterConsumerKey,
-    consumerSecret: twitterConsumerSecret,
+    consumerKey: finalTwitterConsumerKey,
+    consumerSecret: finalTwitterConsumerSecret,
     callbackURL: `${baseURL}/auth/twitter/callback`,
     includeEmail: true
   },
