@@ -6,6 +6,8 @@ console.log('=== ENVIRONMENT DEBUG ===');
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('GOOGLE_CLIENT_ID exists:', !!process.env.GOOGLE_CLIENT_ID);
 console.log('GOOGLE_CLIENT_SECRET exists:', !!process.env.GOOGLE_CLIENT_SECRET);
+console.log('TWITTER_CONSUMER_KEY exists:', !!process.env.TWITTER_CONSUMER_KEY);
+console.log('TWITTER_CONSUMER_SECRET exists:', !!process.env.TWITTER_CONSUMER_SECRET);
 console.log('REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
 console.log('Production mode:', process.env.NODE_ENV === 'production');
 console.log('=========================');

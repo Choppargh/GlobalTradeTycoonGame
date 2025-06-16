@@ -211,20 +211,13 @@ if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
   }));
 }
 
-// Twitter OAuth Strategy  
-const twitterConsumerKey = isProduction ? process.env.TWITTER_CONSUMER_KEY_PROD : process.env.TWITTER_CONSUMER_KEY_DEV;
-const twitterConsumerSecret = isProduction ? process.env.TWITTER_CONSUMER_SECRET_PROD : process.env.TWITTER_CONSUMER_SECRET_DEV;
-
-// Fallback to current env vars for backwards compatibility
-const finalTwitterConsumerKey = twitterConsumerKey || process.env.TWITTER_CONSUMER_KEY;
-const finalTwitterConsumerSecret = twitterConsumerSecret || process.env.TWITTER_CONSUMER_SECRET;
-
-if (finalTwitterConsumerKey && finalTwitterConsumerSecret) {
+// Twitter OAuth Strategy
+if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
   console.log('Registering Twitter OAuth strategy with callback URL:', `${baseURL}/auth/twitter/callback`);
     
   passport.use(new TwitterStrategy({
-    consumerKey: finalTwitterConsumerKey,
-    consumerSecret: finalTwitterConsumerSecret,
+    consumerKey: process.env.TWITTER_CONSUMER_KEY,
+    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: `${baseURL}/auth/twitter/callback`,
     includeEmail: true
   },
