@@ -59,11 +59,12 @@ passport.use(new LocalStrategy(
 
 // Google OAuth Strategy - Configure dynamically based on environment
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-  // Always use production domain for OAuth to avoid Google Console configuration issues
-  // Development environments will redirect to production for OAuth, then back to dev
-  const baseURL = process.env.NODE_ENV === 'production' || process.env.REPLIT_DOMAINS
+  // Use appropriate URL based on environment
+  const baseURL = process.env.NODE_ENV === 'production'
     ? 'https://globaltradingtycoon.app'
-    : 'http://localhost:5000';
+    : process.env.REPLIT_DOMAINS 
+        ? `https://${process.env.REPLIT_DOMAINS}`
+        : 'http://localhost:5000';
   
   console.log('Environment check:', {
     NODE_ENV: process.env.NODE_ENV,
