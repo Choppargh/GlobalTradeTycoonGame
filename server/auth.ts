@@ -86,7 +86,9 @@ if (finalGoogleClientId && finalGoogleClientSecret) {
   passport.use(new GoogleStrategy({
     clientID: finalGoogleClientId,
     clientSecret: finalGoogleClientSecret,
-    callbackURL: `${baseURL}/auth/google/callback`
+    callbackURL: `${baseURL}/auth/google/callback`,
+    scope: ['profile', 'email'],
+    prompt: 'select_account' // This forces Google to show account selection
   },
   async (accessToken, refreshToken, profile, done) => {
     try {

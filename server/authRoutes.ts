@@ -100,7 +100,8 @@ export function registerAuthRoutes(app: Express) {
   // Google OAuth routes
   console.log('Registering Google OAuth routes...');
   app.get('/auth/google', passport.authenticate('google', { 
-    scope: ['profile', 'email']
+    scope: ['profile', 'email'],
+    prompt: 'select_account' // Force account selection screen
   }));
 
   app.get('/auth/google/callback', 
