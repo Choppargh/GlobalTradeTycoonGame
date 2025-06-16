@@ -57,23 +57,25 @@ passport.use(new LocalStrategy(
   }
 ));
 
+// OAuth Configuration - Common settings
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Get environment-specific URL for all OAuth strategies
+const baseURL = isProduction 
+  ? 'https://globaltradingtycoon.app'
+  : process.env.REPLIT_DOMAINS 
+    ? `https://${process.env.REPLIT_DOMAINS}`
+    : 'http://localhost:5000';
+
 // Google OAuth Strategy - Configure dynamically based on environment
 
 // Get environment-specific credentials
-const isProduction = process.env.NODE_ENV === 'production';
 const googleClientId = isProduction ? process.env.GOOGLE_CLIENT_ID_PROD : process.env.GOOGLE_CLIENT_ID_DEV;
 const googleClientSecret = isProduction ? process.env.GOOGLE_CLIENT_SECRET_PROD : process.env.GOOGLE_CLIENT_SECRET_DEV;
 
 // Fallback to current env vars for backwards compatibility
 const finalGoogleClientId = googleClientId || process.env.GOOGLE_CLIENT_ID;
 const finalGoogleClientSecret = googleClientSecret || process.env.GOOGLE_CLIENT_SECRET;
-
-// Get environment-specific URL
-const baseURL = isProduction 
-  ? 'https://globaltradingtycoon.app'
-  : process.env.REPLIT_DOMAINS 
-    ? `https://${process.env.REPLIT_DOMAINS}`
-    : 'http://localhost:5000';
 
 if (finalGoogleClientId && finalGoogleClientSecret) {
   console.log('Environment check:', {
@@ -211,9 +213,17 @@ if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
   }));
 }
 
-// Twitter OAuth Strategy
-if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
-  console.log('Registering Twitter OAuth strategy with callback URL:', `${baseURL}/auth/twitter/callback`);
+// Function to configure Twitter OAuth strategy (called after env vars are loaded)
+export function configureTwitterAuth() {
+  console.log('Configuring Twitter OAuth strategy...');
+  console.log('Twitter OAuth check:', {
+    hasKey: !!process.env.TWITTER_CONSUMER_KEY,
+    hasSecret: !!process.env.TWITTER_CONSUMER_SECRET,
+    baseURL: baseURL
+  });
+
+  if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
+    console.log('Registering Twitter OAuth strategy with callback URL:', `${baseURL}/auth/twitter/callback`);
     
   passport.use(new TwitterStrategy({
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
