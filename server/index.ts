@@ -12,12 +12,12 @@ console.log('REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
 console.log('Production mode:', process.env.NODE_ENV === 'production');
 console.log('=========================');
 
-// Configure Twitter OAuth after environment variables are loaded
-configureTwitterAuth();
-
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import passport, { configureTwitterAuth } from "./auth";
+
+// Configure Twitter OAuth after environment variables are loaded
+configureTwitterAuth();
 import { registerRoutes } from "./routes";
 import { registerAuthRoutes } from "./authRoutes";
 import { setupVite, serveStatic, log } from "./vite";

@@ -262,9 +262,13 @@ export function configureTwitterAuth() {
 
       return done(null, newUser);
     } catch (error) {
+      console.error('Twitter OAuth error:', error);
       return done(error);
     }
   }));
+  } else {
+    console.log('Twitter OAuth not configured - missing environment variables');
+  }
 }
 
 export default passport;
