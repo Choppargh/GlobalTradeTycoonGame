@@ -179,6 +179,8 @@ Changelog:
   * Enhanced Twitter OAuth 2.0 with PKCE and state parameters for improved security
   * Updated deployment configuration to ensure all dependencies available during build
   * Both Google and Twitter OAuth strategies fully functional with proper error handling
+  * Added missing Privacy Policy and Terms of Service links to all main game interfaces
+  * Created dedicated Policy and Terms pages with proper navigation and back buttons
 ```
 
 ## User Preferences

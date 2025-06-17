@@ -6,6 +6,8 @@ import HomePage from "./pages/HomePage";
 import GamePage from "./pages/GamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import RulesPage from "./pages/RulesPage";
+import PolicyPage from "./pages/PolicyPage";
+import TermsPage from "./pages/TermsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import NotFound from "./pages/not-found";
