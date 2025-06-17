@@ -1,4 +1,5 @@
-import React from 'react';
+// Use safe React imports to prevent bundling conflicts
+import { useState, useEffect, useCallback, isReactLoaded } from '@/utils/reactSafe';
 
 export interface User {
   id: number;
@@ -10,11 +11,16 @@ export interface User {
 }
 
 export function useAuth() {
-  const [user, setUser] = React.useState<User | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  // Verify React is available before using hooks
+  if (!isReactLoaded()) {
+    throw new Error('React hooks not available - check React import configuration');
+  }
 
-  const checkAuthStatus = React.useCallback(async () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const checkAuthStatus = useCallback(async () => {
     try {
       const response = await fetch('/auth/me', {
         credentials: 'include'
@@ -37,11 +43,11 @@ export function useAuth() {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  const updateDisplayName = React.useCallback(async (newDisplayName: string): Promise<boolean> => {
+  const updateDisplayName = useCallback(async (newDisplayName: string): Promise<boolean> => {
     try {
       const response = await fetch('/auth/update-display-name', {
         method: 'POST',
@@ -64,7 +70,7 @@ export function useAuth() {
     }
   }, []);
 
-  const logout = React.useCallback(async () => {
+  const logout = useCallback(async () => {
     try {
       await fetch('/auth/logout', {
         method: 'POST',

@@ -3,6 +3,11 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
+// Verify React is properly loaded before rendering
+if (typeof React === 'undefined' || typeof React.useState !== 'function') {
+  console.error('React is not properly loaded. Check your bundler configuration.');
+}
+
 // Simple service worker registration with safety checks
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

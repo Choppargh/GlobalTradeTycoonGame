@@ -1,4 +1,4 @@
-import { useAuthSimple as useAuth } from '@/hooks/useAuthSimple';
+import { useAuth } from '@/hooks/useAuth';
 import { Loading } from '@/components/ui/loading';
 
 interface ProtectedRouteProps {

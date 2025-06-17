@@ -3,7 +3,7 @@ import { ImprovedAuthPage } from '@/components/auth/ImprovedAuthPage';
 import { DisplayNameSetup } from '@/components/auth/DisplayNameSetup';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { InstallPrompt } from '@/components/ui/InstallPrompt';
-import { useAuthSimple as useAuth } from '@/hooks/useAuthSimple';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function HomePage() {
   const { user, isLoading, isAuthenticated, logout } = useAuth();
