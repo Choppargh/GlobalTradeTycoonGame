@@ -50,7 +50,7 @@ export function GameHeader() {
   };
 
   return (
-    <div className="bg-amber-50 border-b border-gray-200 shadow-sm">
+    <div className="bg-amber-50 border-b border-gray-200 shadow-sm rounded-3xl">
       <div className="w-full px-2 py-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex">
@@ -89,7 +89,7 @@ export function GameHeader() {
             </div>
             
             <div 
-              className="flex items-center justify-between p-3 bg-background rounded-md cursor-pointer hover:bg-muted/50"
+              className="flex items-center justify-between p-3 bg-background rounded-3xl cursor-pointer hover:bg-muted/50"
               onClick={() => setBankModalOpen(true)}
             >
               <div className="pr-4">
@@ -99,7 +99,7 @@ export function GameHeader() {
                 </div>
                 <div className="font-semibold">{formatCurrency(cash)}</div>
               </div>
-              <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white ml-2" onClick={() => setBankModalOpen(true)}>
+              <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white ml-2 rounded-2xl" onClick={() => setBankModalOpen(true)}>
                 Bank
               </Button>
             </div>
@@ -109,7 +109,7 @@ export function GameHeader() {
                 <Button 
                   variant="default" 
                   size="sm"
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-green-600 hover:bg-green-700 text-white rounded-2xl"
                   onClick={handleEndGameClick}
                 >
                   <Clock className="mr-1 h-4 w-4" />

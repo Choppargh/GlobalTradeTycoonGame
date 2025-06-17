@@ -141,6 +141,7 @@ export function BuyProductDialog({ isOpen, product, onClose }: BuyProductDialogP
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
