@@ -82,24 +82,24 @@ export default function GamePage() {
           {/* Tabbed interface on mobile, hidden on desktop */}
           <div className="block lg:hidden w-full">
             <Tabs defaultValue="buy" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-2 w-full bg-amber-50 border-b border-amber-200">
+              <TabsList className="grid grid-cols-2 w-full bg-amber-50 border-b border-amber-200 rounded-t-3xl">
                 <TabsTrigger 
                   value="buy" 
-                  className="text-base font-medium data-[state=active]:bg-blue-100 data-[state=active]:text-blue-800 rounded-b-none"
+                  className="text-base font-medium data-[state=active]:bg-orange-200 data-[state=active]:text-orange-800 rounded-tl-3xl rounded-br-none"
                 >
                   Buy
                 </TabsTrigger>
                 <TabsTrigger 
                   value="sell" 
-                  className="text-base font-medium data-[state=active]:bg-green-100 data-[state=active]:text-green-800 rounded-b-none"
+                  className="text-base font-medium data-[state=active]:bg-emerald-200 data-[state=active]:text-emerald-800 rounded-tr-3xl rounded-bl-none"
                 >
                   Sell
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="buy" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
+              <TabsContent value="buy" className="mt-0 pt-0 border-0 rounded-b-3xl">
                 <BuyTab />
               </TabsContent>
-              <TabsContent value="sell" className="mt-0 pt-0 border border-amber-200 border-t-0 rounded-t-none">
+              <TabsContent value="sell" className="mt-0 pt-0 border-0 rounded-b-3xl">
                 <SellTab />
               </TabsContent>
             </Tabs>

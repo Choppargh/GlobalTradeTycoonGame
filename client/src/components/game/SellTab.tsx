@@ -169,10 +169,10 @@ export function SellTab() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="bg-green-100 hover:bg-green-200 text-green-800 w-16"
+                        className="bg-emerald-300 hover:bg-emerald-400 text-white font-semibold rounded-2xl w-16 border-0 shadow-md"
                         onClick={() => handleSellClick(item)}
                       >
-                        Sell
+                        SELL
                       </Button>
                     </div>
                   </TableCell>

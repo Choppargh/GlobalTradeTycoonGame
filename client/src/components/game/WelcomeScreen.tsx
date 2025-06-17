@@ -226,7 +226,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
         )}
 
         {activeScreen === 'play' && (
-          <div className="bg-white/90 rounded-lg p-8 max-w-xl w-full mx-4 z-10 relative">
+          <div className="bg-white/90 rounded-3xl p-8 max-w-xl w-full mx-4 z-10 relative shadow-xl">
             <h2 className="text-2xl font-bold text-tycoon-navy mb-6 text-center">Game Options</h2>
             
             {/* Show saved game option if available */}

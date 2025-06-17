@@ -166,9 +166,9 @@ export function ProductDetailDialog({ isOpen, product, onClose }: ProductDetailD
                 size="sm"
                 onClick={handleBuy}
                 disabled={!buyQuantity || parseInt(String(buyQuantity)) <= 0 || !canBuyProduct()}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-2xl border-0 shadow-md"
               >
-                Buy
+                BUY
               </Button>
             </div>
             
@@ -221,9 +221,9 @@ export function ProductDetailDialog({ isOpen, product, onClose }: ProductDetailD
                 size="sm"
                 onClick={handleSell}
                 disabled={!sellQuantity || parseInt(String(sellQuantity)) <= 0 || !canSellProduct()}
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-emerald-400 hover:bg-emerald-500 text-white font-semibold rounded-2xl border-0 shadow-md"
               >
-                Sell
+                SELL
               </Button>
             </div>
             

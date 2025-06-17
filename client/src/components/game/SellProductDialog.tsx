@@ -89,7 +89,7 @@ export function SellProductDialog({ isOpen, product, onClose }: SellProductDialo
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto" onClick={onClose}>
       <div 
-        className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl"
+        className="bg-white rounded-3xl p-8 max-w-md w-full shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
@@ -146,9 +146,9 @@ export function SellProductDialog({ isOpen, product, onClose }: SellProductDialo
               variant="default"
               onClick={handleSell}
               disabled={!quantity || parseInt(String(quantity)) <= 0 || !canSellProduct()}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-emerald-400 hover:bg-emerald-500 text-white font-semibold rounded-2xl border-0 shadow-md"
             >
-              Sell
+              SELL
             </Button>
           </div>
             
