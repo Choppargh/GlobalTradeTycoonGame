@@ -69,13 +69,9 @@ const baseURL = isProduction
 
 // Google OAuth Strategy - Configure dynamically based on environment
 
-// Get environment-specific credentials
-const googleClientId = isProduction ? process.env.GOOGLE_CLIENT_ID_PROD : process.env.GOOGLE_CLIENT_ID_DEV;
-const googleClientSecret = isProduction ? process.env.GOOGLE_CLIENT_SECRET_PROD : process.env.GOOGLE_CLIENT_SECRET_DEV;
-
-// Fallback to current env vars for backwards compatibility
-const finalGoogleClientId = googleClientId || process.env.GOOGLE_CLIENT_ID;
-const finalGoogleClientSecret = googleClientSecret || process.env.GOOGLE_CLIENT_SECRET;
+// Use deployment-provided secrets directly
+const finalGoogleClientId = process.env.GOOGLE_CLIENT_ID;
+const finalGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
 if (finalGoogleClientId && finalGoogleClientSecret) {
   console.log('Environment check:', {
@@ -222,6 +218,7 @@ export function configureTwitterAuth() {
     baseURL: baseURL
   });
 
+  // Use deployment-provided secrets directly
   if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
     console.log('Registering Twitter OAuth strategy with callback URL:', `${baseURL}/auth/twitter/callback`);
     
