@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -15,7 +15,7 @@ import { Toaster } from "./components/ui/sonner";
 import "@fontsource/inter";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   return (
     <QueryClientProvider client={queryClient}>
