@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface User {
   id: number;
@@ -13,12 +13,11 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
+    if (!mounted && typeof window === 'undefined') return;
+    
     try {
       const response = await fetch('/auth/me', {
         credentials: 'include'
@@ -33,13 +32,23 @@ export function useAuth() {
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error('Auth check error:', error);
       setUser(null);
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [mounted]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      checkAuthStatus();
+    }
+  }, [mounted, checkAuthStatus]);
 
   const updateDisplayName = async (newDisplayName: string) => {
     try {
@@ -54,14 +63,13 @@ export function useAuth() {
 
       if (response.ok) {
         const data = await response.json();
-        setUser(prev => prev ? { ...prev, displayName: newDisplayName } : null);
-        return { success: true };
-      } else {
-        const error = await response.json();
-        return { success: false, error: error.message };
+        setUser(data.user);
+        return true;
       }
+      return false;
     } catch (error) {
-      return { success: false, error: 'Network error occurred' };
+      console.error('Display name update error:', error);
+      return false;
     }
   };
 
@@ -82,8 +90,8 @@ export function useAuth() {
 
   return {
     user,
-    isLoading,
-    isAuthenticated,
+    isAuthenticated: mounted ? isAuthenticated : false,
+    isLoading: mounted ? isLoading : true,
     checkAuthStatus,
     updateDisplayName,
     logout
