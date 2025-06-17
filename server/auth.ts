@@ -226,7 +226,8 @@ export function configureTwitterAuth() {
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
     consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: `${baseURL}/auth/twitter/callback`,
-    includeEmail: true
+    includeEmail: true,
+    userProfileURL: 'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true'
   },
   async (token, tokenSecret, profile, done) => {
     try {
