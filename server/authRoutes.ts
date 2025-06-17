@@ -199,9 +199,7 @@ export function registerAuthRoutes(app: Express) {
       console.log('Twitter user data:', twitterUser);
 
       // Check if user exists with this Twitter ID
-      let user = await storage.users.findFirst({
-        where: (users, { eq }) => eq(users.twitterId, twitterUser.id)
-      });
+      let user = await storage.getUserByProvider('twitter', twitterUser.id);
       
       if (!user) {
         // Create new user
@@ -215,7 +213,7 @@ export function registerAuthRoutes(app: Express) {
           avatar: twitterUser.profile_image_url || null
         };
         
-        user = await storage.users.insert(newUserData).returning().then(result => result[0]);
+        user = await storage.createUser(newUserData);
         console.log('New Twitter user created:', user.id);
       } else {
         console.log('Existing Twitter user found:', user.id);
