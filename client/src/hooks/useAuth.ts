@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 interface User {
   id: number;
@@ -13,11 +13,12 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
-  const checkAuthStatus = useCallback(async () => {
-    if (!mounted && typeof window === 'undefined') return;
-    
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
     try {
       const response = await fetch('/auth/me', {
         credentials: 'include'
@@ -38,17 +39,7 @@ export function useAuth() {
     } finally {
       setIsLoading(false);
     }
-  }, [mounted]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      checkAuthStatus();
-    }
-  }, [mounted, checkAuthStatus]);
+  };
 
   const updateDisplayName = async (newDisplayName: string) => {
     try {
@@ -90,8 +81,8 @@ export function useAuth() {
 
   return {
     user,
-    isAuthenticated: mounted ? isAuthenticated : false,
-    isLoading: mounted ? isLoading : true,
+    isAuthenticated,
+    isLoading,
     checkAuthStatus,
     updateDisplayName,
     logout
