@@ -1,5 +1,4 @@
 import React from "react";
-import { isReactLoaded } from "./utils/reactSafe";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -16,11 +15,6 @@ import { Toaster } from "./components/ui/sonner";
 import "@fontsource/inter";
 
 function App() {
-  // Verify React is properly loaded
-  if (!isReactLoaded()) {
-    return <div>Loading React...</div>;
-  }
-
   const [isLoading, setIsLoading] = React.useState(false);
 
   return (
