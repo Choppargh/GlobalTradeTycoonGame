@@ -2,7 +2,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { Strategy as TwitterStrategy } from '@passport-js/passport-twitter';
+import OAuth2Strategy from 'passport-oauth2';
 import bcrypt from 'bcryptjs';
 import { storage } from './db';
 import type { User } from '@shared/schema';
@@ -222,39 +222,48 @@ export function configureTwitterAuth() {
   if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
     console.log('Registering Twitter OAuth strategy with callback URL:', `${baseURL}/auth/twitter/callback`);
     
-  passport.use(new TwitterStrategy({
-    consumerKey: process.env.TWITTER_CONSUMER_KEY,
-    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+  passport.use('twitter', new OAuth2Strategy({
+    authorizationURL: 'https://twitter.com/i/oauth2/authorize',
+    tokenURL: 'https://api.twitter.com/2/oauth2/token',
+    clientID: process.env.TWITTER_CONSUMER_KEY,
+    clientSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: `${baseURL}/auth/twitter/callback`,
-    includeEmail: true
+    scope: ['tweet.read', 'users.read', 'offline.access'],
+    state: true,
+    pkce: true
   },
-  async (token: string, tokenSecret: string, profile: any, done: any) => {
+  async (accessToken: string, refreshToken: string, profile: any, done: any) => {
     try {
+      // Fetch user data from Twitter API using access token
+      const userResponse = await fetch('https://api.twitter.com/2/users/me?user.fields=id,name,username,profile_image_url', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      
+      if (!userResponse.ok) {
+        throw new Error('Failed to fetch user data from Twitter');
+      }
+      
+      const userData = await userResponse.json();
+      const twitterUser = userData.data;
+      
       // Check if user exists with this Twitter ID
-      let user = await storage.getUserByProvider('twitter', profile.id);
+      let user = await storage.getUserByProvider('twitter', twitterUser.id);
       
       if (user) {
         return done(null, user);
       }
 
-      // Check if user exists with this email
-      const email = profile.emails?.[0]?.value;
-      if (email) {
-        user = await storage.getUserByEmail(email);
-        if (user) {
-          return done(null, user);
-        }
-      }
-
-      // Create new user
+      // Create new user (Twitter OAuth 2.0 doesn't provide email by default)
       const newUser = await storage.createUser({
-        username: profile.displayName || profile.username || `twitter_${profile.id}`,
-        email: email || null,
+        username: twitterUser.username || `twitter_${twitterUser.id}`,
+        email: null, // Twitter OAuth 2.0 requires special permissions for email
         password: null,
         provider: 'twitter',
-        providerId: profile.id,
-        displayName: profile.displayName || null,
-        avatar: profile.photos?.[0]?.value || null
+        providerId: twitterUser.id,
+        displayName: twitterUser.name || twitterUser.username,
+        avatar: twitterUser.profile_image_url || null
       });
 
       return done(null, newUser);
