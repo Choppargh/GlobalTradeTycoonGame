@@ -77,21 +77,21 @@ export default function LeaderboardPage() {
         </div>
 
         {error ? (
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow p-8 text-center">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg p-8 text-center">
             <p className="text-red-600 mb-4">{error}</p>
             <button 
               onClick={fetchLeaderboard}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-6 py-3 bg-blue-400 text-white rounded-2xl hover:bg-blue-500 font-semibold shadow-md"
             >
               Try Again
             </button>
           </div>
         ) : (
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
-            <div className="p-6 border-b">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg">
+            <div className="p-8 border-b border-gray-200 rounded-t-3xl">
               <h2 className="text-xl font-semibold">Top Traders This Week</h2>
             </div>
-            <div className="p-6">
+            <div className="p-8">
               {scores.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 text-lg">No scores yet this week!</p>
@@ -102,7 +102,7 @@ export default function LeaderboardPage() {
                   {scores.map((entry, index) => (
                     <div
                       key={entry.id}
-                      className={`flex items-center justify-between p-4 rounded-lg ${
+                      className={`flex items-center justify-between p-4 rounded-2xl ${
                         index === 0 ? 'bg-yellow-50 border-2 border-yellow-200' :
                         index === 1 ? 'bg-gray-50 border-2 border-gray-200' :
                         index === 2 ? 'bg-orange-50 border-2 border-orange-200' :

@@ -84,17 +84,17 @@ export function SellTab() {
           return (
             <div 
               key={item.productId}
-              className="p-3 border rounded-md bg-white shadow-sm"
+              className="p-4 border rounded-2xl bg-white shadow-md"
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-medium text-base">{item.name}</h3>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="bg-green-100 hover:bg-green-200 text-green-800 min-w-[60px]"
+                  className="bg-emerald-300 hover:bg-emerald-400 text-white font-semibold rounded-2xl min-w-[60px] border-0 shadow-md"
                   onClick={() => handleSellClick(item)}
                 >
-                  Sell
+                  SELL
                 </Button>
               </div>
               <div className="grid grid-cols-2 gap-1 text-sm">
