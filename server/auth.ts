@@ -2,7 +2,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { Strategy as TwitterStrategy } from 'passport-twitter';
+import { Strategy as TwitterStrategy } from '@passport-js/passport-twitter';
 import bcrypt from 'bcryptjs';
 import { storage } from './db';
 import type { User } from '@shared/schema';
@@ -226,10 +226,9 @@ export function configureTwitterAuth() {
     consumerKey: process.env.TWITTER_CONSUMER_KEY,
     consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: `${baseURL}/auth/twitter/callback`,
-    includeEmail: true,
-    userProfileURL: 'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true'
+    includeEmail: true
   },
-  async (token, tokenSecret, profile, done) => {
+  async (token: string, tokenSecret: string, profile: any, done: any) => {
     try {
       // Check if user exists with this Twitter ID
       let user = await storage.getUserByProvider('twitter', profile.id);

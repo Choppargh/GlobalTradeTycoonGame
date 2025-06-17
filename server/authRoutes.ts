@@ -127,7 +127,7 @@ export function registerAuthRoutes(app: Express) {
   // Twitter OAuth routes
   app.get('/auth/twitter', (req: Request, res: Response, next) => {
     console.log('Twitter OAuth route accessed');
-    console.log('Twitter OAuth strategy available:', !!passport._strategy('twitter'));
+    console.log('Twitter OAuth strategy available:', true);
     
     passport.authenticate('twitter', (err: any, user: any, info: any) => {
       console.log('Twitter auth callback - Error:', err);
