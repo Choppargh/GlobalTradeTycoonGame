@@ -5,6 +5,7 @@ import { storage } from './db';
 import { insertUserSchema } from '@shared/schema';
 import { ZodError } from 'zod';
 import { TwitterOAuth2 } from './twitterOAuth';
+import { setupTwitterAuthFallback } from './twitterAuthFallback';
 
 // In-memory storage for OAuth states
 const oauthStates = new Map<string, { returnTo: string; timestamp: number }>();
@@ -128,15 +129,31 @@ export function registerAuthRoutes(app: Express) {
   // Twitter OAuth routes
   app.get('/auth/twitter', (req: Request, res: Response) => {
     console.log('Twitter OAuth route accessed');
+    console.log('Environment check:', {
+      hasTwitterKey: !!process.env.TWITTER_CONSUMER_KEY,
+      hasTwitterSecret: !!process.env.TWITTER_CONSUMER_SECRET,
+      replitDomains: process.env.REPLIT_DOMAINS,
+      nodeEnv: process.env.NODE_ENV
+    });
     
     try {
-      const baseURL = process.env.REPLIT_DOMAINS 
-        ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
-        : 'http://localhost:5000';
+      // Use production URL for Twitter OAuth callback
+      const baseURL = process.env.NODE_ENV === 'production' 
+        ? 'https://globaltradingtycoon.app'
+        : process.env.REPLIT_DOMAINS 
+          ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
+          : 'http://localhost:5000';
+      
+      console.log('Using base URL for Twitter OAuth:', baseURL);
+      
+      if (!process.env.TWITTER_CONSUMER_KEY || !process.env.TWITTER_CONSUMER_SECRET) {
+        console.error('Twitter OAuth credentials missing');
+        return res.redirect('/?error=twitter_config_missing');
+      }
       
       const twitterOAuth = new TwitterOAuth2(
-        process.env.TWITTER_CONSUMER_KEY!,
-        process.env.TWITTER_CONSUMER_SECRET!,
+        process.env.TWITTER_CONSUMER_KEY,
+        process.env.TWITTER_CONSUMER_SECRET,
         `${baseURL}/auth/twitter/callback`
       );
 
@@ -146,39 +163,58 @@ export function registerAuthRoutes(app: Express) {
       (req.session as any).twitterCodeVerifier = codeVerifier;
       (req.session as any).twitterState = state;
       
-      console.log('Redirecting to Twitter OAuth URL:', url);
+      console.log('Generated Twitter OAuth URL:', url);
+      console.log('Stored session data:', {
+        hasCodeVerifier: !!codeVerifier,
+        hasState: !!state
+      });
+      
       res.redirect(url);
     } catch (error) {
       console.error('Twitter OAuth initiation error:', error);
+      console.error('Error stack:', (error as Error).stack);
       res.redirect('/?error=twitter_init_failed');
     }
   });
 
   app.get('/auth/twitter/callback', async (req: Request, res: Response) => {
     console.log('Twitter OAuth callback received');
+    console.log('Callback query parameters:', req.query);
+    console.log('Session data:', {
+      hasCodeVerifier: !!(req.session as any).twitterCodeVerifier,
+      hasState: !!(req.session as any).twitterState
+    });
     
     try {
-      const { code, state, error } = req.query;
+      const { code, state, error, error_description } = req.query;
       
       if (error) {
         console.error('Twitter OAuth error:', error);
-        return res.redirect('/?error=twitter_auth_failed');
+        console.error('Error description:', error_description);
+        return res.redirect(`/?error=twitter_auth_failed&details=${encodeURIComponent(error as string)}`);
       }
 
       if (!code || !state) {
-        console.error('Missing code or state parameter');
-        return res.redirect('/?error=twitter_auth_failed');
+        console.error('Missing code or state parameter', { hasCode: !!code, hasState: !!state });
+        return res.redirect('/?error=twitter_missing_params');
       }
 
       // Verify state parameter
-      if (state !== (req.session as any).twitterState) {
-        console.error('State parameter mismatch');
-        return res.redirect('/?error=twitter_auth_failed');
+      const sessionState = (req.session as any).twitterState;
+      if (state !== sessionState) {
+        console.error('State parameter mismatch', { 
+          received: state, 
+          expected: sessionState 
+        });
+        return res.redirect('/?error=twitter_state_mismatch');
       }
 
-      const baseURL = process.env.REPLIT_DOMAINS 
-        ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
-        : 'http://localhost:5000';
+      // Use production URL for Twitter OAuth callback
+      const baseURL = process.env.NODE_ENV === 'production' 
+        ? 'https://globaltradingtycoon.app'
+        : process.env.REPLIT_DOMAINS 
+          ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
+          : 'http://localhost:5000';
       
       const twitterOAuth = new TwitterOAuth2(
         process.env.TWITTER_CONSUMER_KEY!,
@@ -236,9 +272,26 @@ export function registerAuthRoutes(app: Express) {
 
     } catch (error) {
       console.error('Twitter OAuth callback error:', error);
-      res.redirect('/?error=twitter_auth_failed');
+      console.error('Error stack:', (error as Error).stack);
+      res.redirect('/?error=twitter_auth_failed&message=' + encodeURIComponent((error as Error).message));
     }
   });
+
+  // Fallback Twitter OAuth routes using traditional passport strategy
+  app.get('/auth/twitter/fallback', (req: Request, res: Response, next) => {
+    console.log('Twitter fallback OAuth route accessed');
+    passport.authenticate('twitter-fallback')(req, res, next);
+  });
+
+  app.get('/auth/twitter/fallback/callback',
+    passport.authenticate('twitter-fallback', { 
+      failureRedirect: '/?error=twitter_fallback_failed' 
+    }),
+    (req: Request, res: Response) => {
+      console.log('Twitter fallback OAuth callback success');
+      res.redirect('/');
+    }
+  );
 
   // Logout endpoint
   app.post('/auth/logout', (req: Request, res: Response) => {
