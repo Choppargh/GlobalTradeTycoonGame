@@ -87,7 +87,7 @@ export function SellProductDialog({ isOpen, product, onClose }: SellProductDialo
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[9999] bg-black/80 flex items-center justify-center p-4" onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       <div 
         className="bg-white rounded-3xl p-6 max-w-sm w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}

@@ -37,7 +37,7 @@ export function LocationMap({ currentLocation, onSelect, interactive = false }: 
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden rounded-3xl border-0">
       <CardContent className="p-0 relative">
         <div 
           className="relative w-full h-[250px] bg-cover bg-center bg-gray-100"
