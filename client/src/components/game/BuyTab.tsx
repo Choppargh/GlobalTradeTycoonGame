@@ -59,17 +59,17 @@ export function BuyTab() {
           return (
             <div 
               key={product.productId}
-              className="p-3 border rounded-md bg-white shadow-sm"
+              className="p-4 border rounded-2xl bg-white shadow-md"
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-medium text-base">{product.name}</h3>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="bg-blue-100 hover:bg-blue-200 text-blue-800 min-w-[60px]"
+                  className="bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-2xl min-w-[60px] border-0 shadow-md"
                   onClick={() => handleBuyClick(product)}
                 >
-                  Buy
+                  BUY
                 </Button>
               </div>
               <div className="grid grid-cols-2 gap-1 text-sm">

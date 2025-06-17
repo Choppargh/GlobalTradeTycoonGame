@@ -70,7 +70,7 @@ export default function LeaderboardPage() {
           <h1 className="text-3xl font-bold text-white drop-shadow-lg">Global Leaderboard</h1>
           <button 
             onClick={() => window.location.href = '/'}
-            className="px-4 py-2 bg-white/90 text-gray-800 rounded-lg font-medium hover:bg-white transition-colors shadow-md"
+            className="px-6 py-3 bg-white/90 text-gray-800 rounded-2xl font-medium hover:bg-white transition-colors shadow-lg"
           >
             Back to Home
           </button>

@@ -231,7 +231,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
             
             {/* Show saved game option if available */}
             {hasSavedGame && savedGameInfo && (
-              <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="mb-8 bg-amber-50 border border-amber-200 rounded-3xl p-6 shadow-md">
                 <h3 className="text-lg font-semibold text-amber-800 mb-2">Continue Your Game?</h3>
                 <div className="text-sm text-amber-700 mb-4">
                   <p>Trader: <span className="font-medium">{savedGameInfo.username}</span></p>
@@ -241,13 +241,13 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
                 <div className="flex gap-2">
                   <button 
                     onClick={this.handleLoadGame}
-                    className="flex-1 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors"
+                    className="flex-1 py-2 bg-amber-400 text-white rounded-2xl hover:bg-amber-500 transition-colors font-semibold shadow-md"
                   >
                     Continue Game
                   </button>
                   <button 
                     onClick={this.handleClearSavedGame}
-                    className="py-2 px-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                    className="py-2 px-3 bg-gray-300 text-gray-700 rounded-2xl hover:bg-gray-400 transition-colors font-medium shadow-md"
                   >
                     Delete
                   </button>
@@ -262,7 +262,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
               <p className="text-center text-gray-600 mb-4">Playing as: <span className="font-medium text-tycoon-navy">{user?.username}</span></p>
               <button 
                 onClick={this.handleStartNewGame}
-                className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                className="w-full py-3 bg-emerald-400 text-white rounded-2xl hover:bg-emerald-500 transition-colors font-semibold shadow-md"
               >
                 Start New Game
               </button>
@@ -270,7 +270,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
             
             <button 
               onClick={() => this.setState({ activeScreen: 'welcome' })}
-              className="mt-4 w-full py-2 bg-tycoon-navy text-white rounded hover:bg-opacity-90 transition-colors"
+              className="mt-4 w-full py-2 bg-slate-400 text-white rounded-2xl hover:bg-slate-500 transition-colors font-medium shadow-md"
             >
               Back
             </button>
