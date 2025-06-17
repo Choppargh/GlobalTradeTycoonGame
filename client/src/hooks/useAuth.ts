@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 
-interface User {
+export interface User {
   id: number;
   username: string;
   email: string;
@@ -10,15 +10,11 @@ interface User {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = React.useCallback(async () => {
     try {
       const response = await fetch('/auth/me', {
         credentials: 'include'
@@ -39,9 +35,13 @@ export function useAuth() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const updateDisplayName = async (newDisplayName: string) => {
+  React.useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  const updateDisplayName = React.useCallback(async (newDisplayName: string): Promise<boolean> => {
     try {
       const response = await fetch('/auth/update-display-name', {
         method: 'POST',
@@ -62,9 +62,9 @@ export function useAuth() {
       console.error('Display name update error:', error);
       return false;
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = React.useCallback(async () => {
     try {
       await fetch('/auth/logout', {
         method: 'POST',
@@ -77,7 +77,7 @@ export function useAuth() {
       setIsAuthenticated(false);
       window.location.href = '/';
     }
-  };
+  }, []);
 
   return {
     user,

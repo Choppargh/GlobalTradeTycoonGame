@@ -86,7 +86,7 @@ if (finalGoogleClientId && finalGoogleClientSecret) {
     clientSecret: finalGoogleClientSecret,
     callbackURL: `${baseURL}/auth/google/callback`,
     scope: ['profile', 'email'],
-    prompt: 'select_account' // This forces Google to show account selection
+    // prompt: 'select_account' // Not supported in this version
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
