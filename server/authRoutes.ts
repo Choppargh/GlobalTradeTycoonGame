@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { storage } from './db';
 import { insertUserSchema } from '@shared/schema';
 import { ZodError } from 'zod';
+import { TwitterOAuth2 } from './twitterOAuth';
 
 // In-memory storage for OAuth states
 const oauthStates = new Map<string, { returnTo: string; timestamp: number }>();
@@ -129,7 +130,6 @@ export function registerAuthRoutes(app: Express) {
     console.log('Twitter OAuth route accessed');
     
     try {
-      const { TwitterOAuth2 } = require('./twitterOAuth');
       const baseURL = process.env.REPLIT_DOMAINS 
         ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
         : 'http://localhost:5000';
@@ -143,8 +143,8 @@ export function registerAuthRoutes(app: Express) {
       const { url, codeVerifier, state } = twitterOAuth.generateAuthUrl();
       
       // Store code verifier and state in session
-      req.session.twitterCodeVerifier = codeVerifier;
-      req.session.twitterState = state;
+      (req.session as any).twitterCodeVerifier = codeVerifier;
+      (req.session as any).twitterState = state;
       
       console.log('Redirecting to Twitter OAuth URL:', url);
       res.redirect(url);
@@ -171,12 +171,11 @@ export function registerAuthRoutes(app: Express) {
       }
 
       // Verify state parameter
-      if (state !== req.session.twitterState) {
+      if (state !== (req.session as any).twitterState) {
         console.error('State parameter mismatch');
         return res.redirect('/?error=twitter_auth_failed');
       }
 
-      const { TwitterOAuth2 } = require('./twitterOAuth');
       const baseURL = process.env.REPLIT_DOMAINS 
         ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
         : 'http://localhost:5000';
@@ -190,7 +189,7 @@ export function registerAuthRoutes(app: Express) {
       // Exchange code for access token
       const tokenData = await twitterOAuth.exchangeCodeForToken(
         code as string, 
-        req.session.twitterCodeVerifier
+        (req.session as any).twitterCodeVerifier
       );
 
       // Get user information
@@ -200,8 +199,9 @@ export function registerAuthRoutes(app: Express) {
       console.log('Twitter user data:', twitterUser);
 
       // Check if user exists with this Twitter ID
-      const storage = require('./storage').default;
-      let user = await storage.getUserByProvider('twitter', twitterUser.id);
+      let user = await storage.users.findFirst({
+        where: (users, { eq }) => eq(users.twitterId, twitterUser.id)
+      });
       
       if (!user) {
         // Create new user
@@ -215,7 +215,7 @@ export function registerAuthRoutes(app: Express) {
           avatar: twitterUser.profile_image_url || null
         };
         
-        user = await storage.createUser(newUserData);
+        user = await storage.users.insert(newUserData).returning().then(result => result[0]);
         console.log('New Twitter user created:', user.id);
       } else {
         console.log('Existing Twitter user found:', user.id);
@@ -229,8 +229,8 @@ export function registerAuthRoutes(app: Express) {
         }
         
         // Clean up session data
-        delete req.session.twitterCodeVerifier;
-        delete req.session.twitterState;
+        delete (req.session as any).twitterCodeVerifier;
+        delete (req.session as any).twitterState;
         
         console.log('Twitter OAuth login successful');
         res.redirect('/');
