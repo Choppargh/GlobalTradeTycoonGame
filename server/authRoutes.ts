@@ -6,12 +6,17 @@ import { insertUserSchema } from '@shared/schema';
 import { ZodError } from 'zod';
 import { TwitterOAuth2 } from './twitterOAuth';
 import { setupTwitterAuthFallback } from './twitterAuthFallback';
+import { setupSimpleTwitterAuth } from './twitterOAuthSimple';
 
 // In-memory storage for OAuth states
 const oauthStates = new Map<string, { returnTo: string; timestamp: number }>();
 
 export function registerAuthRoutes(app: Express) {
   console.log('Registering auth routes...');
+  
+  // Set up all Twitter OAuth strategies
+  setupTwitterAuthFallback();
+  setupSimpleTwitterAuth(app);
   
   // Local registration endpoint
   app.post('/auth/register', async (req: Request, res: Response) => {
