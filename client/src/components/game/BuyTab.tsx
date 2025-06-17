@@ -59,14 +59,14 @@ export function BuyTab() {
           return (
             <div 
               key={product.productId}
-              className="p-4 border rounded-2xl bg-white shadow-md"
+              className="p-4 border-0 rounded-3xl bg-white shadow-lg"
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-medium text-base">{product.name}</h3>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-2xl min-w-[60px] border-0 shadow-md"
+                  className="bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-2xl min-w-[60px] border-0 shadow-md"
                   onClick={() => handleBuyClick(product)}
                 >
                   BUY
@@ -123,7 +123,7 @@ export function BuyTab() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-2xl w-16 border-0 shadow-md"
+                        className="bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-2xl w-16 border-0 shadow-md"
                         onClick={() => handleBuyClick(product)}
                       >
                         BUY

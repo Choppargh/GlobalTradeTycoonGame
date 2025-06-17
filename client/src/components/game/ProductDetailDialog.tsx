@@ -125,8 +125,8 @@ export function ProductDetailDialog({ isOpen, product, onClose }: ProductDetailD
         </div>
         
         {/* Buy Section - Always on top */}
-        <div className="border rounded-lg p-4 bg-blue-50 mb-4">
-          <h3 className="font-bold text-lg text-blue-800 mb-3">Buy</h3>
+        <div className="border-0 rounded-3xl p-4 bg-amber-50 mb-4 shadow-sm">
+          <h3 className="font-bold text-lg text-amber-800 mb-3">Buy</h3>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Available:</span>
@@ -166,7 +166,7 @@ export function ProductDetailDialog({ isOpen, product, onClose }: ProductDetailD
                 size="sm"
                 onClick={handleBuy}
                 disabled={!buyQuantity || parseInt(String(buyQuantity)) <= 0 || !canBuyProduct()}
-                className="bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-2xl border-0 shadow-md"
+                className="bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-2xl border-0 shadow-md"
               >
                 BUY
               </Button>
@@ -184,8 +184,8 @@ export function ProductDetailDialog({ isOpen, product, onClose }: ProductDetailD
         </div>
         
         {/* Sell Section - Always below Buy */}
-        <div className="border rounded-lg p-4 bg-green-50">
-          <h3 className="font-bold text-lg text-green-800 mb-3">Sell</h3>
+        <div className="border-0 rounded-3xl p-4 bg-emerald-50 shadow-sm">
+          <h3 className="font-bold text-lg text-emerald-800 mb-3">Sell</h3>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">In Your Inventory:</span>

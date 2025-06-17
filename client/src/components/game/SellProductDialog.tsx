@@ -87,9 +87,9 @@ export function SellProductDialog({ isOpen, product, onClose }: SellProductDialo
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div 
-        className="bg-white rounded-3xl p-8 max-w-md w-full shadow-xl"
+        className="bg-white rounded-3xl p-6 max-w-sm w-full mx-4 shadow-xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
@@ -121,7 +121,7 @@ export function SellProductDialog({ isOpen, product, onClose }: SellProductDialo
         </div>
         
         {/* Sell Controls */}
-        <div className="border rounded-lg p-4 bg-green-50 mb-4">
+        <div className="border-0 rounded-3xl p-4 bg-emerald-50 mb-4 shadow-sm">
           <div className="flex items-center space-x-2 mb-4">
             <Input
               type="number"
@@ -129,7 +129,7 @@ export function SellProductDialog({ isOpen, product, onClose }: SellProductDialo
               onChange={(e) => setQuantity(e.target.value)}
               min={0}
               max={getInventoryQuantity()}
-              className="w-24 bg-white"
+              className="w-24 bg-white rounded-2xl"
               disabled={!canSellProduct()}
               placeholder="Qty"
             />
@@ -138,7 +138,7 @@ export function SellProductDialog({ isOpen, product, onClose }: SellProductDialo
               size="sm"
               onClick={handleMaxSell}
               disabled={!canSellProduct()}
-              className="whitespace-nowrap"
+              className="whitespace-nowrap rounded-2xl"
             >
               Max
             </Button>
