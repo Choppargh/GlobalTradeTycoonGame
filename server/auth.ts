@@ -228,9 +228,10 @@ export function configureTwitterAuth() {
     clientID: process.env.TWITTER_CONSUMER_KEY,
     clientSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: `${baseURL}/auth/twitter/callback`,
-    scope: ['tweet.read', 'users.read', 'offline.access'],
-    state: true,
-    pkce: true
+    scope: ['tweet.read', 'users.read'],
+    customHeaders: {
+      'Authorization': 'Basic ' + Buffer.from(`${process.env.TWITTER_CONSUMER_KEY}:${process.env.TWITTER_CONSUMER_SECRET}`).toString('base64')
+    }
   },
   async (accessToken: string, refreshToken: string, profile: any, done: any) => {
     try {
