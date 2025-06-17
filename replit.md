@@ -173,6 +173,12 @@ Changelog:
   * Implemented Twitter API v2 user data retrieval using access tokens
   * Fixed React hook implementation issues in useAuth preventing authentication state management
   * Twitter OAuth 2.0 now compatible with current Twitter Developer API requirements
+- June 17, 2025. Fixed deployment and authentication system issues:
+  * Resolved esbuild dependency issue by adding npm install to deployment build process
+  * Fixed React hook bundling conflicts using explicit React namespace imports to prevent "useState is null" errors
+  * Enhanced Twitter OAuth 2.0 with PKCE and state parameters for improved security
+  * Updated deployment configuration to ensure all dependencies available during build
+  * Both Google and Twitter OAuth strategies fully functional with proper error handling
 ```
 
 ## User Preferences
