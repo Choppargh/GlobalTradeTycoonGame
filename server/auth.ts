@@ -229,35 +229,41 @@ export function configureTwitterAuth() {
     clientSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: `${baseURL}/auth/twitter/callback`,
     scope: ['tweet.read', 'users.read'],
-    customHeaders: {
-      'Authorization': 'Basic ' + Buffer.from(`${process.env.TWITTER_CONSUMER_KEY}:${process.env.TWITTER_CONSUMER_SECRET}`).toString('base64')
-    }
+    scopeSeparator: ' '
   },
   async (accessToken: string, refreshToken: string, profile: any, done: any) => {
     try {
+      console.log('Twitter OAuth callback - Access Token received:', !!accessToken);
+      
       // Fetch user data from Twitter API using access token
       const userResponse = await fetch('https://api.twitter.com/2/users/me?user.fields=id,name,username,profile_image_url', {
         headers: {
-          'Authorization': `Bearer ${accessToken}`
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
         }
       });
       
       if (!userResponse.ok) {
-        throw new Error('Failed to fetch user data from Twitter');
+        const errorText = await userResponse.text();
+        console.error(`Twitter API error: ${userResponse.status} - ${errorText}`);
+        throw new Error(`Failed to fetch user data from Twitter: ${userResponse.status}`);
       }
       
       const userData = await userResponse.json();
+      console.log('Twitter user data:', userData);
       const twitterUser = userData.data;
       
       // Check if user exists with this Twitter ID
       let user = await storage.getUserByProvider('twitter', twitterUser.id);
+      console.log('Existing Twitter user found:', user ? `User ${user.id}` : 'Not found');
       
       if (user) {
+        console.log('Returning existing Twitter user:', user.id);
         return done(null, user);
       }
 
       // Create new user (Twitter OAuth 2.0 doesn't provide email by default)
-      const newUser = await storage.createUser({
+      const newUserData = {
         username: twitterUser.username || `twitter_${twitterUser.id}`,
         email: null, // Twitter OAuth 2.0 requires special permissions for email
         password: null,
@@ -265,7 +271,11 @@ export function configureTwitterAuth() {
         providerId: twitterUser.id,
         displayName: twitterUser.name || twitterUser.username,
         avatar: twitterUser.profile_image_url || null
-      });
+      };
+      
+      console.log('Creating new Twitter user:', newUserData);
+      const newUser = await storage.createUser(newUserData);
+      console.log('New Twitter user created:', newUser.id);
 
       return done(null, newUser);
     } catch (error) {

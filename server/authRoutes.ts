@@ -125,19 +125,122 @@ export function registerAuthRoutes(app: Express) {
   );
 
   // Twitter OAuth routes
-  app.get('/auth/twitter', (req: Request, res: Response, next) => {
+  app.get('/auth/twitter', (req: Request, res: Response) => {
     console.log('Twitter OAuth route accessed');
-    console.log('Twitter OAuth strategy available:', true);
-    passport.authenticate('twitter')(req, res, next);
+    
+    try {
+      const { TwitterOAuth2 } = require('./twitterOAuth');
+      const baseURL = process.env.REPLIT_DOMAINS 
+        ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
+        : 'http://localhost:5000';
+      
+      const twitterOAuth = new TwitterOAuth2(
+        process.env.TWITTER_CONSUMER_KEY!,
+        process.env.TWITTER_CONSUMER_SECRET!,
+        `${baseURL}/auth/twitter/callback`
+      );
+
+      const { url, codeVerifier, state } = twitterOAuth.generateAuthUrl();
+      
+      // Store code verifier and state in session
+      req.session.twitterCodeVerifier = codeVerifier;
+      req.session.twitterState = state;
+      
+      console.log('Redirecting to Twitter OAuth URL:', url);
+      res.redirect(url);
+    } catch (error) {
+      console.error('Twitter OAuth initiation error:', error);
+      res.redirect('/?error=twitter_init_failed');
+    }
   });
 
-  app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', { failureRedirect: '/?error=twitter_auth_failed' }),
-    (req: Request, res: Response) => {
-      // Successful authentication - redirect to homepage/dashboard
-      res.redirect('/');
+  app.get('/auth/twitter/callback', async (req: Request, res: Response) => {
+    console.log('Twitter OAuth callback received');
+    
+    try {
+      const { code, state, error } = req.query;
+      
+      if (error) {
+        console.error('Twitter OAuth error:', error);
+        return res.redirect('/?error=twitter_auth_failed');
+      }
+
+      if (!code || !state) {
+        console.error('Missing code or state parameter');
+        return res.redirect('/?error=twitter_auth_failed');
+      }
+
+      // Verify state parameter
+      if (state !== req.session.twitterState) {
+        console.error('State parameter mismatch');
+        return res.redirect('/?error=twitter_auth_failed');
+      }
+
+      const { TwitterOAuth2 } = require('./twitterOAuth');
+      const baseURL = process.env.REPLIT_DOMAINS 
+        ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` 
+        : 'http://localhost:5000';
+      
+      const twitterOAuth = new TwitterOAuth2(
+        process.env.TWITTER_CONSUMER_KEY!,
+        process.env.TWITTER_CONSUMER_SECRET!,
+        `${baseURL}/auth/twitter/callback`
+      );
+
+      // Exchange code for access token
+      const tokenData = await twitterOAuth.exchangeCodeForToken(
+        code as string, 
+        req.session.twitterCodeVerifier
+      );
+
+      // Get user information
+      const userData = await twitterOAuth.getUserInfo(tokenData.access_token);
+      const twitterUser = userData.data;
+
+      console.log('Twitter user data:', twitterUser);
+
+      // Check if user exists with this Twitter ID
+      const storage = require('./storage').default;
+      let user = await storage.getUserByProvider('twitter', twitterUser.id);
+      
+      if (!user) {
+        // Create new user
+        const newUserData = {
+          username: twitterUser.username || `twitter_${twitterUser.id}`,
+          email: null,
+          password: null,
+          provider: 'twitter',
+          providerId: twitterUser.id,
+          displayName: twitterUser.name || twitterUser.username,
+          avatar: twitterUser.profile_image_url || null
+        };
+        
+        user = await storage.createUser(newUserData);
+        console.log('New Twitter user created:', user.id);
+      } else {
+        console.log('Existing Twitter user found:', user.id);
+      }
+
+      // Login the user
+      req.login(user, (err) => {
+        if (err) {
+          console.error('Login error after Twitter auth:', err);
+          return res.redirect('/?error=login_failed');
+        }
+        
+        // Clean up session data
+        delete req.session.twitterCodeVerifier;
+        delete req.session.twitterState;
+        
+        console.log('Twitter OAuth login successful');
+        res.redirect('/');
+      });
+
+    } catch (error) {
+      console.error('Twitter OAuth callback error:', error);
+      res.redirect('/?error=twitter_auth_failed');
     }
-  );
+  });
 
   // Logout endpoint
   app.post('/auth/logout', (req: Request, res: Response) => {
