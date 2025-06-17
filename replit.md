@@ -167,6 +167,12 @@ Changelog:
   * Simplified environment file structure to avoid conflicts between local and deployment configs
   * Both Google and Twitter OAuth strategies now register properly on server startup
   * Authentication system fully functional with email/password, Google OAuth, and Twitter OAuth
+- June 17, 2025. Migrated Twitter OAuth from 1.0a to OAuth 2.0:
+  * Replaced @passport-js/passport-twitter with passport-oauth2 strategy for Twitter OAuth 2.0 compatibility
+  * Updated Twitter authentication to use clientID/clientSecret instead of consumerKey/consumerSecret
+  * Implemented Twitter API v2 user data retrieval using access tokens
+  * Fixed React hook implementation issues in useAuth preventing authentication state management
+  * Twitter OAuth 2.0 now compatible with current Twitter Developer API requirements
 ```
 
 ## User Preferences
