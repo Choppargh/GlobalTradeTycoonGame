@@ -67,10 +67,10 @@ export default function LeaderboardPage() {
     }}>
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-white drop-shadow-lg bg-black/30 px-4 py-2 rounded-lg backdrop-blur-sm">Global Leaderboard</h1>
+          <h1 className="text-3xl font-bold text-white drop-shadow-lg">Global Leaderboard</h1>
           <button 
             onClick={() => window.location.href = '/'}
-            className="px-6 py-3 border-2 border-white rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow-lg transition-colors"
+            className="px-4 py-2 bg-white/90 text-gray-800 rounded-lg font-medium hover:bg-white transition-colors shadow-md"
           >
             Back to Home
           </button>
