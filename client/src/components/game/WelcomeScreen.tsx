@@ -220,23 +220,7 @@ export class WelcomeScreen extends React.Component<WelcomeScreenProps, WelcomeSc
                   style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto' }}
                 />
               </button>
-              
-              {/* Policy and Terms Links */}
-              <div className="flex gap-3 justify-center mt-6 text-sm">
-                <button
-                  onClick={() => window.location.href = '/policy'}
-                  className="text-blue-600 hover:text-blue-800 underline"
-                >
-                  Privacy Policy
-                </button>
-                <span className="text-gray-400">|</span>
-                <button
-                  onClick={() => window.location.href = '/terms'}
-                  className="text-blue-600 hover:text-blue-800 underline"
-                >
-                  Terms of Service
-                </button>
-              </div>
+
             </div>
           </div>
         )}

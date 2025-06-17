@@ -170,23 +170,7 @@ export default function HomePage() {
                 style={{ width: '160px', height: 'auto' }}
               />
             </button>
-            
-            {/* Policy and Terms Links */}
-            <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-              <button
-                onClick={() => window.location.href = '/policy'}
-                className="text-sm text-blue-600 hover:text-blue-800 underline"
-              >
-                Privacy Policy
-              </button>
-              <span className="text-gray-400">|</span>
-              <button
-                onClick={() => window.location.href = '/terms'}
-                className="text-sm text-blue-600 hover:text-blue-800 underline"
-              >
-                Terms of Service
-              </button>
-            </div>
+
           </div>
         </div>
       </div>
