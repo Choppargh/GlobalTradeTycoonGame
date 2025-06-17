@@ -123,10 +123,10 @@ export function BuyTab() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="bg-blue-100 hover:bg-blue-200 text-blue-800 w-16"
+                        className="bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-2xl w-16 border-0 shadow-md"
                         onClick={() => handleBuyClick(product)}
                       >
-                        Buy
+                        BUY
                       </Button>
                     </div>
                   </TableCell>
@@ -140,7 +140,7 @@ export function BuyTab() {
   };
 
   return (
-    <Card className="h-full shadow-sm rounded-lg border border-black">
+    <Card className="h-full shadow-lg rounded-3xl border-0 bg-white/95 backdrop-blur-sm">
       <CardHeader className="pb-3">
         <CardTitle>Buy Products</CardTitle>
         <CardDescription>Purchase goods at market price and build your inventory</CardDescription>

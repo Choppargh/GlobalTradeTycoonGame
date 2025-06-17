@@ -13,31 +13,31 @@ export default function RulesPage() {
           <h1 className="text-3xl font-bold text-white drop-shadow-lg">Game Rules</h1>
           <button 
             onClick={() => window.location.href = '/'}
-            className="px-4 py-2 bg-white/90 text-gray-800 rounded-lg font-medium hover:bg-white transition-colors shadow-md"
+            className="px-6 py-3 bg-white/90 text-gray-800 rounded-2xl font-medium hover:bg-white transition-colors shadow-lg"
           >
             Back to Home
           </button>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
-            <div className="p-6 border-b">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg">
+            <div className="p-8 border-b border-gray-200 rounded-t-3xl">
               <h2 className="text-xl font-semibold">🎯 Objective</h2>
             </div>
-            <div className="p-6">
-              <p className="text-gray-700">
+            <div className="p-8">
+              <p className="text-gray-700 leading-relaxed">
                 Build your trading empire by buying and selling products across different global markets. 
                 Maximize your net worth (cash + bank balance - loan amount) within 31 days to compete on the global leaderboard.
               </p>
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
-            <div className="p-6 border-b">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg">
+            <div className="p-8 border-b border-gray-200 rounded-t-3xl">
               <h2 className="text-xl font-semibold">💰 Starting Conditions</h2>
             </div>
-            <div className="p-6">
-              <ul className="space-y-2 text-gray-700">
+            <div className="p-8">
+              <ul className="space-y-3 text-gray-700">
                 <li>• You start with $2,000 cash (from an initial loan)</li>
                 <li>• You have $2,000 in loan debt (5% interest per day)</li>
                 <li>• You have 31 days to trade</li>
