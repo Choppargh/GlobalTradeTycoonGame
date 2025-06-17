@@ -92,7 +92,7 @@ export class TravelOptions extends React.Component<{}, TravelOptionsState> {
 
     return (
       <>
-        <Card className="h-full shadow-sm rounded-lg border border-black">
+        <Card className="h-full shadow-sm rounded-3xl border-0">
           <CardHeader className="pb-3">
             <CardTitle>Departures</CardTitle>
             <CardDescription>
