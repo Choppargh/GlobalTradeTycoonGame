@@ -43,7 +43,7 @@ export function useAuth() {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  const updateDisplayName = React.useCallback(async (newDisplayName: string): Promise<boolean> => {
+  const updateDisplayName = React.useCallback(async (newDisplayName: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await fetch('/auth/update-display-name', {
         method: 'POST',
@@ -57,12 +57,14 @@ export function useAuth() {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
-        return true;
+        return { success: true };
+      } else {
+        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+        return { success: false, error: errorData.message || 'Failed to update trader name' };
       }
-      return false;
     } catch (error) {
       console.error('Display name update error:', error);
-      return false;
+      return { success: false, error: 'Network error occurred' };
     }
   }, []);
 

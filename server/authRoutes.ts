@@ -372,6 +372,8 @@ export function registerAuthRoutes(app: Express) {
       // Update the session user object
       req.user = updatedUser;
 
+      console.log('Display name updated successfully for user:', updatedUser.id, 'New name:', trimmedDisplayName);
+      
       res.json({ 
         message: 'Display name updated successfully',
         user: {
@@ -386,6 +388,7 @@ export function registerAuthRoutes(app: Express) {
 
     } catch (error) {
       console.error('Update display name error:', error);
+      console.error('Error details:', (error as Error).stack);
       res.status(500).json({ message: 'Internal server error' });
     }
   });
