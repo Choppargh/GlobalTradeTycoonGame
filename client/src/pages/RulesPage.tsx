@@ -46,8 +46,8 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
-            <div className="p-6 border-b">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg">
+            <div className="p-6 border-b border-gray-200 rounded-t-3xl">
               <h2 className="text-xl font-semibold">🌍 Trading Mechanics</h2>
             </div>
             <div className="p-6">
@@ -111,8 +111,8 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
-            <div className="p-6 border-b">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg">
+            <div className="p-6 border-b border-gray-200 rounded-t-3xl">
               <h2 className="text-xl font-semibold">🏆 Scoring & Leaderboard</h2>
             </div>
             <div className="p-6">

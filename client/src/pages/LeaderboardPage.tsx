@@ -140,7 +140,7 @@ export default function LeaderboardPage() {
           </p>
           <button 
             onClick={() => window.location.href = '/game'}
-            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="px-6 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 shadow-md"
           >
             Play Now
           </button>
