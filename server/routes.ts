@@ -18,7 +18,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       allScores.forEach(score => {
         const existing = userHighestScores.get(score.username);
         if (!existing || score.score > existing.score) {
-          userHighestScores.set(score.username, score);
+          userHighestScores.set(score.username, {
+            ...score,
+            displayName: score.displayName || score.username
+          });
         }
       });
       
