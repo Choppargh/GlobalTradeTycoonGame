@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ProductListing } from '@shared/schema';
 import { useGameStore } from '@/lib/stores/useGameStore';
 import { Input } from '@/components/ui/input';
@@ -141,6 +142,7 @@ export function BuyProductDialog({ isOpen, product, onClose }: BuyProductDialogP
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
