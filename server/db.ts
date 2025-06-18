@@ -41,9 +41,19 @@ export class DbStorage {
   }
 
   async getScores(): Promise<Score[]> {
-    const result = await db.select().from(scores)
-      .orderBy(desc(scores.score))
-      .limit(20);
+    const result = await db.select({
+      id: scores.id,
+      username: scores.username,
+      displayName: users.displayName,
+      score: scores.score,
+      days: scores.days,
+      endNetWorth: scores.endNetWorth,
+      createdAt: scores.createdAt
+    })
+    .from(scores)
+    .leftJoin(users, eq(scores.username, users.username))
+    .orderBy(desc(scores.score))
+    .limit(20);
     return result;
   }
 
