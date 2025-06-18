@@ -44,7 +44,6 @@ export class DbStorage {
     const result = await db.select({
       id: scores.id,
       userId: scores.userId,
-      username: users.username,
       displayName: users.displayName,
       score: scores.score,
       days: scores.days,

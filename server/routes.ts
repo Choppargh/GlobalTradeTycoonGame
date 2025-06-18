@@ -19,8 +19,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const existing = userHighestScores.get(score.userId);
         if (!existing || score.score > existing.score) {
           userHighestScores.set(score.userId, {
-            ...score,
-            displayName: score.displayName || score.username
+            id: score.id,
+            displayName: score.displayName || 'Anonymous',
+            score: score.score,
+            days: score.days,
+            endNetWorth: score.endNetWorth,
+            createdAt: score.createdAt
           });
         }
       });
