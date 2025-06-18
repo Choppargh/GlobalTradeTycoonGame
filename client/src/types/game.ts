@@ -36,8 +36,9 @@ export interface GameStatus {
 export interface LeaderboardEntry {
   id: number;
   username: string;
+  displayName?: string;
   score: number;
   days: number;
-  endNetWorth: number;
+  endNetWorth?: number;
   createdAt: string;
 }
