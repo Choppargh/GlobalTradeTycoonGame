@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 interface LeaderboardEntry {
   id: number;
   username: string;
+  displayName?: string;
   score: number;
   weekNumber: number;
   createdAt: string;
@@ -119,7 +120,7 @@ export default function LeaderboardPage() {
                           {index + 1}
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-900">{entry.username}</p>
+                          <p className="font-semibold text-gray-900">{entry.displayName || entry.username}</p>
                           <p className="text-sm text-gray-500">{formatDate(entry.createdAt)}</p>
                         </div>
                       </div>

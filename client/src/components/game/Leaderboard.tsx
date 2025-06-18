@@ -56,7 +56,7 @@ export function Leaderboard({ scores, currentUsername }: LeaderboardProps) {
                   index + 1
                 )}
               </TableCell>
-              <TableCell>{entry.username}</TableCell>
+              <TableCell>{entry.displayName || entry.username}</TableCell>
               <TableCell className="text-right">{entry.days}</TableCell>
               <TableCell className="text-right font-medium">{formatCurrency(entry.score)}</TableCell>
               <TableCell className="text-right text-muted-foreground hidden sm:table-cell">
