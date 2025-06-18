@@ -28,8 +28,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
 // New schema for game scores
 export const scores = pgTable("scores", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull(),
-  displayName: text("display_name"),
+  userId: integer("user_id").notNull(),
   score: real("score").notNull(),
   days: integer("days").notNull(),
   endNetWorth: real("end_net_worth").notNull(),
@@ -37,8 +36,7 @@ export const scores = pgTable("scores", {
 });
 
 export const insertScoreSchema = createInsertSchema(scores).pick({
-  username: true,
-  displayName: true,
+  userId: true,
   score: true,
   days: true,
   endNetWorth: true,

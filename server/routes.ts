@@ -12,13 +12,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const allScores = await storage.getScores();
       
-      // Group scores by username and keep only the highest score for each user
+      // Group scores by userId and keep only the highest score for each user
       const userHighestScores = new Map();
       
       allScores.forEach(score => {
-        const existing = userHighestScores.get(score.username);
+        const existing = userHighestScores.get(score.userId);
         if (!existing || score.score > existing.score) {
-          userHighestScores.set(score.username, {
+          userHighestScores.set(score.userId, {
             ...score,
             displayName: score.displayName || score.username
           });
@@ -56,7 +56,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const scoreData = {
-        username: user.username,
+        userId: user.id,
         score,
         days,
         endNetWorth
