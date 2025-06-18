@@ -15,7 +15,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Group scores by userId and keep only the highest score for each user
       const userHighestScores = new Map();
       
-      allScores.forEach(score => {
+      allScores.forEach((score: any) => {
         const existing = userHighestScores.get(score.userId);
         if (!existing || score.score > existing.score) {
           userHighestScores.set(score.userId, {

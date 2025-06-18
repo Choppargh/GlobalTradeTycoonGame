@@ -40,7 +40,7 @@ export class DbStorage {
     return result[0];
   }
 
-  async getScores(): Promise<Score[]> {
+  async getScores(): Promise<any[]> {
     const result = await db.select({
       id: scores.id,
       userId: scores.userId,

@@ -11,7 +11,7 @@ export interface IStorage {
   updateUserDisplayName(id: number, displayName: string): Promise<User | undefined>;
   
   // Score related operations
-  getScores(): Promise<Score[]>;
+  getScores(): Promise<any[]>;
   createScore(score: InsertScore): Promise<Score>;
 }
 
@@ -67,7 +67,7 @@ export class MemStorage implements IStorage {
     return user;
   }
   
-  async getScores(): Promise<Score[]> {
+  async getScores(): Promise<any[]> {
     return Array.from(this.scores.values())
       .sort((a, b) => b.score - a.score)
       .slice(0, 20); // Top 20 scores
