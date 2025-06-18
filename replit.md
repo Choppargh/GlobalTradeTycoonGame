@@ -203,6 +203,12 @@ Changelog:
   * Applied rounded styling to leaderboard page, policy pages, terms pages, and authentication forms
   * Achieved complete design consistency with softer, more organic interface across all pages
   * All containers now use rounded-3xl with shadow-lg effects for visual depth and cohesion
+- June 18, 2025. Fixed leaderboard display name and database structure:
+  * Restructured scores table to use userId instead of username for better data integrity
+  * Fixed JOIN query to properly fetch display names from users table
+  * Updated API endpoints to work with userId-based score storage
+  * Leaderboard now correctly shows user display names instead of usernames
+  * Fixed game state loading to properly handle user authentication before loading saved games
 ```
 
 ## User Preferences

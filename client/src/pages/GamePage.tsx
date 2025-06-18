@@ -29,7 +29,8 @@ export default function GamePage() {
   useEffect(() => {
     const initializeGame = async () => {
       if (!currentLocation) {
-        // Try to load saved game first, if none exists start new game
+        // First refresh user info to get userId, then try to load saved game
+        await useGameStore.getState().refreshUserInfo();
         const hasExistingGame = loadGameState();
         if (!hasExistingGame) {
           await startGame();

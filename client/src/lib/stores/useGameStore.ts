@@ -587,11 +587,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     try {
       // Submit score to leaderboard
-      // Game starts with 7 days, so days played = 7 - daysRemaining
+      // Game starts with 31 days, so days played = 31 - daysRemaining
       await apiRequest('POST', '/api/scores', {
-        username: state.username || 'Anonymous',
         score,
-        days: 7 - state.daysRemaining,
+        days: 31 - state.daysRemaining,
         endNetWorth: netWorth
       });
       
