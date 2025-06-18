@@ -26,7 +26,7 @@ export function Leaderboard({ scores, currentUsername }: LeaderboardProps) {
   };
 
   return (
-    <div className="rounded-md border overflow-hidden">
+    <div className="rounded-3xl border-0 shadow-lg overflow-hidden bg-white">
       <Table>
         <TableHeader>
           <TableRow>

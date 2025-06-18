@@ -74,8 +74,8 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
-            <div className="p-6 border-b">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg">
+            <div className="p-6 border-b border-gray-200 rounded-t-3xl">
               <h2 className="text-xl font-semibold">🏦 Banking System</h2>
             </div>
             <div className="p-6">
@@ -93,8 +93,8 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
-            <div className="p-6 border-b">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg">
+            <div className="p-6 border-b border-gray-200 rounded-t-3xl">
               <h2 className="text-xl font-semibold">⚡ Random Events</h2>
             </div>
             <div className="p-6">
@@ -133,8 +133,8 @@ export default function RulesPage() {
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow">
-            <div className="p-6 border-b">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg">
+            <div className="p-6 border-b border-gray-200 rounded-t-3xl">
               <h2 className="text-xl font-semibold">🎮 Controls</h2>
             </div>
             <div className="p-6">
@@ -162,7 +162,7 @@ export default function RulesPage() {
         <div className="mt-8 text-center">
           <button 
             onClick={() => window.location.href = '/game'}
-            className="px-8 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="px-8 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 shadow-md"
           >
             Start Trading Now
           </button>
