@@ -209,6 +209,12 @@ Changelog:
   * Updated API endpoints to work with userId-based score storage
   * Leaderboard now correctly shows user display names instead of usernames
   * Fixed game state loading to properly handle user authentication before loading saved games
+- June 19, 2025. Fixed mobile UI and score recording issues:
+  * Changed product cards on mobile to use rounded-b-3xl (square top, rounded bottom) for proper visual hierarchy
+  * Fixed duplicate score submissions by implementing localStorage-based submission tracking
+  * Corrected days calculation to properly show 31-day gameplay duration instead of incorrect 6-day values
+  * Removed username exposure from leaderboard API responses for improved privacy
+  * Cleaned up duplicate score records from database
 ```
 
 ## User Preferences
