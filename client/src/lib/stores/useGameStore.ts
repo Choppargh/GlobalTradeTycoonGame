@@ -575,6 +575,13 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Score is based ONLY on banked cash
     const score = Math.max(0, Math.round(state.bankBalance));
     
+    // Check if score already submitted to prevent duplicates
+    const submittedScoreKey = `globalTradeTycoon_submittedScore_${state.userId || 'guest'}`;
+    if (localStorage.getItem(submittedScoreKey)) {
+      console.log("Score already submitted, skipping submission");
+      return;
+    }
+    
     // Always clear saved game state first to prevent resumed play in any case
     get().clearSavedGameState();
     
@@ -587,12 +594,16 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     try {
       // Submit score to leaderboard
-      // Game starts with 31 days, so days played = 31 - daysRemaining
+      // Calculate correct days played (game starts with 31 days)
+      const daysPlayed = 31 - state.daysRemaining;
       await apiRequest('POST', '/api/scores', {
         score,
-        days: 31 - state.daysRemaining,
+        days: daysPlayed,
         endNetWorth: netWorth
       });
+      
+      // Mark score as submitted to prevent duplicates
+      localStorage.setItem(submittedScoreKey, 'true');
       
       console.log("Score submitted successfully");
     } catch (error) {
@@ -602,8 +613,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   
   restartGame: () => {
+    const state = get();
     // Clear the submitted score flag so the player can submit a new score
-    localStorage.removeItem('globalTradeTycoon_submittedScore');
+    const submittedScoreKey = `globalTradeTycoon_submittedScore_${state.userId || 'guest'}`;
+    localStorage.removeItem(submittedScoreKey);
     
     set({
       currentLocation: null,
