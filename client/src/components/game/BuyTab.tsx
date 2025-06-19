@@ -59,7 +59,8 @@ export function BuyTab() {
           return (
             <div 
               key={product.productId}
-              className="p-4 border-0 rounded-b-3xl bg-white shadow-lg"
+              className="p-4 border-0 bg-white shadow-lg"
+              style={{ borderRadius: '0 0 1.5rem 1.5rem' }}
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-medium text-base">{product.name}</h3>
