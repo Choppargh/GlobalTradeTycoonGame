@@ -72,8 +72,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   currentLocation: null,
   cash: 0,
   bankBalance: 0,
-  loanAmount: 2000, // Start with $2k loan
-  daysRemaining: 31,
+  loanAmount: GAME_CONFIG.STARTING_LOAN,
+  daysRemaining: GAME_DURATION,
   inventory: [],
   marketListings: [],
   priceChanges: {},
@@ -86,7 +86,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   travelRiskMessage: '',
   isTravelRiskDialogOpen: false,
   isEndGameConfirmationOpen: false,
-  autoSaveEnabled: true, // Default to auto-save enabled
+  autoSaveEnabled: GAME_CONFIG.AUTO_SAVE_ENABLED,
   
   setUsername: (username) => {
     set({ username });
@@ -190,9 +190,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     let updatedInventory = [...state.inventory];
     let challengeMessage = "";
     
-    // Challenge 1: Cash loss at airport (1 in 100 chance)
-    if (Math.random() < 0.01) {
-      const lossPercentage = Math.random() * 0.75; // Up to 75% loss
+    // Challenge 1: Cash loss at airport
+    if (Math.random() < GAME_CONFIG.CASH_LOSS_PROBABILITY) {
+      const lossPercentage = Math.random() * GAME_CONFIG.MAX_CASH_LOSS_PERCENTAGE;
       const lossAmount = Math.round(state.cash * lossPercentage * 100) / 100;
       updatedCash = Math.round((state.cash - lossAmount) * 100) / 100;
       
@@ -214,9 +214,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       });
     }
     
-    // Challenge 2: Inventory loss due to fire/theft (1 in 200 chance)
-    if (Math.random() < 0.005 && state.inventory.length > 0) {
-      const lossPercentage = Math.random() * 0.8; // Up to 80% loss
+    // Challenge 2: Inventory loss due to fire/theft
+    if (Math.random() < GAME_CONFIG.INVENTORY_LOSS_PROBABILITY && state.inventory.length > 0) {
+      const lossPercentage = Math.random() * GAME_CONFIG.MAX_INVENTORY_LOSS_PERCENTAGE;
       
       // Create updated inventory with some items lost
       updatedInventory = state.inventory.map(item => {
@@ -481,9 +481,9 @@ export const useGameStore = create<GameState>((set, get) => ({
         break;
         
       case 'loan':
-        if (state.loanAmount + roundedAmount > 10000) {
+        if (state.loanAmount + roundedAmount > GAME_CONFIG.MAX_LOAN_AMOUNT) {
           set({ 
-            travelRiskMessage: "Your total loan cannot exceed $10,000.",
+            travelRiskMessage: `Your total loan cannot exceed $${GAME_CONFIG.MAX_LOAN_AMOUNT.toLocaleString()}.`,
             isTravelRiskDialogOpen: true 
           });
           return;
@@ -594,9 +594,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     try {
       // Submit score to leaderboard
-      // Always submit 31 days for completed games since players should play full duration
+      // Always submit full game duration for completed games since players should play full duration
       // If they finish early, they still get credit for full game completion
-      const daysPlayed = 31; // Fixed to always show 31 days for completed games
+      const daysPlayed = GAME_DURATION; // Fixed to always show full duration for completed games
       console.log(`Score submission: User completed game. Days remaining: ${state.daysRemaining}, submitting: ${daysPlayed} days`);
       
       await apiRequest('POST', '/api/scores', {
