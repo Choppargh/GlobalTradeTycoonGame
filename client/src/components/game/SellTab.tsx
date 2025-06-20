@@ -187,7 +187,7 @@ export function SellTab() {
   };
 
   return (
-    <Card className="h-full shadow-lg rounded-3xl border-0 bg-white/95 backdrop-blur-sm">
+    <Card className="h-full shadow-lg rounded-b-3xl border-0 bg-white/95 backdrop-blur-sm">
       <CardHeader className="pb-3">
         <CardTitle>Sell Products</CardTitle>
         <CardDescription>Sell your inventory at demand prices to make profit</CardDescription>

@@ -141,7 +141,7 @@ export function BuyTab() {
   };
 
   return (
-    <Card className="h-full shadow-lg rounded-3xl border-0 bg-white/95 backdrop-blur-sm">
+    <Card className="h-full shadow-lg rounded-b-3xl border-0 bg-white/95 backdrop-blur-sm">
       <CardHeader className="pb-3">
         <CardTitle>Buy Products</CardTitle>
         <CardDescription>Purchase goods at market price and build your inventory</CardDescription>
