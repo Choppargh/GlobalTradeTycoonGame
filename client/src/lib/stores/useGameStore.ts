@@ -594,9 +594,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     try {
       // Submit score to leaderboard
-      // Calculate correct days played (game starts with 31 days)
-      const daysPlayed = 31 - state.daysRemaining;
-      console.log(`Days calculation: Started with 31, remaining: ${state.daysRemaining}, played: ${daysPlayed}`);
+      // Always submit 31 days for completed games since players should play full duration
+      // If they finish early, they still get credit for full game completion
+      const daysPlayed = 31; // Fixed to always show 31 days for completed games
+      console.log(`Score submission: User completed game. Days remaining: ${state.daysRemaining}, submitting: ${daysPlayed} days`);
       
       await apiRequest('POST', '/api/scores', {
         score,

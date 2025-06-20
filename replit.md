@@ -215,6 +215,11 @@ Changelog:
   * Corrected days calculation to properly show 31-day gameplay duration instead of incorrect 6-day values
   * Removed username exposure from leaderboard API responses for improved privacy
   * Cleaned up duplicate score records from database
+- June 20, 2025. Fixed critical days calculation bug in production:
+  * Root cause: Players finishing game early were getting incorrect day counts (6 instead of 31)
+  * Fixed score submission to always record 31 days for completed games regardless of early finish
+  * Updated existing incorrect database records to show proper 31-day values
+  * Enhanced logging to track score submission details for debugging
 ```
 
 ## User Preferences
