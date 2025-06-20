@@ -8,6 +8,7 @@ import {
   applyEventToInventory, 
   GameEvent 
 } from "../gameLogic";
+import { GAME_CONFIG, GAME_DURATION } from "@shared/gameConfig";
 import { saveGameState, loadGameState, clearSavedGameState } from "../autoSave";
 import { clearAllGameData } from "../clearCrossSessionData";
 
@@ -149,10 +150,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     set({
       currentLocation: startLocation,
-      cash: 2000, // Start with $2k cash from initial loan
+      cash: GAME_CONFIG.STARTING_LOAN, // Start with cash from initial loan
       bankBalance: 0,
-      loanAmount: 2000,
-      daysRemaining: 31,
+      loanAmount: GAME_CONFIG.STARTING_LOAN,
+      daysRemaining: GAME_DURATION,
       inventory: [],
       marketListings,
       priceChanges: initialPriceChanges,
@@ -176,8 +177,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       return;
     }
     
-    // Apply loan interest (5%) with proper rounding to nearest cent
-    const newLoanAmount = Math.round(state.loanAmount * 1.05 * 100) / 100;
+    // Apply loan interest with proper rounding to nearest cent
+    const newLoanAmount = Math.round(state.loanAmount * (1 + GAME_CONFIG.LOAN_INTEREST_RATE) * 100) / 100;
     
     // Apply bank interest (3% per day) with proper rounding to nearest cent
     const newBankBalance = Math.round(state.bankBalance * 1.03 * 100) / 100;

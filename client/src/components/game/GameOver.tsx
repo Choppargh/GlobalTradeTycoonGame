@@ -5,7 +5,7 @@ import { useGameStore } from '@/lib/stores/useGameStore';
 import { calculateNetWorth } from '@/lib/gameLogic';
 import { Leaderboard } from './Leaderboard';
 import { LeaderboardEntry } from '@/types/game';
-import { GAME_DURATION } from '@/../../shared/gameConfig';
+import { GAME_DURATION } from '@shared/gameConfig';
 
 interface GameOverState {
   scoreSubmitted: boolean;
@@ -36,8 +36,7 @@ export class GameOver extends React.Component<{}, GameOverState> {
     const gameStore = useGameStore.getState();
     const { username, cash, bankBalance, loanAmount, inventory, daysRemaining } = gameStore;
     
-    const initialDays = 7;
-    const daysPassed = initialDays - daysRemaining;
+    const daysPassed = GAME_DURATION - daysRemaining;
     const netWorth = calculateNetWorth(cash, bankBalance, inventory, loanAmount);
 
     try {
@@ -113,8 +112,7 @@ export class GameOver extends React.Component<{}, GameOverState> {
     const gameStore = useGameStore.getState();
     const { username, cash, bankBalance, loanAmount, inventory, daysRemaining } = gameStore;
     
-    const initialDays = 7;
-    const daysPassed = initialDays - daysRemaining;
+    const daysPassed = GAME_DURATION - daysRemaining;
     const inventoryValue = inventory.reduce(
       (total, item) => total + (item.quantity * item.purchasePrice),
       0
