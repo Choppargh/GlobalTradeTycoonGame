@@ -8,7 +8,19 @@ import {
   applyEventToInventory, 
   GameEvent 
 } from "../gameLogic";
-import { GAME_CONFIG, GAME_DURATION } from "@shared/gameConfig";
+// Import game configuration constants
+const GAME_CONFIG = {
+  GAME_DURATION_DAYS: 31,
+  STARTING_LOAN: 2000,
+  MAX_LOAN_AMOUNT: 10000,
+  LOAN_INTEREST_RATE: 0.05,
+  CASH_LOSS_PROBABILITY: 0.01,
+  INVENTORY_LOSS_PROBABILITY: 0.005,
+  MAX_CASH_LOSS_PERCENTAGE: 0.75,
+  MAX_INVENTORY_LOSS_PERCENTAGE: 0.8,
+  AUTO_SAVE_ENABLED: true,
+};
+const GAME_DURATION = GAME_CONFIG.GAME_DURATION_DAYS;
 import { saveGameState, loadGameState, clearSavedGameState } from "../autoSave";
 import { clearAllGameData } from "../clearCrossSessionData";
 

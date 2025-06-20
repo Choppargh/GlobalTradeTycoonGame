@@ -220,6 +220,8 @@ Changelog:
   * Fixed score submission to always record 31 days for completed games regardless of early finish
   * Updated existing incorrect database records to show proper 31-day values
   * Enhanced logging to track score submission details for debugging
+  * Created global game configuration system to prevent future hardcoded value inconsistencies
+  * Centralized all game constants (duration, loan amounts, interest rates) in single config file
 ```
 
 ## User Preferences

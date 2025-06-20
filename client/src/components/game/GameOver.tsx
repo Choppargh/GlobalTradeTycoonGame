@@ -5,7 +5,8 @@ import { useGameStore } from '@/lib/stores/useGameStore';
 import { calculateNetWorth } from '@/lib/gameLogic';
 import { Leaderboard } from './Leaderboard';
 import { LeaderboardEntry } from '@/types/game';
-import { GAME_DURATION } from '@shared/gameConfig';
+// Game configuration constant
+const GAME_DURATION = 31;
 
 interface GameOverState {
   scoreSubmitted: boolean;
