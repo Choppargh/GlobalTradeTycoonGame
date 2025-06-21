@@ -613,11 +613,27 @@ export const useGameStore = create<GameState>((set, get) => ({
       const daysPlayed = GAME_DURATION; // Fixed to always show full duration for completed games
       console.log(`Score submission: User completed game. Days remaining: ${state.daysRemaining}, submitting: ${daysPlayed} days`);
       
-      await apiRequest('POST', '/api/scores', {
-        score,
-        days: daysPlayed,
-        endNetWorth: netWorth
+      console.log("Submitting score to API...");
+      const response = await fetch('/api/scores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          score,
+          days: daysPlayed,
+          endNetWorth: netWorth
+        })
       });
+
+      console.log("Score submission response:", response.status, response.statusText);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Score submission failed:", response.status, errorText);
+        throw new Error(`Score submission failed: ${response.status} ${errorText}`);
+      }
       
       // Mark score as submitted for this session to prevent duplicates
       localStorage.setItem(submittedScoreKey, 'true');

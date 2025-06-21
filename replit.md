@@ -240,6 +240,12 @@ Changelog:
   * Added localStorage cleanup to prevent key bloat from old submission markers
   * Manually restored Craig Gatenby's missing $54,212.90 score that was blocked by old system
   * Players can now submit scores for multiple games without localStorage interference
+- June 21, 2025. Fixed score submission authentication failure:
+  * Root cause: API configuration forced all requests to production server while sessions were local
+  * Updated API configuration to use relative URLs in development environment
+  * Enhanced score submission with detailed logging and error handling
+  * Authentication sessions now properly maintained during score submission
+  * Score submission and leaderboard display now work correctly in development
 ```
 
 ## User Preferences

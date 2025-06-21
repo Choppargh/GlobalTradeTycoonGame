@@ -10,8 +10,12 @@ export const API_CONFIG = {
       return (window as any).PRODUCTION_API_URL || API_CONFIG.PRODUCTION_API_URL;
     }
     
-    // Always use production URL for mobile apps and built versions
-    // This ensures the global leaderboard works on all devices
+    // In development, use relative URLs to maintain session
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return '';
+    }
+    
+    // For production/deployed versions, use full URL
     return API_CONFIG.PRODUCTION_API_URL;
   }
 };
