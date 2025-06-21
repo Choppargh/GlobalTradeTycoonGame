@@ -1,5 +1,5 @@
-// Direct React import to prevent bundling conflicts
-import React from 'react';
+// Import React hooks directly to prevent bundling issues
+import { useState, useCallback, useEffect } from 'react';
 
 export interface User {
   id: number;
@@ -11,12 +11,12 @@ export interface User {
 }
 
 export function useAuth() {
-  // Use React hooks directly from the React namespace to prevent bundling issues
-  const [user, setUser] = React.useState<User | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  // Use direct hook imports to prevent bundling issues
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuthStatus = React.useCallback(async () => {
+  const checkAuthStatus = useCallback(async () => {
     try {
       const response = await fetch('/auth/me', {
         credentials: 'include'
@@ -39,11 +39,11 @@ export function useAuth() {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  const updateDisplayName = React.useCallback(async (newDisplayName: string): Promise<{ success: boolean; error?: string }> => {
+  const updateDisplayName = useCallback(async (newDisplayName: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await fetch('/auth/update-display-name', {
         method: 'POST',
@@ -68,7 +68,7 @@ export function useAuth() {
     }
   }, []);
 
-  const logout = React.useCallback(async () => {
+  const logout = useCallback(async () => {
     try {
       await fetch('/auth/logout', {
         method: 'POST',
