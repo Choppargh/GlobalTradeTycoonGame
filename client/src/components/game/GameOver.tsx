@@ -9,7 +9,6 @@ import { LeaderboardEntry } from '@/types/game';
 const GAME_DURATION = 31;
 
 interface GameOverState {
-  scoreSubmitted: boolean;
   leaderboard: LeaderboardEntry[];
   isLoading: boolean;
   playerRank: number;
@@ -19,7 +18,6 @@ export class GameOver extends React.Component<{}, GameOverState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      scoreSubmitted: false,
       leaderboard: [],
       isLoading: true,
       playerRank: 0
@@ -27,52 +25,12 @@ export class GameOver extends React.Component<{}, GameOverState> {
   }
 
   async componentDidMount() {
-    await this.submitScore();
+    // Score submission is now handled by useGameStore.finishGame()
+    // This prevents duplicate submissions
     await this.loadLeaderboard();
   }
 
-  submitScore = async () => {
-    if (this.state.scoreSubmitted) return;
-
-    const gameStore = useGameStore.getState();
-    const { username, cash, bankBalance, loanAmount, inventory, daysRemaining } = gameStore;
-    
-    const daysPassed = GAME_DURATION - daysRemaining;
-    const netWorth = calculateNetWorth(cash, bankBalance, inventory, loanAmount);
-
-    try {
-      // Save the username for future games
-      localStorage.setItem('globalTradeTycoon_lastUsername', username || '');
-      
-      const scoreData = {
-        username,
-        score: bankBalance,
-        days: daysPassed,
-        endNetWorth: netWorth
-      };
-      
-      console.log('Submitting score:', scoreData);
-      
-      const response = await fetch('/api/scores', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(scoreData),
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Score submitted successfully:', result);
-        this.setState({ scoreSubmitted: true });
-      } else {
-        const errorText = await response.text();
-        console.error('Failed to submit score:', response.status, errorText);
-      }
-    } catch (error) {
-      console.error('Failed to submit score:', error);
-    }
-  };
+  // Score submission removed - now handled by useGameStore.finishGame() to prevent duplicates
 
   loadLeaderboard = async () => {
     try {
@@ -80,7 +38,8 @@ export class GameOver extends React.Component<{}, GameOverState> {
       if (response.ok) {
         const leaderboard = await response.json();
         const gameStore = useGameStore.getState();
-        const playerRank = leaderboard.findIndex((entry: LeaderboardEntry) => entry.username === gameStore.username) + 1;
+        // Find player rank by userId (using display names now, not usernames)
+        const playerRank = leaderboard.findIndex((entry: LeaderboardEntry) => entry.id === gameStore.userId) + 1;
         
         this.setState({ 
           leaderboard, 
@@ -109,7 +68,7 @@ export class GameOver extends React.Component<{}, GameOverState> {
   };
 
   render() {
-    const { scoreSubmitted, leaderboard, isLoading, playerRank } = this.state;
+    const { leaderboard, isLoading, playerRank } = this.state;
     const gameStore = useGameStore.getState();
     const { username, cash, bankBalance, loanAmount, inventory, daysRemaining } = gameStore;
     
@@ -165,7 +124,7 @@ export class GameOver extends React.Component<{}, GameOverState> {
               </div>
             </div>
 
-            {scoreSubmitted && playerRank > 0 && (
+            {playerRank > 0 && (
               <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
                 <p className="text-lg font-semibold text-green-800">
                   Congratulations! You ranked #{playerRank} on the leaderboard!
