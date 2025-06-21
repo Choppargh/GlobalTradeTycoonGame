@@ -318,16 +318,20 @@ export function registerAuthRoutes(app: Express) {
     
     if (req.isAuthenticated() && req.user) {
       const user = req.user as any;
-      console.log('Auth check - User details:', { id: user.id, email: user.email, provider: user.provider });
+      console.log('Auth check - User details:', { 
+        id: user.id, 
+        email: user.email, 
+        displayName: user.displayName, 
+        avatar: user.avatar, 
+        provider: user.provider 
+      });
       res.json({
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          displayName: user.displayName,
-          avatar: user.avatar,
-          provider: user.provider
-        }
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        displayName: user.displayName,
+        avatar: user.avatar,
+        provider: user.provider
       });
     } else {
       console.log('Auth check - Not authenticated, sending 401');

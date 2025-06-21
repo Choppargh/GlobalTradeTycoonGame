@@ -19,7 +19,16 @@ passport.deserializeUser(async (id: number, done) => {
   console.log('Deserializing user ID:', id);
   try {
     const user = await storage.getUser(id);
-    console.log('Retrieved user from database:', user ? { id: user.id, email: user.email } : 'User not found');
+    if (user) {
+      console.log('Retrieved user from database:', { 
+        id: user.id, 
+        email: user.email, 
+        displayName: user.displayName, 
+        avatar: user.avatar 
+      });
+    } else {
+      console.log('User not found');
+    }
     done(null, user);
   } catch (error) {
     console.error('Error deserializing user:', error);
