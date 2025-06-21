@@ -234,6 +234,12 @@ Changelog:
   * Fixed authentication response structure to properly return user data including displayName and avatar
   * Enhanced passport deserialization logging to include all user fields for debugging
   * Authentication system now works reliably with proper display names and avatars showing
+- June 21, 2025. Fixed score submission blocking issue:
+  * Root cause: localStorage duplicate prevention was persistent across all games, blocking new submissions
+  * Changed duplicate prevention to be session-specific using game-unique identifiers
+  * Added localStorage cleanup to prevent key bloat from old submission markers
+  * Manually restored Craig Gatenby's missing $54,212.90 score that was blocked by old system
+  * Players can now submit scores for multiple games without localStorage interference
 ```
 
 ## User Preferences

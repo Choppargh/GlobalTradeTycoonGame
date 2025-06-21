@@ -588,10 +588,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Score is based ONLY on banked cash
     const score = Math.max(0, Math.round(state.bankBalance));
     
-    // Check if score already submitted to prevent duplicates
-    const submittedScoreKey = `globalTradeTycoon_submittedScore_${state.userId || 'guest'}`;
+    // Check if score already submitted for this game session to prevent duplicates
+    const gameId = `${state.userId}_${state.daysRemaining}_${state.cash}_${Date.now()}`;
+    const submittedScoreKey = `globalTradeTycoon_submittedScore_${gameId}`;
     if (localStorage.getItem(submittedScoreKey)) {
-      console.log("Score already submitted, skipping submission");
+      console.log("Score already submitted for this game session, skipping submission");
       return;
     }
     
@@ -618,8 +619,16 @@ export const useGameStore = create<GameState>((set, get) => ({
         endNetWorth: netWorth
       });
       
-      // Mark score as submitted to prevent duplicates
+      // Mark score as submitted for this session to prevent duplicates
       localStorage.setItem(submittedScoreKey, 'true');
+      
+      // Clean up old submission keys to prevent localStorage bloat
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('globalTradeTycoon_submittedScore_') && key !== submittedScoreKey) {
+          localStorage.removeItem(key);
+        }
+      }
       
       console.log("Score submitted successfully");
     } catch (error) {
