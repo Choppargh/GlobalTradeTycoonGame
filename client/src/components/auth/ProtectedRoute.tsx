@@ -1,3 +1,4 @@
+// Force refresh
 import { useAuth } from '@/hooks/useAuth';
 import { Loading } from '@/components/ui/loading';
 
