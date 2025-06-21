@@ -585,8 +585,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Net worth includes everything, properly rounded to the nearest cent
     const netWorth = Math.round((state.cash + state.bankBalance + inventoryValue - state.loanAmount) * 100) / 100;
     
-    // Score is based ONLY on banked cash
-    const score = Math.max(0, Math.round(state.bankBalance));
+    // Score is final Bank Balance minus any outstanding loan amount
+    const score = Math.max(0, Math.round(state.bankBalance - state.loanAmount));
     
     // Check if score already submitted for this game session to prevent duplicates
     const gameId = `${state.userId}_${state.daysRemaining}_${state.cash}_${Date.now()}`;
@@ -647,6 +647,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
       
       console.log("Score submitted successfully");
+      
+      // Add a small delay and then notify GameOver component to refresh leaderboard
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('scoreSubmitted'));
+      }, 100);
     } catch (error) {
       console.error("Failed to submit score:", error);
       // Game over screen is already showing, no need to change state again

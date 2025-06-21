@@ -27,8 +27,22 @@ export class GameOver extends React.Component<{}, GameOverState> {
   async componentDidMount() {
     // Score submission is now handled by useGameStore.finishGame()
     // This prevents duplicate submissions
+    
+    // Listen for score submission completion to refresh leaderboard
+    window.addEventListener('scoreSubmitted', this.handleScoreSubmitted);
+    
+    // Initial load (may not include the just-submitted score yet)
     await this.loadLeaderboard();
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('scoreSubmitted', this.handleScoreSubmitted);
+  }
+
+  handleScoreSubmitted = async () => {
+    console.log("Score submission completed, refreshing leaderboard...");
+    await this.loadLeaderboard();
+  };
 
   // Score submission removed - now handled by useGameStore.finishGame() to prevent duplicates
 
@@ -78,6 +92,7 @@ export class GameOver extends React.Component<{}, GameOverState> {
       0
     );
     const netWorth = calculateNetWorth(cash, bankBalance, inventory, loanAmount);
+    const finalScore = Math.max(0, bankBalance - loanAmount);
 
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4"
@@ -100,9 +115,16 @@ export class GameOver extends React.Component<{}, GameOverState> {
             <div className="text-center">
               <h2 className="text-3xl font-bold">{username}</h2>
               <p className="text-4xl font-extrabold mt-2">
+                {this.formatCurrency(finalScore)}
+              </p>
+              <p className="text-muted-foreground">Final Score (Bank Balance - Loan)</p>
+            </div>
+            
+            <div className="text-center border-t pt-4">
+              <p className="text-2xl font-bold">
                 {this.formatCurrency(netWorth)}
               </p>
-              <p className="text-muted-foreground">Final Net Worth</p>
+              <p className="text-muted-foreground">Total Net Worth</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">

@@ -246,6 +246,12 @@ Changelog:
   * Enhanced score submission with detailed logging and error handling
   * Authentication sessions now properly maintained during score submission
   * Score submission and leaderboard display now work correctly in development
+- June 21, 2025. Fixed leaderboard timing and score calculation issues:
+  * Root cause: Leaderboard loaded before score was saved to database, missing new personal bests
+  * Implemented event-driven leaderboard refresh that triggers after successful score submission
+  * Fixed final score calculation to be "Bank Balance minus Loan Amount" as specified
+  * Added clear display separation between Final Score and Total Net Worth on game over screen
+  * Leaderboard now updates immediately after game completion showing new personal best scores
 ```
 
 ## User Preferences
