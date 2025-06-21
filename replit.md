@@ -222,6 +222,11 @@ Changelog:
   * Enhanced logging to track score submission details for debugging
   * Created global game configuration system to prevent future hardcoded value inconsistencies
   * Centralized all game constants (duration, loan amounts, interest rates) in single config file
+- June 20, 2025. Fixed duplicate score submission issue:
+  * Root cause: Both useGameStore.finishGame() and GameOver.submitScore() were submitting scores
+  * Removed duplicate submission from GameOver component - now only useGameStore handles submissions
+  * Cleaned up duplicate database entries and prevented future duplicates
+  * Score submission now occurs once through single centralized method
 ```
 
 ## User Preferences
