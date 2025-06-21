@@ -1,3 +1,4 @@
+// Backup of useAuth with completely clean implementation
 import { useState, useCallback, useEffect } from 'react';
 
 export interface User {
