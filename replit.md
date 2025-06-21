@@ -227,6 +227,13 @@ Changelog:
   * Removed duplicate submission from GameOver component - now only useGameStore handles submissions
   * Cleaned up duplicate database entries and prevented future duplicates
   * Score submission now occurs once through single centralized method
+- June 21, 2025. Fixed React hook bundling issues causing blank screens:
+  * Root cause: React.useState references in useAuth hook were becoming null due to bundling conflicts
+  * Completely recreated useAuth.ts with proper direct hook imports from 'react'
+  * Cleared Vite cache and forced HMR updates across all components
+  * Fixed authentication response structure to properly return user data including displayName and avatar
+  * Enhanced passport deserialization logging to include all user fields for debugging
+  * Authentication system now works reliably with proper display names and avatars showing
 ```
 
 ## User Preferences
