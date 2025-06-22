@@ -17,6 +17,7 @@ import {
   INFRASTRUCTURE_COSTS
 } from "@shared/schema";
 import { apiRequest } from "../queryClient";
+import { makeRequest } from "../api";
 import { 
   generateMarketListings, 
   generateRandomEvent, 
@@ -958,7 +959,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     try {
       // Create player settings with home base
-      await apiRequest('POST', '/api/player/settings', {
+      await makeRequest('POST', '/api/player/settings', {
         userId: state.userId,
         homeBase,
         currentDay: 1,
@@ -969,40 +970,31 @@ export const useGameStore = create<GameState>((set, get) => ({
 
       // Build starting office and warehouse in home base
       await Promise.all([
-        apiRequest('/api/player/infrastructure', {
-          method: 'POST',
-          body: JSON.stringify({
-            userId: state.userId,
-            location: homeBase,
-            type: 'office',
-            level: 1,
-            maintenanceCost: 10
-          })
+        apiRequest('POST', '/api/player/infrastructure', {
+          userId: state.userId,
+          location: homeBase,
+          type: 'office',
+          level: 1,
+          maintenanceCost: 10
         }),
-        apiRequest('/api/player/infrastructure', {
-          method: 'POST',
-          body: JSON.stringify({
-            userId: state.userId,
-            location: homeBase,
-            type: 'warehouse',
-            level: 1,
-            maintenanceCost: 15
-          })
+        apiRequest('POST', '/api/player/infrastructure', {
+          userId: state.userId,
+          location: homeBase,
+          type: 'warehouse',
+          level: 1,
+          maintenanceCost: 15
         })
       ]);
 
       // Initialize reputation for all locations
       const reputationPromises = Object.values(Location).map(location =>
-        apiRequest('/api/player/reputation', {
-          method: 'POST',
-          body: JSON.stringify({
-            userId: state.userId,
-            location,
-            score: location === homeBase ? 25 : 0, // Start with Bronze in home base
-            totalTrades: 0,
-            contractsCompleted: 0,
-            contractsFailed: 0
-          })
+        apiRequest('POST', '/api/player/reputation', {
+          userId: state.userId,
+          location,
+          score: location === homeBase ? 25 : 0, // Start with Bronze in home base
+          totalTrades: 0,
+          contractsCompleted: 0,
+          contractsFailed: 0
         })
       );
       await Promise.all(reputationPromises);
@@ -1028,15 +1020,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       const cost = INFRASTRUCTURE_COSTS[type].build[0]; // Level 1 cost
       const maintenance = INFRASTRUCTURE_COSTS[type].maintenance[0];
 
-      await apiRequest('/api/player/infrastructure', {
-        method: 'POST',
-        body: JSON.stringify({
-          userId: state.userId,
-          location,
-          type,
-          level: 1,
-          maintenanceCost: maintenance
-        })
+      await apiRequest('POST', '/api/player/infrastructure', {
+        userId: state.userId,
+        location,
+        type,
+        level: 1,
+        maintenanceCost: maintenance
       });
 
       // Deduct cost from cash
@@ -1068,17 +1057,14 @@ export const useGameStore = create<GameState>((set, get) => ({
       const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
       const name = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
 
-      await apiRequest('/api/player/staff', {
-        method: 'POST',
-        body: JSON.stringify({
-          userId: state.userId,
-          location,
-          staffType,
-          name,
-          level,
-          salary,
-          performance: 1.0
-        })
+      await apiRequest('POST', '/api/player/staff', {
+        userId: state.userId,
+        location,
+        staffType,
+        name,
+        level,
+        salary,
+        performance: 1.0
       });
 
       await get().loadPlayerData();
@@ -1089,9 +1075,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   fireStaff: async (staffId: number) => {
     try {
-      await apiRequest(`/api/player/staff/${staffId}`, {
-        method: 'DELETE'
-      });
+      await apiRequest('DELETE', `/api/player/staff/${staffId}`, undefined);
       await get().loadPlayerData();
     } catch (error) {
       console.error('Failed to fire staff:', error);
