@@ -103,8 +103,10 @@ interface GameState {
   // UI states
   isBankModalOpen: boolean;
   setBankModalOpen: (isOpen: boolean) => void;
-  isEmpireModalOpen: boolean;
-  setEmpireModalOpen: (isOpen: boolean) => void;
+  isInfrastructureModalOpen: boolean;
+  setInfrastructureModalOpen: (isOpen: boolean) => void;
+  isStaffModalOpen: boolean;
+  setStaffModalOpen: (isOpen: boolean) => void;
   isEndGameConfirmationOpen: boolean;
   setEndGameConfirmationOpen: (isOpen: boolean) => void;
   
@@ -141,7 +143,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   gamePhase: 'intro',
   isBankModalOpen: false,
-  isEmpireModalOpen: false,
+  isInfrastructureModalOpen: false,
+  isStaffModalOpen: false,
   currentEvent: null,
   travelRiskMessage: '',
   isTravelRiskDialogOpen: false,
@@ -738,9 +741,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ isBankModalOpen: isOpen });
   },
   
-  setEmpireModalOpen: (isOpen) => {
-    set({ isEmpireModalOpen: isOpen });
-  },
+
   
   setEndGameConfirmationOpen: (isOpen) => {
     console.log("setEndGameConfirmationOpen called with:", isOpen);
@@ -1150,5 +1151,14 @@ export const useGameStore = create<GameState>((set, get) => ({
     } catch (error) {
       console.error('Failed to load player data:', error);
     }
+  },
+  
+  // Modal state setters (missing implementations)
+  setInfrastructureModalOpen: (isOpen: boolean) => {
+    set({ isInfrastructureModalOpen: isOpen });
+  },
+  
+  setStaffModalOpen: (isOpen: boolean) => {
+    set({ isStaffModalOpen: isOpen });
   }
 }));

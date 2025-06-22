@@ -25,8 +25,10 @@ export default function GamePage() {
     isTravelRiskDialogOpen,
     travelRiskMessage,
     clearTravelRiskDialog,
-    isEmpireModalOpen,
-    setEmpireModalOpen,
+    isInfrastructureModalOpen,
+    setInfrastructureModalOpen,
+    isStaffModalOpen,
+    setStaffModalOpen,
     startGame,
     loadGameState,
     selectHomeBase,
@@ -142,10 +144,16 @@ export default function GamePage() {
       {/* Bank Modal (shows when needed) */}
       <BankInterface />
 
-      {/* Empire Modal (shows when needed) */}
-      <EmpireModal 
-        isOpen={isEmpireModalOpen}
-        onClose={() => setEmpireModalOpen(false)}
+      {/* Infrastructure Modal (shows when needed) */}
+      <InfrastructureModal 
+        isOpen={isInfrastructureModalOpen}
+        onClose={() => setInfrastructureModalOpen(false)}
+      />
+
+      {/* Staff Modal (shows when needed) */}
+      <StaffModal 
+        isOpen={isStaffModalOpen}
+        onClose={() => setStaffModalOpen(false)}
       />
 
       {/* Random Event Notification */}
