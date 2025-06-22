@@ -1,5 +1,21 @@
 import { create } from "zustand";
-import { Location, PRODUCTS, ProductListing, InventoryItem, PRODUCT_NAMES } from "@shared/schema";
+import { 
+  Location, 
+  PRODUCTS, 
+  ProductListing, 
+  InventoryItem, 
+  PRODUCT_NAMES,
+  PlayerInfrastructure,
+  PlayerStaff,
+  PlayerReputation,
+  Contract,
+  PlayerSettings,
+  StaffType,
+  InfrastructureType,
+  REPUTATION_TIERS,
+  STAFF_TYPES,
+  INFRASTRUCTURE_COSTS
+} from "@shared/schema";
 import { apiRequest } from "../queryClient";
 import { 
   generateMarketListings, 
@@ -39,8 +55,16 @@ interface GameState {
   boughtProducts: Set<number>; // Track products bought in current location/day
   soldProducts: Set<number>;   // Track products sold in current location/day
   
+  // Phase 2: New game state
+  playerSettings: PlayerSettings | null;
+  infrastructure: PlayerInfrastructure[];
+  staff: PlayerStaff[];
+  reputation: Record<string, PlayerReputation>; // Keyed by location
+  contracts: Contract[];
+  baseSelectionPhase: boolean; // True when player needs to select base
+  
   // Game phase
-  gamePhase: 'intro' | 'playing' | 'game-over';
+  gamePhase: 'base-selection' | 'intro' | 'playing' | 'game-over';
   
   // Random events
   currentEvent: GameEvent | null;
@@ -63,6 +87,17 @@ interface GameState {
   endGame: () => Promise<void>;
   finishGame: () => Promise<void>;
   restartGame: () => void;
+  
+  // Phase 2 actions
+  selectHomeBase: (homeBase: Location) => Promise<void>;
+  buildInfrastructure: (location: Location, type: InfrastructureType) => Promise<void>;
+  upgradeInfrastructure: (infrastructureId: number) => Promise<void>;
+  hireStaff: (location: Location, staffType: StaffType) => Promise<void>;
+  fireStaff: (staffId: number) => Promise<void>;
+  acceptContract: (contractId: number) => Promise<void>;
+  completeContract: (contractId: number) => Promise<void>;
+  updateReputation: (location: Location, change: number) => void;
+  loadPlayerData: () => Promise<void>;
   
   // UI states
   isBankModalOpen: boolean;
