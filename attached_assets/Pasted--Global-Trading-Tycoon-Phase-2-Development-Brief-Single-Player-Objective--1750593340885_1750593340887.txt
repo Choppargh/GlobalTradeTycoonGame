@@ -1,0 +1,176 @@
+---
+
+## **Global Trading Tycoon – Phase 2 Development Brief (Single Player)**
+
+---
+
+### **Objective**
+
+This phase expands the single-player gameplay of *Global Trading Tycoon* by introducing deeper mechanics such as regional infrastructure, reputation systems, dynamic staff hiring, flexible loan management, and scalable rewards. The goal is to add immersion, progression, and long-term engagement to the existing turn-based trading loop.
+
+---
+
+### **1. Base Selection (Start of Game)**
+
+* Upon starting the game, the player selects **one of the current 7 continents** as their home base.
+* The chosen base provides:
+
+  * One **starting office and warehouse slot**
+  * A **5% discount** on goods purchased in that region
+  * (Optional) **Regional starter bonus** — e.g., bonus food in Africa, tech in Asia
+
+---
+
+### **2. Offices & Warehouses**
+
+Players can expand operations into any of the 7 regions by building offices and warehouses.
+
+#### Offices:
+
+* Unlock **staff hiring** in the region
+* Increase **reputation gain rate** in that region
+* Can be upgraded: Basic → Branch → HQ
+
+#### Warehouses:
+
+* Allow **inventory storage** and strategic trading
+* Enable participation in **regional contracts**
+* Can be upgraded for **capacity and efficiency**
+* Include maintenance or degradation mechanics, there should be a small daily cost for maintenance.
+
+---
+
+### **3. Staff Hiring System**
+
+* Staff can only be hired in regions where the player owns a **warehouse or office**
+* Hiring staff provides **up to 20% additional discounts** in that region
+* Staff types:
+
+  * **Trader Assistant** – boosts sale value
+  * **Market Scout** – provides early market warnings
+  * **Contract Negotiator** – improves contract payout and leniency
+  * **Bank Liaison** – reduces daily loan interest rate
+* Staff have:
+
+  * **Daily salary cost**
+  * performance traits or upgrade systems - The more reputable the company is, the better the staff you can hire but also, the better the staff the more costly they are to hire too.
+
+---
+
+### **4. Contract System**
+
+* Contracts appear in regions with player-owned warehouses
+* Each contract includes:
+
+  * Required goods
+  * Destination region
+  * Delivery deadline
+  * Reward (cash, reputation, goods)
+
+* Failure penalties include:
+
+  * Loss of **reputation**
+  * Optional **fines** or partial loss of goods
+
+* Contract availability and quality scale with **regional reputation**
+
+---
+
+### **5. Reputation System**
+
+Each region maintains its own **reputation score** from 0 to 100, influencing gameplay benefits and restrictions.
+There is also an overall reputation system which uses the average of all regional scores to calculate the banking perks stated below.
+
+#### Tier Structure:
+
+| Reputation | Tier   | Medal | Effects                                         |
+| ---------- | ------ | ----- | ----------------------------------------------- |
+| 0–24       | Poor   | None  | High prices, no contracts                       |
+| 25–50      | Bronze | 🥉    | Contracts unlocked                              |
+| 51–75      | Silver | 🥈    | Reduced prices, better contracts and loans      |
+| 76–100     | Gold   | 🥇    | VIP prices, exclusive contracts, top loan terms |
+
+#### Positive Triggers:
+
+* Frequent, successful trading in a region
+* Fulfilling contracts
+* Hiring staff
+* Constructing/upgrading buildings
+
+#### Negative Triggers:
+
+* Failing contracts
+* Excessive pricing (>150% markup)
+* Ignoring the region (no activity over multiple days)
+* Having an unpaid loan active for the day
+
+#### Benefits:
+
+* Regional rep offers **up to 10% discount** on goods
+* Additional **up to 20% discount** via hired staff
+* Unlocks special perks, licenses, and UI medals
+
+---
+
+### **6. Loan System – World Bank**
+
+* The banking system is managed **globally**, not per region
+* Players start with a \$2,000 loan at **5% daily interest**
+* There is **no fixed repayment schedule**
+* **Interest is charged daily** on the full loan balance
+
+#### Loan Cap & Rate Scaling (Based on Global Reputation):
+
+| Global Reputation | Max Loan  | Daily Interest Rate |
+| ----------------- | --------- | ------------------- |
+| 0–24              | \$10,000  | 5.0%                |
+| 25–50             | \$25,000  | 3.5% – 4.5%         |
+| 51–75             | \$50,000  | 2.5% – 3.5%         |
+| 76–100            | \$100,000 | 1.5% – 2.0%         |
+
+#### Rules:
+
+* If the player has a loan **and makes no repayment in a day**, global rep is reduced by **–1**
+* **Loan extensions are locked** until the player makes at least one repayment
+* **Partial repayments** are accepted
+* No compound interest — daily rate applies to remaining balance
+
+---
+
+### **7. Unlockable Perks**
+
+| Unlockable Perk   | Requirement                      | Benefit                                     |
+| ----------------- | -------------------------------- | ------------------------------------------- |
+| Regional Discount | Silver rep in a region           | +10% discount on goods in that region       |
+| Export License    | Gold rep in 3+ regions           | Unlocks rare global goods                   |
+| Loan Extension    | Complete 5 contracts w/o failure | Raise loan cap by \$5,000                   |
+| Auto-Trade Staff  | Hire 3+ staff in a region        | Automate daily trading in that region       |
+| Regional HQ       | Office upgraded to Tier 3        | +10% sale value on all goods in that region |
+
+---
+
+### **8. Reputation Medal UI**
+
+* Each region displays a **medal badge**:
+
+  * 🥉 Bronze: 25–50
+  * 🥈 Silver: 51–75
+  * 🥇 Gold: 76–100
+* Clicking a medal reveals:
+
+  * Reputation percentage and tier
+  * Log of recent positive/negative events
+  * Benefits unlocked and next milestone
+
+---
+
+### **9. Deliverables Summary**
+
+* Base region selection with bonus system
+* Fully functional regional infrastructure (offices + warehouses)
+* Staff management with price and gameplay modifiers
+* Contract generation, resolution, and penalties
+* Per-region reputation system with tiered benefits
+* Flexible, player-controlled global loan system
+* Unlockable perks tied to infrastructure and reputation
+* UI elements: medal system, loan panel, staff view, reputation logs
