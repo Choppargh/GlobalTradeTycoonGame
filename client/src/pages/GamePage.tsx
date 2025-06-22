@@ -145,12 +145,22 @@ export default function GamePage() {
             </Tabs>
           </div>
 
-          {/* Desktop layout - side by side, hidden on mobile */}
-          <div className="hidden lg:block col-span-1">
-            <BuyTab />
+          {/* Desktop layout - grid layout, hidden on mobile */}
+          <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+            <div className="col-span-1">
+              <BuyTab />
+            </div>
+            <div className="col-span-1">
+              <SellTab />
+            </div>
+            <div className="col-span-2 xl:col-span-1">
+              <BankInterface />
+            </div>
           </div>
-          <div className="hidden lg:block col-span-1">
-            <SellTab />
+          
+          {/* Infrastructure Panel - Full width on desktop */}
+          <div className="hidden lg:block w-full">
+            <InfrastructurePanel />
           </div>
         </div>
       </div>

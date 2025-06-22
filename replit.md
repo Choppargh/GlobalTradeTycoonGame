@@ -252,6 +252,17 @@ Changelog:
   * Fixed final score calculation to be "Bank Balance minus Loan Amount" as specified
   * Added clear display separation between Final Score and Total Net Worth on game over screen
   * Leaderboard now updates immediately after game completion showing new personal best scores
+- June 22, 2025. Implemented comprehensive Phase 2 expansion features:
+  * Added base selection system: Players now choose home base from 7 continents with unique bonuses
+  * Implemented infrastructure system: Offices and warehouses with upgrade levels and maintenance costs
+  * Created staff management: 4 staff types (Trader, Scout, Negotiator, Banker) with location-based hiring
+  * Built reputation system: Regional reputation (0-100) with Bronze/Silver/Gold tiers and benefits
+  * Added contract system framework: Foundation for delivery contracts with rewards and penalties
+  * Enhanced loan system: Dynamic caps and interest rates based on global reputation
+  * Created comprehensive infrastructure management UI with Empire tab
+  * Updated database schema with 5 new tables for Phase 2 features
+  * Added Phase 2 API endpoints for all new game mechanics
+  * Integrated base selection into game flow as initial phase for new players
 ```
 
 ## User Preferences
