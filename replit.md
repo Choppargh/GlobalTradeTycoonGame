@@ -286,6 +286,13 @@ Changelog:
   * Updated useAuth hook with rock-solid implementation using stable React imports
   * This solution eliminates the recurring "Cannot read properties of null (reading 'useState')" error permanently
   * Users no longer need to perform hard refreshes (Ctrl+Shift+R) to recover from React hooks corruption
+- June 22, 2025. Fixed mobile layout and removed test elements:
+  * Removed temporary "New Base Selection" test button from header
+  * Created dedicated mobile-first responsive header layout with proper spacing
+  * Fixed mobile action button visibility by implementing separate mobile and desktop layouts
+  * Added compact mobile game stats display in card format below header
+  * Ensured hamburger menu (3 lines) is properly positioned and accessible on mobile devices
+  * Mobile layout now shows trader info and action dropdown in top row, game stats in bottom card
 ```
 
 ## User Preferences
