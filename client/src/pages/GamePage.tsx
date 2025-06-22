@@ -31,6 +31,7 @@ export default function GamePage() {
     isStaffModalOpen,
     setStaffModalOpen,
     startGame,
+    startNewGame,
     loadGameState,
     selectHomeBase,
     loadPlayerData

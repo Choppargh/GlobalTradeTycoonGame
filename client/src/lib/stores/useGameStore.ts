@@ -81,6 +81,7 @@ interface GameState {
   setUsername: (username: string) => void;
   refreshUserInfo: () => Promise<void>;
   startGame: () => Promise<void>;
+  startNewGame: () => void;
   travel: (destination: Location) => void;
   buyProduct: (productId: number, quantity: number, price: number) => void;
   sellProduct: (productId: number, quantity: number, price: number) => void;
@@ -720,6 +721,40 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
   },
   
+  startNewGame: () => {
+    const state = get();
+    console.log('Starting new game - forcing base selection');
+    
+    // Clear the submitted score flag so the player can submit a new score
+    const submittedScoreKey = `globalTradeTycoon_submittedScore_${state.userId || 'guest'}`;
+    localStorage.removeItem(submittedScoreKey);
+    
+    set({
+      currentLocation: null,
+      cash: 0,
+      bankBalance: 0,
+      loanAmount: 0,
+      daysRemaining: 31,
+      inventory: [],
+      marketListings: [],
+      priceChanges: {},
+      boughtProducts: new Set<number>(),
+      soldProducts: new Set<number>(),
+      gamePhase: 'base-selection',
+      baseSelectionPhase: true,
+      isBankModalOpen: false,
+      currentEvent: null,
+      // Don't clear player settings completely, but force base selection
+      infrastructure: [],
+      staff: [],
+      reputation: {},
+      contracts: []
+    });
+    
+    // Clear any saved game data
+    get().clearSavedGameState();
+  },
+
   restartGame: () => {
     const state = get();
     // Clear the submitted score flag so the player can submit a new score

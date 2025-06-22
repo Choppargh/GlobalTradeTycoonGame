@@ -5,6 +5,7 @@ import { UserAvatar } from '@/components/ui/UserAvatar';
 import { InstallPrompt } from '@/components/ui/InstallPrompt';
 // Cache bust 12:52
 import { useAuth } from '@/hooks/useAuth';
+import { useGameStore } from '@/lib/stores/useGameStore';
 
 export default function HomePage() {
   const { user, isLoading, isAuthenticated, logout } = useAuth();
@@ -86,7 +87,12 @@ export default function HomePage() {
           
           <div className="flex flex-col gap-3 w-full max-w-[200px]">
             <button 
-              onClick={() => window.location.href = '/game'}
+              onClick={() => {
+                // Start a new game which forces base selection
+                const { startNewGame } = require('@/lib/stores/useGameStore').useGameStore.getState();
+                startNewGame();
+                window.location.href = '/game';
+              }}
               className="transition-transform hover:scale-105 focus:outline-none"
             >
               <img 
