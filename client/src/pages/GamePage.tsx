@@ -45,17 +45,25 @@ export default function GamePage() {
       // Try to load existing player data
       await loadPlayerData();
       
-      // Check if user has existing settings (completed base selection)
+      // Check if we have a saved game in progress
       const state = useGameStore.getState();
+      const hasExistingGame = loadGameState();
+      
+      if (hasExistingGame) {
+        // Continue existing game
+        console.log('Continuing existing game');
+        return;
+      }
+      
+      // No saved game - check for player settings
       if (!state.playerSettings && state.userId) {
-        // No settings found, show base selection
+        // No settings found, force base selection for new game
+        console.log('No player settings found, showing base selection');
         useGameStore.setState({ baseSelectionPhase: true, gamePhase: 'base-selection' });
-      } else if (state.playerSettings && !currentLocation) {
-        // Settings exist, try to load saved game or start new game
-        const hasExistingGame = loadGameState();
-        if (!hasExistingGame) {
-          await startGame();
-        }
+      } else if (state.playerSettings) {
+        // Settings exist but no saved game - start fresh game with base selection
+        console.log('Player settings exist but no saved game, showing base selection for new game');
+        useGameStore.setState({ baseSelectionPhase: true, gamePhase: 'base-selection' });
       }
     };
     
