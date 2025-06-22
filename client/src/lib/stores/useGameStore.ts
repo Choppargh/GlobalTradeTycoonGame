@@ -200,47 +200,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ username: 'Trader' }); // Fallback
     }
     
-    // Check if player has home base settings - if not, go to base selection
+    // Always start with base selection for new games
     const state = get();
-    if (!state.playerSettings?.homeBase) {
-      // No home base selected, start with base selection phase
-      set({
-        gamePhase: 'base-selection',
-        baseSelectionPhase: true
-      });
-      return;
-    }
-    
-    // Use player's selected home base
-    const startLocation = state.playerSettings.homeBase as Location;
-    
-    // Create initial market listings for this location
-    const marketListings = generateMarketListings(startLocation);
-    
-    // Initialize price changes
-    const initialPriceChanges: Record<number, 'increase' | 'decrease' | null> = {};
-    marketListings.forEach(listing => {
-      initialPriceChanges[listing.productId] = null;
-    });
-    
     set({
-      currentLocation: startLocation,
-      cash: GAME_CONFIG.STARTING_LOAN, // Start with cash from initial loan
-      bankBalance: 0,
-      loanAmount: GAME_CONFIG.STARTING_LOAN,
-      daysRemaining: GAME_DURATION,
-      inventory: [],
-      marketListings,
-      priceChanges: initialPriceChanges,
-      boughtProducts: new Set<number>(),
-      soldProducts: new Set<number>(),
-      gamePhase: 'playing'
+      gamePhase: 'base-selection',
+      baseSelectionPhase: true
     });
-    
-    // Auto-save when starting a new game
-    if (get().autoSaveEnabled) {
-      setTimeout(() => get().saveGameState(), 100);
-    }
   },
   
   travel: (destination) => {
