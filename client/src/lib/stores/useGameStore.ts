@@ -103,6 +103,8 @@ interface GameState {
   // UI states
   isBankModalOpen: boolean;
   setBankModalOpen: (isOpen: boolean) => void;
+  isEmpireModalOpen: boolean;
+  setEmpireModalOpen: (isOpen: boolean) => void;
   isEndGameConfirmationOpen: boolean;
   setEndGameConfirmationOpen: (isOpen: boolean) => void;
   
@@ -139,6 +141,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   gamePhase: 'intro',
   isBankModalOpen: false,
+  isEmpireModalOpen: false,
   currentEvent: null,
   travelRiskMessage: '',
   isTravelRiskDialogOpen: false,
@@ -727,6 +730,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   setBankModalOpen: (isOpen) => {
     set({ isBankModalOpen: isOpen });
+  },
+  
+  setEmpireModalOpen: (isOpen) => {
+    set({ isEmpireModalOpen: isOpen });
   },
   
   setEndGameConfirmationOpen: (isOpen) => {

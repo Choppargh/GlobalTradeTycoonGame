@@ -9,7 +9,7 @@ import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
 import { GameOver } from '@/components/game/GameOver';
 import { BaseSelection } from '@/components/game/BaseSelection';
-import { InfrastructurePanel } from '@/components/game/InfrastructurePanel';
+import { EmpireModal } from '@/components/game/EmpireModal';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
@@ -99,35 +99,23 @@ export default function GamePage() {
           <TravelOptions />
         </div>
 
-        {/* Trading Interface - Tabbed on mobile, grid on desktop */}
-        <div className="grid grid-cols-1 gap-3 sm:gap-4">
+        {/* Buy and Sell Tabs - Tabbed on mobile, side-by-side on desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
           {/* Tabbed interface on mobile, hidden on desktop */}
           <div className="block lg:hidden w-full">
             <Tabs defaultValue="buy" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-4 w-full bg-amber-50 border-b border-amber-200 rounded-t-3xl rounded-b-none">
+              <TabsList className="grid grid-cols-2 w-full bg-amber-50 border-b border-amber-200 rounded-t-3xl rounded-b-none">
                 <TabsTrigger 
                   value="buy" 
-                  className="text-sm font-medium data-[state=active]:bg-orange-200 data-[state=active]:text-orange-800"
+                  className="text-base font-medium data-[state=active]:bg-orange-200 data-[state=active]:text-orange-800 rounded-tl-3xl rounded-br-none"
                 >
                   Buy
                 </TabsTrigger>
                 <TabsTrigger 
                   value="sell" 
-                  className="text-sm font-medium data-[state=active]:bg-emerald-200 data-[state=active]:text-emerald-800"
+                  className="text-base font-medium data-[state=active]:bg-emerald-200 data-[state=active]:text-emerald-800 rounded-tr-3xl rounded-bl-none"
                 >
                   Sell
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="bank" 
-                  className="text-sm font-medium data-[state=active]:bg-blue-200 data-[state=active]:text-blue-800"
-                >
-                  Bank
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="infrastructure" 
-                  className="text-sm font-medium data-[state=active]:bg-purple-200 data-[state=active]:text-purple-800"
-                >
-                  Empire
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="buy" className="mt-0 pt-0 border-0 rounded-b-3xl">
@@ -136,31 +124,15 @@ export default function GamePage() {
               <TabsContent value="sell" className="mt-0 pt-0 border-0 rounded-b-3xl">
                 <SellTab />
               </TabsContent>
-              <TabsContent value="bank" className="mt-0 pt-0 border-0 rounded-b-3xl">
-                <BankInterface />
-              </TabsContent>
-              <TabsContent value="infrastructure" className="mt-0 pt-0 border-0 rounded-b-3xl">
-                <InfrastructurePanel />
-              </TabsContent>
             </Tabs>
           </div>
 
-          {/* Desktop layout - grid layout, hidden on mobile */}
-          <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
-            <div className="col-span-1">
-              <BuyTab />
-            </div>
-            <div className="col-span-1">
-              <SellTab />
-            </div>
-            <div className="col-span-2 xl:col-span-1">
-              <BankInterface />
-            </div>
+          {/* Desktop layout - side by side, hidden on mobile */}
+          <div className="hidden lg:block col-span-1">
+            <BuyTab />
           </div>
-          
-          {/* Infrastructure Panel - Full width on desktop */}
-          <div className="hidden lg:block w-full">
-            <InfrastructurePanel />
+          <div className="hidden lg:block col-span-1">
+            <SellTab />
           </div>
         </div>
       </div>
