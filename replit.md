@@ -299,6 +299,13 @@ Changelog:
   * Updated game initialization logic to properly handle existing player settings vs new games
   * Base selection now correctly appears when players want to start a new game session
   * Fixed mobile dropdown transparency with solid white background and proper styling
+- June 22, 2025. Implemented separate development and production databases:
+  * Created environment-specific database configuration supporting DATABASE_URL_DEV for development
+  * Updated database connection logic to automatically select appropriate database based on NODE_ENV
+  * Development environment uses DATABASE_URL_DEV with fallback to DATABASE_URL
+  * Production environment uses DATABASE_URL from deployment settings
+  * Added comprehensive database setup documentation in DATABASE_SETUP.md
+  * Ensures data isolation between development testing and production user data
 ```
 
 ## User Preferences
