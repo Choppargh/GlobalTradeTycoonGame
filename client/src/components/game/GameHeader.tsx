@@ -54,70 +54,66 @@ export function GameHeader() {
 
   return (
     <div className="bg-amber-50 border-b border-gray-200 shadow-sm">
-      <div className="w-full px-2 py-2">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex">
-            <div className="flex items-center mr-6">
-              <img 
-                src="/images/GTC_Logo-512x512.png" 
-                alt="Global Trade Tycoon" 
-                className="w-12 h-12 mr-2"
-              />
-              <div>
-                <div className="text-lg font-bold">Trader</div>
-                <div className="text-3xl font-bold">{username}</div>
-              </div>
-            </div>
-            <div className="border-l border-gray-300 pl-6">
-              <div className="text-lg font-bold">Location</div>
-              <div className="text-3xl font-bold">{currentLocation}</div>
+      <div className="w-full px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Left: Trader Info */}
+          <div className="flex items-center">
+            <img 
+              src="/images/GTC_Logo-512x512.png" 
+              alt="Global Trade Tycoon" 
+              className="w-12 h-12 mr-3"
+            />
+            <div>
+              <div className="text-sm text-gray-600">Trader</div>
+              <div className="text-xl font-bold">{username}</div>
+              <div className="text-sm text-gray-600">Location: <span className="font-semibold">{currentLocation}</span></div>
             </div>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex flex-col">
-              <div className="flex items-center text-sm text-gray-600 mb-1">
+          {/* Center: Game Stats */}
+          <div className="flex gap-8">
+            <div className="text-center">
+              <div className="flex items-center justify-center text-sm text-gray-600 mb-1">
                 <CalendarIcon className="w-4 h-4 mr-1" />
                 Days Left
               </div>
               <div className="text-2xl font-bold">{daysRemaining}</div>
             </div>
             
-            <div className="flex flex-col">
-              <div className="flex items-center text-sm text-gray-600 mb-1">
+            <div className="text-center">
+              <div className="flex items-center justify-center text-sm text-gray-600 mb-1">
                 <CalculatorIcon className="w-4 h-4 mr-1" />
                 Net Worth
               </div>
               <div className="text-2xl font-bold">{formatCurrency(netWorth)}</div>
             </div>
             
-            <div 
-              className="flex items-center justify-between p-3 bg-background rounded-3xl cursor-pointer hover:bg-muted/50"
-              onClick={() => setBankModalOpen(true)}
-            >
-              <div className="pr-4">
-                <div className="text-sm font-medium">
-                  <Banknote className="inline-block w-4 h-4 mr-1" />
-                  Cash
-                </div>
-                <div className="font-semibold">{formatCurrency(cash)}</div>
+            <div className="text-center">
+              <div className="flex items-center justify-center text-sm text-gray-600 mb-1">
+                <Banknote className="w-4 h-4 mr-1" />
+                Cash
               </div>
-              <div className="flex gap-2">
-                <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl" onClick={() => setInfrastructureModalOpen(true)}>
-                  <Building2 className="mr-1 h-4 w-4" />
-                  Infrastructure
-                </Button>
-                <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl" onClick={() => setStaffModalOpen(true)}>
-                  <Building2 className="mr-1 h-4 w-4" />
-                  Staff
-                </Button>
-                <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-2xl" onClick={() => setBankModalOpen(true)}>
-                  Bank
-                </Button>
-              </div>
+              <div className="text-2xl font-bold">{formatCurrency(cash)}</div>
             </div>
-            
-            <div className="flex items-center space-x-4">
+          </div>
+          
+          {/* Right: Action Buttons */}
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl" onClick={() => setInfrastructureModalOpen(true)}>
+                <Building2 className="mr-1 h-4 w-4" />
+                Infrastructure
+              </Button>
+              <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl" onClick={() => setStaffModalOpen(true)}>
+                <Building2 className="mr-1 h-4 w-4" />
+                Staff
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-2xl" onClick={() => setBankModalOpen(true)}>
+                <Banknote className="mr-1 h-4 w-4" />
+                Bank
+              </Button>
               {daysRemaining <= 1 ? (
                 <Button 
                   variant="default" 
@@ -130,8 +126,9 @@ export function GameHeader() {
                 </Button>
               ) : (
                 <Button 
-                  variant="destructive" 
+                  variant="default" 
                   size="sm"
+                  className="bg-red-600 hover:bg-red-700 text-white rounded-2xl"
                   onClick={handleEndGameClick}
                 >
                   <Clock className="mr-1 h-4 w-4" />

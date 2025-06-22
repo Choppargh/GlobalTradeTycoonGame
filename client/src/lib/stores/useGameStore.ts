@@ -176,7 +176,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   
   startGame: async () => {
-    // Fetch current user information
+    // Fetch current user information and load player data
     try {
       const response = await fetch('/auth/status', {
         credentials: 'include'
@@ -189,6 +189,9 @@ export const useGameStore = create<GameState>((set, get) => ({
             userId: data.user.id,
             username: data.user.displayName || data.user.username || data.user.email || 'Trader' 
           });
+          
+          // Load player data first to check for existing settings
+          await get().loadPlayerData();
         }
       }
     } catch (error) {
@@ -734,10 +737,20 @@ export const useGameStore = create<GameState>((set, get) => ({
       priceChanges: {},
       boughtProducts: new Set<number>(),
       soldProducts: new Set<number>(),
-      gamePhase: 'intro',
+      gamePhase: 'base-selection',
+      baseSelectionPhase: true,
       isBankModalOpen: false,
-      currentEvent: null
+      currentEvent: null,
+      // Clear Phase 2 data to force fresh selection
+      playerSettings: null,
+      infrastructure: [],
+      staff: [],
+      reputation: {},
+      contracts: []
     });
+    
+    // Clear any saved game data
+    get().clearSavedGameState();
   },
   
   setBankModalOpen: (isOpen) => {
