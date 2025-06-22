@@ -982,63 +982,36 @@ export const useGameStore = create<GameState>((set, get) => ({
   // Phase 2 action implementations
   selectHomeBase: async (homeBase: Location) => {
     const state = get();
-    if (!state.userId) {
-      console.error('User not authenticated');
-      return;
-    }
-
-    try {
-      // Create player settings with home base
-      await makeRequest('POST', '/api/player/settings', {
-        userId: state.userId,
-        homeBase,
-        currentDay: 1,
-        globalReputation: 0,
-        loanCap: 10000,
-        interestRate: 0.05
-      });
-
-      // Build starting office and warehouse in home base
-      await Promise.all([
-        makeRequest('POST', '/api/player/infrastructure', {
-          userId: state.userId,
-          location: homeBase,
-          type: 'office',
-          level: 1,
-          maintenanceCost: 10
-        }),
-        makeRequest('POST', '/api/player/infrastructure', {
-          userId: state.userId,
-          location: homeBase,
-          type: 'warehouse',
-          level: 1,
-          maintenanceCost: 15
-        })
-      ]);
-
-      // Initialize reputation for all locations
-      const reputationPromises = Object.values(Location).map(location =>
-        makeRequest('POST', '/api/player/reputation', {
-          userId: state.userId,
-          location,
-          score: location === homeBase ? 25 : 0, // Start with Bronze in home base
-          totalTrades: 0,
-          contractsCompleted: 0,
-          contractsFailed: 0
-        })
-      );
-      await Promise.all(reputationPromises);
-
-      // Load all player data and start game
-      await get().loadPlayerData();
-      set({ 
-        baseSelectionPhase: false, 
-        gamePhase: 'intro',
-        currentLocation: homeBase 
-      });
-
-    } catch (error) {
-      console.error('Failed to set home base:', error);
+    console.log('Base selected for this session:', homeBase);
+    
+    // Start game directly with selected base for current session only
+    // Create initial market listings for this location
+    const marketListings = generateMarketListings(homeBase);
+    
+    // Initialize price changes
+    const initialPriceChanges: Record<number, 'increase' | 'decrease' | null> = {};
+    marketListings.forEach(listing => {
+      initialPriceChanges[listing.productId] = null;
+    });
+    
+    set({
+      currentLocation: homeBase,
+      cash: GAME_CONFIG.STARTING_LOAN, // Start with cash from initial loan
+      bankBalance: 0,
+      loanAmount: GAME_CONFIG.STARTING_LOAN,
+      daysRemaining: GAME_DURATION,
+      inventory: [],
+      marketListings,
+      priceChanges: initialPriceChanges,
+      boughtProducts: new Set<number>(),
+      soldProducts: new Set<number>(),
+      baseSelectionPhase: false,
+      gamePhase: 'playing'
+    });
+    
+    // Auto-save when starting a new game
+    if (get().autoSaveEnabled) {
+      setTimeout(() => get().saveGameState(), 100);
     }
   },
 

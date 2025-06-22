@@ -56,22 +56,9 @@ export default function GamePage() {
         return;
       }
       
-      // No saved game - check for player settings
-      if (!state.playerSettings && state.userId) {
-        // No settings found, force base selection for new game
-        console.log('No player settings found, showing base selection');
-        useGameStore.setState({ baseSelectionPhase: true, gamePhase: 'base-selection' });
-      } else if (state.playerSettings && state.playerSettings.homeBase) {
-        // Settings exist with home base - start normal game
-        console.log('Player settings exist with home base, starting normal game');
-        useGameStore.setState({ 
-          baseSelectionPhase: false, 
-          gamePhase: 'intro',
-          currentLocation: state.playerSettings.homeBase 
-        });
-        // Initialize a new game with existing settings
-        await startGame();
-      }
+      // No saved game - always show base selection for new games
+      console.log('No saved game found, showing base selection for new game');
+      useGameStore.setState({ baseSelectionPhase: true, gamePhase: 'base-selection' });
     };
     
     initializeGame();
