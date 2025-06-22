@@ -6,7 +6,8 @@ import {
   Banknote, 
   CalendarIcon, 
   CalculatorIcon,
-  Clock
+  Clock,
+  Building2
 } from 'lucide-react';
 import { CustomEndGameDialog } from './CustomEndGameDialog';
 
@@ -22,6 +23,7 @@ export function GameHeader() {
     inventory,
     currentLocation,
     setBankModalOpen,
+    setEmpireModalOpen,
     endGame,
   } = useGameStore();
   
@@ -99,9 +101,15 @@ export function GameHeader() {
                 </div>
                 <div className="font-semibold">{formatCurrency(cash)}</div>
               </div>
-              <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white ml-2 rounded-2xl" onClick={() => setBankModalOpen(true)}>
-                Bank
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl" onClick={() => setEmpireModalOpen(true)}>
+                  <Building2 className="mr-1 h-4 w-4" />
+                  Empire
+                </Button>
+                <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-2xl" onClick={() => setBankModalOpen(true)}>
+                  Bank
+                </Button>
+              </div>
             </div>
             
             <div className="flex items-center space-x-4">
