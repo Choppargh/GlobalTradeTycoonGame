@@ -8,6 +8,7 @@ import { BankInterface } from '@/components/game/BankInterface';
 import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
 import { GameOver } from '@/components/game/GameOver';
+import { BaseSelection } from '@/components/game/BaseSelection';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
@@ -16,21 +17,35 @@ export default function GamePage() {
   const { 
     currentLocation, 
     gamePhase,
+    baseSelectionPhase,
+    playerSettings,
     currentEvent, 
     clearCurrentEvent, 
     isTravelRiskDialogOpen,
     travelRiskMessage,
     clearTravelRiskDialog,
     startGame,
-    loadGameState
+    loadGameState,
+    selectHomeBase,
+    loadPlayerData
   } = useGameStore();
 
   // Auto-initialize game on first load
   useEffect(() => {
     const initializeGame = async () => {
-      if (!currentLocation) {
-        // First refresh user info to get userId, then try to load saved game
-        await useGameStore.getState().refreshUserInfo();
+      // First refresh user info to get userId
+      await useGameStore.getState().refreshUserInfo();
+      
+      // Try to load existing player data
+      await loadPlayerData();
+      
+      // Check if user has existing settings (completed base selection)
+      const state = useGameStore.getState();
+      if (!state.playerSettings && state.userId) {
+        // No settings found, show base selection
+        useGameStore.setState({ baseSelectionPhase: true, gamePhase: 'base-selection' });
+      } else if (state.playerSettings && !currentLocation) {
+        // Settings exist, try to load saved game or start new game
         const hasExistingGame = loadGameState();
         if (!hasExistingGame) {
           await startGame();
@@ -39,7 +54,7 @@ export default function GamePage() {
     };
     
     initializeGame();
-  }, [currentLocation, startGame, loadGameState]);
+  }, [currentLocation, startGame, loadGameState, loadPlayerData]);
 
   // Check for game over state first
   if (gamePhase === 'game-over') {
