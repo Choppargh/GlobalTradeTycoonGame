@@ -11,11 +11,11 @@ export interface User {
 }
 
 export function useAuth() {
-  const [user, setUser] = React.useState<User | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuthStatus = React.useCallback(async () => {
+  const checkAuthStatus = useCallback(async () => {
     try {
       const response = await fetch('/auth/me', {
         credentials: 'include'
@@ -38,11 +38,11 @@ export function useAuth() {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  const login = React.useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     try {
       setIsLoading(true);
       const response = await fetch('/auth/login', {
@@ -70,7 +70,7 @@ export function useAuth() {
     }
   }, []);
 
-  const logout = React.useCallback(async () => {
+  const logout = useCallback(async () => {
     try {
       await fetch('/auth/logout', {
         method: 'POST',
