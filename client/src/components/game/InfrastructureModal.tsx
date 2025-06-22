@@ -60,9 +60,9 @@ export function InfrastructureModal({ isOpen, onClose }: InfrastructureModalProp
 
   const getInfrastructureIcon = (type: InfrastructureType) => {
     switch (type) {
-      case InfrastructureType.OFFICE:
+      case InfrastructureType.Office:
         return <Building2 className="w-5 h-5" />;
-      case InfrastructureType.WAREHOUSE:
+      case InfrastructureType.Warehouse:
         return <Warehouse className="w-5 h-5" />;
       default:
         return <Building2 className="w-5 h-5" />;
@@ -100,7 +100,7 @@ export function InfrastructureModal({ isOpen, onClose }: InfrastructureModalProp
                     </div>
                     <div className="text-sm text-gray-600">
                       <p>Daily Cost: ${infra.maintenanceCost.toFixed(2)}</p>
-                      <p>Built: {new Date(infra.createdAt).toLocaleDateString()}</p>
+                      <p>Built: {new Date(infra.buildDate).toLocaleDateString()}</p>
                     </div>
                   </div>
                 ))}
@@ -112,26 +112,27 @@ export function InfrastructureModal({ isOpen, onClose }: InfrastructureModalProp
           <div>
             <h3 className="text-lg font-semibold mb-3">Build New Infrastructure</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Object.values(InfrastructureType).map((type) => {
-                const cost = INFRASTRUCTURE_COSTS[type];
-                const canBuild = canBuildInLocation(type);
+              {['office', 'warehouse'].map((type) => {
+                const costInfo = INFRASTRUCTURE_COSTS[type as keyof typeof INFRASTRUCTURE_COSTS];
+                const cost = costInfo ? costInfo.build[0] : 1000;
+                const canBuild = canBuildInLocation(type as InfrastructureType);
                 const canAfford = cash >= cost;
 
                 return (
                   <div key={type} className="bg-background/30 p-4 rounded-3xl border">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        {getInfrastructureIcon(type)}
-                        <span className="font-medium">{type}</span>
+                        {type === 'office' ? <Building2 className="w-5 h-5" /> : <Warehouse className="w-5 h-5" />}
+                        <span className="font-medium capitalize">{type}</span>
                       </div>
                       <span className="text-sm font-medium">${cost.toLocaleString()}</span>
                     </div>
                     
                     <div className="text-sm text-gray-600 mb-3">
-                      {type === InfrastructureType.OFFICE && (
+                      {type === 'office' && (
                         <p>Reduces travel costs and improves staff efficiency</p>
                       )}
-                      {type === InfrastructureType.WAREHOUSE && (
+                      {type === 'warehouse' && (
                         <p>Increases inventory capacity and reduces storage costs</p>
                       )}
                     </div>
@@ -140,7 +141,7 @@ export function InfrastructureModal({ isOpen, onClose }: InfrastructureModalProp
                       size="sm"
                       className="w-full rounded-2xl"
                       disabled={!canBuild || !canAfford}
-                      onClick={() => handleBuildInfrastructure(type)}
+                      onClick={() => handleBuildInfrastructure(type as InfrastructureType)}
                       variant={canBuild && canAfford ? "default" : "secondary"}
                     >
                       {!canBuild ? 'Already Built' : 

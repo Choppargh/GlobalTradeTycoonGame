@@ -35,7 +35,7 @@ export function StaffModal({ isOpen, onClose }: StaffModalProps) {
     if (!currentLocation) return;
     
     const staffInfo = STAFF_TYPES[staffType];
-    if (cash < staffInfo.salary) {
+    if (cash < staffInfo.baseSalary) {
       alert('Not enough cash to hire this staff member!');
       return;
     }
@@ -59,15 +59,15 @@ export function StaffModal({ isOpen, onClose }: StaffModalProps) {
     }
   };
 
-  const getStaffIcon = (type: StaffType) => {
+  const getStaffIcon = (type: string) => {
     switch (type) {
-      case StaffType.MANAGER:
+      case 'trader':
         return <Briefcase className="w-5 h-5" />;
-      case StaffType.ANALYST:
+      case 'scout':
         return <Search className="w-5 h-5" />;
-      case StaffType.NEGOTIATOR:
+      case 'negotiator':
         return <MessageCircle className="w-5 h-5" />;
-      case StaffType.SECURITY:
+      case 'banker':
         return <Shield className="w-5 h-5" />;
       default:
         return <Users className="w-5 h-5" />;
@@ -98,14 +98,14 @@ export function StaffModal({ isOpen, onClose }: StaffModalProps) {
                   <div key={member.id} className="bg-background/50 p-4 rounded-3xl border">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        {getStaffIcon(member.type)}
-                        <span className="font-medium">{member.type}</span>
+                        {getStaffIcon(member.staffType)}
+                        <span className="font-medium">{member.name}</span>
                       </div>
                       <Badge variant="secondary">Level {member.level}</Badge>
                     </div>
                     <div className="text-sm text-gray-600 mb-3">
                       <p>Daily Salary: ${member.salary.toFixed(2)}</p>
-                      <p>Hired: {new Date(member.createdAt).toLocaleDateString()}</p>
+                      <p>Hired: {new Date(member.hireDate).toLocaleDateString()}</p>
                     </div>
                     <Button
                       size="sm"
@@ -127,21 +127,21 @@ export function StaffModal({ isOpen, onClose }: StaffModalProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(STAFF_TYPES).map(([type, info]) => {
                 const staffType = type as StaffType;
-                const canAfford = cash >= info.salary;
-                const alreadyHired = locationStaff.some(s => s.type === staffType);
+                const canAfford = cash >= info.baseSalary;
+                const alreadyHired = locationStaff.some(s => s.staffType === type);
 
                 return (
                   <div key={type} className="bg-background/30 p-4 rounded-3xl border">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        {getStaffIcon(staffType)}
-                        <span className="font-medium">{type}</span>
+                        {getStaffIcon(type)}
+                        <span className="font-medium">{info.name}</span>
                       </div>
-                      <span className="text-sm font-medium">${info.salary.toFixed(2)}/day</span>
+                      <span className="text-sm font-medium">${info.baseSalary.toFixed(2)}/day</span>
                     </div>
                     
                     <div className="text-sm text-gray-600 mb-3">
-                      <p>{info.description}</p>
+                      <p>{info.benefit}</p>
                     </div>
 
                     <Button
@@ -153,7 +153,7 @@ export function StaffModal({ isOpen, onClose }: StaffModalProps) {
                     >
                       {alreadyHired ? 'Already Hired' : 
                        !canAfford ? 'Not Enough Cash' : 
-                       `Hire for $${info.salary.toFixed(2)}/day`}
+                       `Hire for $${info.baseSalary.toFixed(2)}/day`}
                     </Button>
                   </div>
                 );
