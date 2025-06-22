@@ -75,6 +75,17 @@ export function GameHeader() {
               <div className="text-sm text-gray-600">Trader</div>
               <div className="text-xl font-bold">{username}</div>
               <div className="text-sm text-gray-600">Location: <span className="font-semibold">{currentLocation}</span></div>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="mt-1 text-xs"
+                onClick={() => {
+                  const gameStore = useGameStore.getState();
+                  gameStore.restartGame();
+                }}
+              >
+                New Base Selection
+              </Button>
             </div>
           </div>
           

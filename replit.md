@@ -272,6 +272,13 @@ Changelog:
   * Reorganized header layout with Infrastructure (purple), Staff (blue), and Bank (green) buttons
   * Fixed modal conflicts where banking modal would appear behind empire modal
   * Enhanced product availability by ensuring market listings generate in player's chosen base location
+- June 22, 2025. Enhanced UI responsiveness and fixed modal transparency issues:
+  * Fixed modal transparency by adding explicit background colors and borders to Infrastructure and Staff modals
+  * Improved header spacing with increased gaps between game stats for better visual hierarchy
+  * Added mobile dropdown menu functionality - action buttons collapse into "Actions" dropdown on mobile
+  * Created responsive design with desktop showing stacked buttons and mobile showing condensed dropdown
+  * Added temporary base selection trigger button for testing new game initialization
+  * Enhanced mobile user experience with cleaner interface on smaller screens
 ```
 
 ## User Preferences
