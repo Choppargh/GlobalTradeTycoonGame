@@ -89,7 +89,7 @@ export default function HomePage() {
             <button 
               onClick={() => {
                 // Start a new game which forces base selection
-                const { startNewGame } = require('@/lib/stores/useGameStore').useGameStore.getState();
+                const { startNewGame } = useGameStore.getState();
                 startNewGame();
                 window.location.href = '/game';
               }}

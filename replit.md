@@ -293,6 +293,12 @@ Changelog:
   * Added compact mobile game stats display in card format below header
   * Ensured hamburger menu (3 lines) is properly positioned and accessible on mobile devices
   * Mobile layout now shows trader info and action dropdown in top row, game stats in bottom card
+- June 22, 2025. Fixed base selection system for new games:
+  * Added startNewGame function that forces base selection to appear for fresh games
+  * Modified HomePage Play button to call startNewGame before navigating to game page
+  * Updated game initialization logic to properly handle existing player settings vs new games
+  * Base selection now correctly appears when players want to start a new game session
+  * Fixed mobile dropdown transparency with solid white background and proper styling
 ```
 
 ## User Preferences
