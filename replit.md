@@ -263,6 +263,15 @@ Changelog:
   * Updated database schema with 5 new tables for Phase 2 features
   * Added Phase 2 API endpoints for all new game mechanics
   * Integrated base selection into game flow as initial phase for new players
+- June 22, 2025. Reorganized Phase 2 UI layout and fixed modal system:
+  * Replaced single Empire button with separate Infrastructure and Staff buttons in game header
+  * Created dedicated InfrastructureModal for building and managing offices/warehouses
+  * Created dedicated StaffModal for hiring and managing location-based staff
+  * Fixed base selection prompt to appear at start of each new game when no home base is selected
+  * Updated game initialization to use player's selected home base location for market generation
+  * Reorganized header layout with Infrastructure (purple), Staff (blue), and Bank (green) buttons
+  * Fixed modal conflicts where banking modal would appear behind empire modal
+  * Enhanced product availability by ensuring market listings generate in player's chosen base location
 ```
 
 ## User Preferences

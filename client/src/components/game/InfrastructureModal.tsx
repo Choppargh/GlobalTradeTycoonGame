@@ -33,16 +33,16 @@ export function InfrastructureModal({ isOpen, onClose }: InfrastructureModalProp
     return infrastructure.filter(inf => inf.location === currentLocation);
   };
 
-  const canBuildInLocation = (type: InfrastructureType) => {
+  const canBuildInLocation = (type: any) => {
     const existing = getLocationInfrastructure().find(inf => inf.type === type);
     return !existing; // Can only build one of each type per location
   };
 
-  const handleBuildInfrastructure = async (type: InfrastructureType) => {
+  const handleBuildInfrastructure = async (type: any) => {
     if (!currentLocation) return;
     
-    const costInfo = INFRASTRUCTURE_COSTS[type];
-    const cost = costInfo.build[0]; // Level 1 build cost
+    const costInfo = INFRASTRUCTURE_COSTS[type as keyof typeof INFRASTRUCTURE_COSTS];
+    const cost = costInfo ? costInfo.build[0] : 1000; // Level 1 build cost
     if (cash < cost) {
       alert('Not enough cash to build this infrastructure!');
       return;
@@ -115,7 +115,7 @@ export function InfrastructureModal({ isOpen, onClose }: InfrastructureModalProp
               {['office', 'warehouse'].map((type) => {
                 const costInfo = INFRASTRUCTURE_COSTS[type as keyof typeof INFRASTRUCTURE_COSTS];
                 const cost = costInfo ? costInfo.build[0] : 1000;
-                const canBuild = canBuildInLocation(type as InfrastructureType);
+                const canBuild = canBuildInLocation(type as any);
                 const canAfford = cash >= cost;
 
                 return (
@@ -141,7 +141,7 @@ export function InfrastructureModal({ isOpen, onClose }: InfrastructureModalProp
                       size="sm"
                       className="w-full rounded-2xl"
                       disabled={!canBuild || !canAfford}
-                      onClick={() => handleBuildInfrastructure(type as InfrastructureType)}
+                      onClick={() => handleBuildInfrastructure(type as any)}
                       variant={canBuild && canAfford ? "default" : "secondary"}
                     >
                       {!canBuild ? 'Already Built' : 
