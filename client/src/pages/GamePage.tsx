@@ -61,10 +61,16 @@ export default function GamePage() {
         // No settings found, force base selection for new game
         console.log('No player settings found, showing base selection');
         useGameStore.setState({ baseSelectionPhase: true, gamePhase: 'base-selection' });
-      } else if (state.playerSettings) {
-        // Settings exist but no saved game - start fresh game with base selection
-        console.log('Player settings exist but no saved game, showing base selection for new game');
-        useGameStore.setState({ baseSelectionPhase: true, gamePhase: 'base-selection' });
+      } else if (state.playerSettings && state.playerSettings.homeBase) {
+        // Settings exist with home base - start normal game
+        console.log('Player settings exist with home base, starting normal game');
+        useGameStore.setState({ 
+          baseSelectionPhase: false, 
+          gamePhase: 'intro',
+          currentLocation: state.playerSettings.homeBase 
+        });
+        // Initialize a new game with existing settings
+        await startGame();
       }
     };
     

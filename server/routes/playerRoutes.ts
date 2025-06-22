@@ -31,11 +31,25 @@ router.get('/settings/:userId', async (req, res) => {
 router.post('/settings', async (req, res) => {
   try {
     const validatedData = insertPlayerSettingsSchema.parse(req.body);
-    const result = await db.insert(playerSettings).values(validatedData).returning();
-    res.json(result[0]);
+    
+    // Try to update existing settings first
+    const existingSettings = await db.select().from(playerSettings).where(eq(playerSettings.userId, validatedData.userId));
+    
+    if (existingSettings.length > 0) {
+      // Update existing settings
+      const result = await db.update(playerSettings)
+        .set(validatedData)
+        .where(eq(playerSettings.userId, validatedData.userId))
+        .returning();
+      res.json(result[0]);
+    } else {
+      // Create new settings
+      const result = await db.insert(playerSettings).values(validatedData).returning();
+      res.json(result[0]);
+    }
   } catch (error) {
-    console.error('Error creating player settings:', error);
-    res.status(500).json({ error: 'Failed to create player settings' });
+    console.error('Error creating/updating player settings:', error);
+    res.status(500).json({ error: 'Failed to create/update player settings' });
   }
 });
 
