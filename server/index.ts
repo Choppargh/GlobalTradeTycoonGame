@@ -20,6 +20,7 @@ import passport, { configureTwitterAuth } from "./auth";
 configureTwitterAuth();
 import { registerRoutes } from "./routes";
 import { registerAuthRoutes } from "./authRoutes";
+import playerRoutes from "./routes/playerRoutes";
 import { setupVite, serveStatic, log } from "./vite";
 import { startWeeklyResetScheduler } from "./scheduler";
 
@@ -93,6 +94,9 @@ app.use((req, res, next) => {
 (async () => {
   // Register authentication routes
   registerAuthRoutes(app);
+  
+  // Register Phase 2 player routes
+  app.use('/api/player', playerRoutes);
   
   const server = await registerRoutes(app);
   

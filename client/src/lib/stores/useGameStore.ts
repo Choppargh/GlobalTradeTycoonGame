@@ -128,6 +128,14 @@ export const useGameStore = create<GameState>((set, get) => ({
   boughtProducts: new Set<number>(), // Products bought in current location
   soldProducts: new Set<number>(),   // Products sold in current location
   
+  // Phase 2 initial state
+  playerSettings: null,
+  infrastructure: [],
+  staff: [],
+  reputation: {},
+  contracts: [],
+  baseSelectionPhase: false,
+  
   gamePhase: 'intro',
   isBankModalOpen: false,
   currentEvent: null,
@@ -938,5 +946,220 @@ export const useGameStore = create<GameState>((set, get) => ({
   clearSavedGameState: () => {
     const state = get();
     return clearSavedGameState(state.userId || undefined);
+  },
+
+  // Phase 2 action implementations
+  selectHomeBase: async (homeBase: Location) => {
+    const state = get();
+    if (!state.userId) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    try {
+      // Create player settings with home base
+      await apiRequest('POST', '/api/player/settings', {
+        userId: state.userId,
+        homeBase,
+        currentDay: 1,
+        globalReputation: 0,
+        loanCap: 10000,
+        interestRate: 0.05
+      });
+
+      // Build starting office and warehouse in home base
+      await Promise.all([
+        apiRequest('/api/player/infrastructure', {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: state.userId,
+            location: homeBase,
+            type: 'office',
+            level: 1,
+            maintenanceCost: 10
+          })
+        }),
+        apiRequest('/api/player/infrastructure', {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: state.userId,
+            location: homeBase,
+            type: 'warehouse',
+            level: 1,
+            maintenanceCost: 15
+          })
+        })
+      ]);
+
+      // Initialize reputation for all locations
+      const reputationPromises = Object.values(Location).map(location =>
+        apiRequest('/api/player/reputation', {
+          method: 'POST',
+          body: JSON.stringify({
+            userId: state.userId,
+            location,
+            score: location === homeBase ? 25 : 0, // Start with Bronze in home base
+            totalTrades: 0,
+            contractsCompleted: 0,
+            contractsFailed: 0
+          })
+        })
+      );
+      await Promise.all(reputationPromises);
+
+      // Load all player data and start game
+      await get().loadPlayerData();
+      set({ 
+        baseSelectionPhase: false, 
+        gamePhase: 'intro',
+        currentLocation: homeBase 
+      });
+
+    } catch (error) {
+      console.error('Failed to set home base:', error);
+    }
+  },
+
+  buildInfrastructure: async (location: Location, type: InfrastructureType) => {
+    const state = get();
+    if (!state.userId) return;
+
+    try {
+      const cost = INFRASTRUCTURE_COSTS[type].build[0]; // Level 1 cost
+      const maintenance = INFRASTRUCTURE_COSTS[type].maintenance[0];
+
+      await apiRequest('/api/player/infrastructure', {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: state.userId,
+          location,
+          type,
+          level: 1,
+          maintenanceCost: maintenance
+        })
+      });
+
+      // Deduct cost from cash
+      set({ cash: state.cash - cost });
+      
+      // Reload infrastructure data
+      await get().loadPlayerData();
+    } catch (error) {
+      console.error('Failed to build infrastructure:', error);
+    }
+  },
+
+  upgradeInfrastructure: async (infrastructureId: number) => {
+    // Implementation for upgrading existing infrastructure
+    console.log('Upgrade infrastructure:', infrastructureId);
+  },
+
+  hireStaff: async (location: Location, staffType: StaffType) => {
+    const state = get();
+    if (!state.userId) return;
+
+    try {
+      const staffInfo = STAFF_TYPES[staffType];
+      const level = 1;
+      const salary = staffInfo.baseSalary * level;
+
+      // Generate a random staff name
+      const firstNames = ['Alex', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Avery', 'Quinn'];
+      const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis'];
+      const name = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+
+      await apiRequest('/api/player/staff', {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: state.userId,
+          location,
+          staffType,
+          name,
+          level,
+          salary,
+          performance: 1.0
+        })
+      });
+
+      await get().loadPlayerData();
+    } catch (error) {
+      console.error('Failed to hire staff:', error);
+    }
+  },
+
+  fireStaff: async (staffId: number) => {
+    try {
+      await apiRequest(`/api/player/staff/${staffId}`, {
+        method: 'DELETE'
+      });
+      await get().loadPlayerData();
+    } catch (error) {
+      console.error('Failed to fire staff:', error);
+    }
+  },
+
+  acceptContract: async (contractId: number) => {
+    console.log('Accept contract:', contractId);
+  },
+
+  completeContract: async (contractId: number) => {
+    console.log('Complete contract:', contractId);
+  },
+
+  updateReputation: (location: Location, change: number) => {
+    const state = get();
+    const currentRep = state.reputation[location];
+    if (currentRep) {
+      const newScore = Math.max(0, Math.min(100, currentRep.score + change));
+      set({
+        reputation: {
+          ...state.reputation,
+          [location]: {
+            ...currentRep,
+            score: newScore
+          }
+        }
+      });
+    }
+  },
+
+  loadPlayerData: async () => {
+    const state = get();
+    if (!state.userId) return;
+
+    try {
+      const [settingsRes, infrastructureRes, staffRes, reputationRes, contractsRes] = await Promise.all([
+        fetch(`/api/player/settings/${state.userId}`, { credentials: 'include' }),
+        fetch(`/api/player/infrastructure/${state.userId}`, { credentials: 'include' }),
+        fetch(`/api/player/staff/${state.userId}`, { credentials: 'include' }),
+        fetch(`/api/player/reputation/${state.userId}`, { credentials: 'include' }),
+        fetch(`/api/player/contracts/${state.userId}`, { credentials: 'include' })
+      ]);
+
+      const [settings, infrastructure, staff, reputationList, contracts] = await Promise.all([
+        settingsRes.ok ? settingsRes.json() : null,
+        infrastructureRes.ok ? infrastructureRes.json() : [],
+        staffRes.ok ? staffRes.json() : [],
+        reputationRes.ok ? reputationRes.json() : [],
+        contractsRes.ok ? contractsRes.json() : []
+      ]);
+
+      // Convert reputation array to location-keyed object
+      const reputation: Record<string, PlayerReputation> = {};
+      reputationList.forEach((rep: PlayerReputation) => {
+        reputation[rep.location] = rep;
+      });
+
+      set({
+        playerSettings: settings,
+        infrastructure,
+        staff,
+        reputation,
+        contracts
+      });
+
+    } catch (error) {
+      console.error('Failed to load player data:', error);
+    }
   }
 }));
