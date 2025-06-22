@@ -1,5 +1,5 @@
-// Force cache refresh - updated at 12:52
-import { useState, useCallback, useEffect } from 'react';
+// Permanent fix for useState bundling issues - v4.0
+import { React, useState, useEffect, useCallback } from '@/lib/react-stable';
 
 export interface User {
   id: number;
@@ -11,11 +11,11 @@ export interface User {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  const checkAuthStatus = useCallback(async () => {
+  const checkAuthStatus = React.useCallback(async () => {
     try {
       const response = await fetch('/auth/me', {
         credentials: 'include'
@@ -38,56 +38,58 @@ export function useAuth() {
     }
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  const updateDisplayName = useCallback(async (newDisplayName: string): Promise<{ success: boolean; error?: string }> => {
+  const login = React.useCallback(async (email: string, password: string) => {
     try {
-      const response = await fetch('/auth/update-display-name', {
+      setIsLoading(true);
+      const response = await fetch('/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ displayName: newDisplayName })
+        body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
+        setIsAuthenticated(true);
         return { success: true };
       } else {
-        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-        return { success: false, error: errorData.message || 'Failed to update trader name' };
+        const errorData = await response.json();
+        return { success: false, error: errorData.message || 'Login failed' };
       }
     } catch (error) {
-      console.error('Display name update error:', error);
-      return { success: false, error: 'Network error occurred' };
+      return { success: false, error: 'Network error' };
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
-  const logout = useCallback(async () => {
+  const logout = React.useCallback(async () => {
     try {
       await fetch('/auth/logout', {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
       });
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
       setUser(null);
       setIsAuthenticated(false);
-      window.location.href = '/';
     }
   }, []);
 
   return {
     user,
-    isAuthenticated,
     isLoading,
+    isAuthenticated,
+    login,
+    logout,
     checkAuthStatus,
-    updateDisplayName,
-    logout
   };
 }
