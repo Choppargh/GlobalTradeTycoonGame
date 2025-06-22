@@ -78,7 +78,7 @@ export function StaffModal({ isOpen, onClose }: StaffModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto rounded-3xl">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto rounded-3xl bg-white border shadow-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="w-5 h-5" />

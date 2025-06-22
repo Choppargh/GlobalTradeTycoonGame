@@ -7,8 +7,16 @@ import {
   CalendarIcon, 
   CalculatorIcon,
   Clock,
-  Building2
+  Building2,
+  Users,
+  Menu
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { CustomEndGameDialog } from './CustomEndGameDialog';
 
 export function GameHeader() {
@@ -71,25 +79,25 @@ export function GameHeader() {
           </div>
           
           {/* Center: Game Stats */}
-          <div className="flex gap-8">
-            <div className="text-center">
-              <div className="flex items-center justify-center text-sm text-gray-600 mb-1">
+          <div className="flex gap-12">
+            <div className="text-center px-4">
+              <div className="flex items-center justify-center text-sm text-gray-600 mb-2">
                 <CalendarIcon className="w-4 h-4 mr-1" />
                 Days Left
               </div>
               <div className="text-2xl font-bold">{daysRemaining}</div>
             </div>
             
-            <div className="text-center">
-              <div className="flex items-center justify-center text-sm text-gray-600 mb-1">
+            <div className="text-center px-4">
+              <div className="flex items-center justify-center text-sm text-gray-600 mb-2">
                 <CalculatorIcon className="w-4 h-4 mr-1" />
                 Net Worth
               </div>
               <div className="text-2xl font-bold">{formatCurrency(netWorth)}</div>
             </div>
             
-            <div className="text-center">
-              <div className="flex items-center justify-center text-sm text-gray-600 mb-1">
+            <div className="text-center px-4">
+              <div className="flex items-center justify-center text-sm text-gray-600 mb-2">
                 <Banknote className="w-4 h-4 mr-1" />
                 Cash
               </div>
@@ -99,42 +107,75 @@ export function GameHeader() {
           
           {/* Right: Action Buttons */}
           <div className="flex flex-col gap-2">
-            <div className="flex gap-2">
-              <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl" onClick={() => setInfrastructureModalOpen(true)}>
-                <Building2 className="mr-1 h-4 w-4" />
-                Infrastructure
-              </Button>
-              <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl" onClick={() => setStaffModalOpen(true)}>
-                <Building2 className="mr-1 h-4 w-4" />
-                Staff
-              </Button>
+            {/* Desktop View */}
+            <div className="hidden md:flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl" onClick={() => setInfrastructureModalOpen(true)}>
+                  <Building2 className="mr-1 h-4 w-4" />
+                  Infrastructure
+                </Button>
+                <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl" onClick={() => setStaffModalOpen(true)}>
+                  <Users className="mr-1 h-4 w-4" />
+                  Staff
+                </Button>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-2xl" onClick={() => setBankModalOpen(true)}>
+                  <Banknote className="mr-1 h-4 w-4" />
+                  Bank
+                </Button>
+                {daysRemaining <= 1 ? (
+                  <Button 
+                    variant="default" 
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700 text-white rounded-2xl"
+                    onClick={handleEndGameClick}
+                  >
+                    <Clock className="mr-1 h-4 w-4" />
+                    I'm Finished
+                  </Button>
+                ) : (
+                  <Button 
+                    variant="default" 
+                    size="sm"
+                    className="bg-red-600 hover:bg-red-700 text-white rounded-2xl"
+                    onClick={handleEndGameClick}
+                  >
+                    <Clock className="mr-1 h-4 w-4" />
+                    End Game
+                  </Button>
+                )}
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-2xl" onClick={() => setBankModalOpen(true)}>
-                <Banknote className="mr-1 h-4 w-4" />
-                Bank
-              </Button>
-              {daysRemaining <= 1 ? (
-                <Button 
-                  variant="default" 
-                  size="sm"
-                  className="bg-green-600 hover:bg-green-700 text-white rounded-2xl"
-                  onClick={handleEndGameClick}
-                >
-                  <Clock className="mr-1 h-4 w-4" />
-                  I'm Finished
-                </Button>
-              ) : (
-                <Button 
-                  variant="default" 
-                  size="sm"
-                  className="bg-red-600 hover:bg-red-700 text-white rounded-2xl"
-                  onClick={handleEndGameClick}
-                >
-                  <Clock className="mr-1 h-4 w-4" />
-                  End Game
-                </Button>
-              )}
+
+            {/* Mobile View */}
+            <div className="md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="default" size="sm" className="bg-gray-600 hover:bg-gray-700 text-white rounded-2xl">
+                    <Menu className="mr-1 h-4 w-4" />
+                    Actions
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => setInfrastructureModalOpen(true)}>
+                    <Building2 className="mr-2 h-4 w-4" />
+                    Infrastructure
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setStaffModalOpen(true)}>
+                    <Users className="mr-2 h-4 w-4" />
+                    Staff
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setBankModalOpen(true)}>
+                    <Banknote className="mr-2 h-4 w-4" />
+                    Bank
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleEndGameClick}>
+                    <Clock className="mr-2 h-4 w-4" />
+                    {daysRemaining <= 1 ? "I'm Finished" : "End Game"}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
