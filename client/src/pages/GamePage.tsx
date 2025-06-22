@@ -9,6 +9,7 @@ import { EventNotification } from '@/components/game/EventNotification';
 import { TravelRiskNotification } from '@/components/game/TravelRiskNotification';
 import { GameOver } from '@/components/game/GameOver';
 import { BaseSelection } from '@/components/game/BaseSelection';
+import { InfrastructurePanel } from '@/components/game/InfrastructurePanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function GamePage() {
@@ -56,7 +57,12 @@ export default function GamePage() {
     initializeGame();
   }, [currentLocation, startGame, loadGameState, loadPlayerData]);
 
-  // Check for game over state first
+  // Check for base selection phase
+  if (gamePhase === 'base-selection' || baseSelectionPhase) {
+    return <BaseSelection onBaseSelected={selectHomeBase} />;
+  }
+
+  // Check for game over state
   if (gamePhase === 'game-over') {
     return <GameOver />;
   }
@@ -93,23 +99,35 @@ export default function GamePage() {
           <TravelOptions />
         </div>
 
-        {/* Buy and Sell Tabs - Tabbed on mobile, side-by-side on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+        {/* Trading Interface - Tabbed on mobile, grid on desktop */}
+        <div className="grid grid-cols-1 gap-3 sm:gap-4">
           {/* Tabbed interface on mobile, hidden on desktop */}
           <div className="block lg:hidden w-full">
             <Tabs defaultValue="buy" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-2 w-full bg-amber-50 border-b border-amber-200 rounded-t-3xl rounded-b-none">
+              <TabsList className="grid grid-cols-4 w-full bg-amber-50 border-b border-amber-200 rounded-t-3xl rounded-b-none">
                 <TabsTrigger 
                   value="buy" 
-                  className="text-base font-medium data-[state=active]:bg-orange-200 data-[state=active]:text-orange-800 rounded-tl-3xl rounded-br-none"
+                  className="text-sm font-medium data-[state=active]:bg-orange-200 data-[state=active]:text-orange-800"
                 >
                   Buy
                 </TabsTrigger>
                 <TabsTrigger 
                   value="sell" 
-                  className="text-base font-medium data-[state=active]:bg-emerald-200 data-[state=active]:text-emerald-800 rounded-tr-3xl rounded-bl-none"
+                  className="text-sm font-medium data-[state=active]:bg-emerald-200 data-[state=active]:text-emerald-800"
                 >
                   Sell
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="bank" 
+                  className="text-sm font-medium data-[state=active]:bg-blue-200 data-[state=active]:text-blue-800"
+                >
+                  Bank
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="infrastructure" 
+                  className="text-sm font-medium data-[state=active]:bg-purple-200 data-[state=active]:text-purple-800"
+                >
+                  Empire
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="buy" className="mt-0 pt-0 border-0 rounded-b-3xl">
@@ -117,6 +135,12 @@ export default function GamePage() {
               </TabsContent>
               <TabsContent value="sell" className="mt-0 pt-0 border-0 rounded-b-3xl">
                 <SellTab />
+              </TabsContent>
+              <TabsContent value="bank" className="mt-0 pt-0 border-0 rounded-b-3xl">
+                <BankInterface />
+              </TabsContent>
+              <TabsContent value="infrastructure" className="mt-0 pt-0 border-0 rounded-b-3xl">
+                <InfrastructurePanel />
               </TabsContent>
             </Tabs>
           </div>
