@@ -23,7 +23,8 @@ export function GameHeader() {
     inventory,
     currentLocation,
     setBankModalOpen,
-    setEmpireModalOpen,
+    setInfrastructureModalOpen,
+    setStaffModalOpen,
     endGame,
   } = useGameStore();
   
@@ -102,9 +103,13 @@ export function GameHeader() {
                 <div className="font-semibold">{formatCurrency(cash)}</div>
               </div>
               <div className="flex gap-2">
-                <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl" onClick={() => setEmpireModalOpen(true)}>
+                <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl" onClick={() => setInfrastructureModalOpen(true)}>
                   <Building2 className="mr-1 h-4 w-4" />
-                  Empire
+                  Infrastructure
+                </Button>
+                <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl" onClick={() => setStaffModalOpen(true)}>
+                  <Building2 className="mr-1 h-4 w-4" />
+                  Staff
                 </Button>
                 <Button variant="default" size="sm" className="bg-green-600 hover:bg-green-700 text-white rounded-2xl" onClick={() => setBankModalOpen(true)}>
                   Bank

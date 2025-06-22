@@ -196,16 +196,19 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ username: 'Trader' }); // Fallback
     }
     
-    // Use player's home base if they have settings, otherwise pick random location
+    // Check if player has home base settings - if not, go to base selection
     const state = get();
-    let startLocation: Location;
-    if (state.playerSettings?.homeBase) {
-      startLocation = state.playerSettings.homeBase as Location;
-    } else {
-      const locations = Object.values(Location);
-      const randomIndex = Math.floor(Math.random() * locations.length);
-      startLocation = locations[randomIndex];
+    if (!state.playerSettings?.homeBase) {
+      // No home base selected, start with base selection phase
+      set({
+        gamePhase: 'base-selection',
+        baseSelectionPhase: true
+      });
+      return;
     }
+    
+    // Use player's selected home base
+    const startLocation = state.playerSettings.homeBase as Location;
     
     // Create initial market listings for this location
     const marketListings = generateMarketListings(startLocation);
