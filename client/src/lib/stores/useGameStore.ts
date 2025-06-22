@@ -193,10 +193,16 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ username: 'Trader' }); // Fallback
     }
     
-    // Pick random location
-    const locations = Object.values(Location);
-    const randomIndex = Math.floor(Math.random() * locations.length);
-    const startLocation = locations[randomIndex];
+    // Use player's home base if they have settings, otherwise pick random location
+    const state = get();
+    let startLocation: Location;
+    if (state.playerSettings?.homeBase) {
+      startLocation = state.playerSettings.homeBase as Location;
+    } else {
+      const locations = Object.values(Location);
+      const randomIndex = Math.floor(Math.random() * locations.length);
+      startLocation = locations[randomIndex];
+    }
     
     // Create initial market listings for this location
     const marketListings = generateMarketListings(startLocation);
