@@ -1,5 +1,31 @@
-// Permanent fix for useState bundling issues - v4.0
-import { React, useState, useEffect, useCallback } from '@/lib/react-stable';
+// Anti-corruption React hooks with automatic recovery
+import * as React from 'react';
+import { stableUseState, stableUseEffect, stableUseCallback, validateReactHooks } from '@/lib/react-imports';
+
+// Validate hooks on every function call
+function safeUseState<T>(initialValue: T) {
+  if (!validateReactHooks()) {
+    console.error('React hooks corrupted, forcing reload');
+    window.location.reload();
+  }
+  return stableUseState(initialValue);
+}
+
+function safeUseEffect(effect: React.EffectCallback, deps?: React.DependencyList) {
+  if (!validateReactHooks()) {
+    console.error('React hooks corrupted, forcing reload');
+    window.location.reload();
+  }
+  return stableUseEffect(effect, deps);
+}
+
+function safeUseCallback<T extends (...args: any[]) => any>(callback: T, deps: React.DependencyList): T {
+  if (!validateReactHooks()) {
+    console.error('React hooks corrupted, forcing reload');
+    window.location.reload();
+  }
+  return stableUseCallback(callback, deps);
+}
 
 export interface User {
   id: number;
@@ -11,11 +37,11 @@ export interface User {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = safeUseState<User | null>(null);
+  const [isLoading, setIsLoading] = safeUseState(true);
+  const [isAuthenticated, setIsAuthenticated] = safeUseState(false);
 
-  const checkAuthStatus = useCallback(async () => {
+  const checkAuthStatus = safeUseCallback(async () => {
     try {
       const response = await fetch('/auth/me', {
         credentials: 'include'
@@ -38,11 +64,11 @@ export function useAuth() {
     }
   }, []);
 
-  useEffect(() => {
+  safeUseEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = safeUseCallback(async (email: string, password: string) => {
     try {
       setIsLoading(true);
       const response = await fetch('/auth/login', {
@@ -70,7 +96,7 @@ export function useAuth() {
     }
   }, []);
 
-  const logout = useCallback(async () => {
+  const logout = safeUseCallback(async () => {
     try {
       await fetch('/auth/logout', {
         method: 'POST',

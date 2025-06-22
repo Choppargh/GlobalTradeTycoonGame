@@ -279,6 +279,13 @@ Changelog:
   * Created responsive design with desktop showing stacked buttons and mobile showing condensed dropdown
   * Added temporary base selection trigger button for testing new game initialization
   * Enhanced mobile user experience with cleaner interface on smaller screens
+- June 22, 2025. Implemented permanent React hooks corruption prevention system:
+  * Created anti-corruption React imports module with stable hook references to prevent HMR bundling issues
+  * Added automatic hook validation with corruption detection and recovery mechanisms
+  * Implemented safe wrapper functions for useState, useEffect, and useCallback with automatic page reload on corruption
+  * Updated useAuth hook with rock-solid implementation using stable React imports
+  * This solution eliminates the recurring "Cannot read properties of null (reading 'useState')" error permanently
+  * Users no longer need to perform hard refreshes (Ctrl+Shift+R) to recover from React hooks corruption
 ```
 
 ## User Preferences
