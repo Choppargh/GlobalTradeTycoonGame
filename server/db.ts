@@ -3,8 +3,28 @@ import { neon } from '@neondatabase/serverless';
 import { users, scores, type User, type InsertUser, type Score, type InsertScore } from '@shared/schema';
 import { eq, desc, and } from 'drizzle-orm';
 
-// Database connection
-const sql = neon(process.env.DATABASE_URL!);
+// Database connection - environment specific
+function getDatabaseUrl(): string {
+  const nodeEnv = process.env.NODE_ENV;
+  
+  // For production, use the main DATABASE_URL (set by deployment)
+  if (nodeEnv === 'production') {
+    return process.env.DATABASE_URL!;
+  }
+  
+  // For development, prefer DATABASE_URL_DEV if available, otherwise fallback to DATABASE_URL
+  const devUrl = process.env.DATABASE_URL_DEV || process.env.DATABASE_URL;
+  if (!devUrl) {
+    throw new Error('No database URL configured for development environment');
+  }
+  
+  console.log(`Database environment: ${nodeEnv || 'development'}`);
+  console.log(`Using database URL ending with: ...${devUrl.slice(-20)}`);
+  
+  return devUrl;
+}
+
+const sql = neon(getDatabaseUrl());
 export const db = drizzle(sql);
 
 // Database storage implementation
