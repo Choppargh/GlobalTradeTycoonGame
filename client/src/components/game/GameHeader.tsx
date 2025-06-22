@@ -86,21 +86,21 @@ export function GameHeader() {
                     <Menu className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => setInfrastructureModalOpen(true)}>
-                    <Building2 className="mr-2 h-4 w-4" />
+                <DropdownMenuContent align="end" className="w-48 bg-white border border-gray-200 shadow-lg rounded-2xl">
+                  <DropdownMenuItem onClick={() => setInfrastructureModalOpen(true)} className="hover:bg-purple-50">
+                    <Building2 className="mr-2 h-4 w-4 text-purple-600" />
                     Infrastructure
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setStaffModalOpen(true)}>
-                    <Users className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem onClick={() => setStaffModalOpen(true)} className="hover:bg-blue-50">
+                    <Users className="mr-2 h-4 w-4 text-blue-600" />
                     Staff
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setBankModalOpen(true)}>
-                    <Banknote className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem onClick={() => setBankModalOpen(true)} className="hover:bg-green-50">
+                    <Banknote className="mr-2 h-4 w-4 text-green-600" />
                     Bank
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleEndGameClick}>
-                    <Clock className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem onClick={handleEndGameClick} className="hover:bg-red-50">
+                    <Clock className="mr-2 h-4 w-4 text-red-600" />
                     {daysRemaining <= 1 ? "I'm Finished" : "End Game"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -109,18 +109,20 @@ export function GameHeader() {
           </div>
           
           {/* Mobile Game Stats */}
-          <div className="flex justify-around bg-white rounded-2xl py-2 px-3 shadow-sm">
-            <div className="text-center">
-              <div className="text-xs text-gray-600 mb-1">Days Left</div>
-              <div className="text-lg font-bold">{daysRemaining}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xs text-gray-600 mb-1">Net Worth</div>
-              <div className="text-lg font-bold">{formatCurrency(netWorth)}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xs text-gray-600 mb-1">Cash</div>
-              <div className="text-lg font-bold">{formatCurrency(cash)}</div>
+          <div className="bg-white rounded-2xl py-3 px-4 shadow-sm">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-xs text-gray-600 mb-1">Days Left</div>
+                <div className="text-lg font-bold">{daysRemaining}</div>
+              </div>
+              <div className="text-center border-l border-r border-gray-200">
+                <div className="text-xs text-gray-600 mb-1">Net Worth</div>
+                <div className="text-sm font-bold">{formatCurrency(netWorth)}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-600 mb-1">Cash</div>
+                <div className="text-sm font-bold">{formatCurrency(cash)}</div>
+              </div>
             </div>
           </div>
         </div>
