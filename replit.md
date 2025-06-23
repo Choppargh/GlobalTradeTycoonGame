@@ -325,6 +325,17 @@ Changelog:
   * Added storage capacity tracking and validation throughout the trading system
   * Enhanced market generation to filter products based on player reputation level
   * Created player_storage database table for persistent storage management
+- June 24, 2025. Implemented comprehensive supply and demand-based market system:
+  * Replaced random market listings with sophisticated supply/demand economic model
+  * Created location-specific modifiers for all 7 regions affecting supply/demand by product category
+  * Implemented dynamic pricing based on supply/demand ratios with seasonal variations
+  * Added economic event system that affects market prices through supply/demand changes
+  * Built reputation-based pricing discounts: Base (0%), Bronze (5%), Silver (10%), Gold (15%)
+  * Created comprehensive market logic in shared/marketLogic.ts with all pricing calculations
+  * Shows all reputation-unlocked products simultaneously instead of random selections
+  * Added market status indicators: High Demand, Good Demand, Balanced, High Supply, Oversupply
+  * Built MarketDisplay component with categorized product views and trend indicators
+  * Integrated real-time supply/demand calculations with game day progression and location factors
 ```
 
 ## User Preferences

@@ -58,7 +58,7 @@ const LOCATION_MODIFIERS: Record<Location, Record<string, { supply: number; dema
     'Construction': { supply: 1.4, demand: 1.0 },
     'Medical': { supply: 1.2, demand: 0.9 }
   },
-  [Location.Australia]: {
+  [Location.Oceania]: {
     'Raw Materials': { supply: 1.5, demand: 0.9 },
     'Precious Metals': { supply: 1.4, demand: 0.8 },
     'Textiles': { supply: 0.7, demand: 1.2 },
@@ -206,7 +206,7 @@ export function generateMarketListings(
 ): MarketListing[] {
   const unlockedProducts = getUnlockedProducts(playerReputation);
   
-  return unlockedProducts.map(productId => {
+  return unlockedProducts.map((productId: number) => {
     const config = getProductConfig(productId);
     if (!config) return null;
     
