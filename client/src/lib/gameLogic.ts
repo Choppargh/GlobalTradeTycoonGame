@@ -16,7 +16,21 @@ const PRODUCT_PRICE_RANGES: Record<number, [number, number]> = {
   12: [30, 80],     // Corn
   13: [40, 90],     // Wheat
   14: [35, 85],     // Rice
-  15: [500, 1200]   // Electronics
+  15: [500, 1200],  // Electronics
+  16: [60, 150],    // Wood
+  17: [25, 80],     // Toys
+  18: [20, 60],     // Food
+  19: [200, 500],   // Steel
+  20: [100, 250],   // Ceramics
+  21: [45, 120],    // Wool
+  22: [30, 90],     // Plastics
+  23: [50, 150],    // Clothing
+  24: [70, 180],    // Rubber
+  25: [150, 400],   // Medicine
+  26: [15, 40],     // Beer
+  27: [80, 300],    // Wine
+  28: [200, 600],   // Champagne
+  29: [120, 350]    // Spirits
 };
 
 // Location price modifiers (makes certain products cheaper/more expensive in different regions)
@@ -26,52 +40,57 @@ const LOCATION_PRICE_MODIFIERS: Record<Location, Record<number, number>> = {
     3: 0.85,  // Spices cheaper
     6: 0.9,   // Diamonds cheaper
     10: 1.2,  // Oil more expensive
-    14: 1.1   // Rice more expensive
+    14: 1.1,  // Rice more expensive
+    16: 0.8,  // Wood cheaper
+    18: 0.85  // Food cheaper
   },
   [Location.Antarctica]: {
     // Everything more expensive in Antarctica due to scarcity
-    1: 1.5,
-    2: 1.5,
-    3: 1.5,
-    4: 1.3, 
-    5: 1.3,
-    6: 1.3,
-    7: 1.5,
-    8: 1.5,
-    9: 1.3,
-    10: 1.5,
-    11: 1.5,
-    12: 1.6,
-    13: 1.6,
-    14: 1.6,
-    15: 1.4
+    1: 1.5, 2: 1.5, 3: 1.5, 4: 1.3, 5: 1.3, 6: 1.3, 7: 1.5, 8: 1.5, 9: 1.3, 10: 1.5,
+    11: 1.5, 12: 1.6, 13: 1.6, 14: 1.6, 15: 1.4, 16: 1.6, 17: 1.7, 18: 1.8, 19: 1.4,
+    20: 1.5, 21: 1.6, 22: 1.4, 23: 1.6, 24: 1.5, 25: 1.3, 26: 2.0, 27: 1.8, 28: 1.9, 29: 1.8
   },
   [Location.Asia]: {
     7: 0.75,  // Silk cheaper in Asia
     8: 0.8,   // Cotton cheaper
     14: 0.7,  // Rice cheaper
-    15: 0.85  // Electronics cheaper
+    15: 0.85, // Electronics cheaper
+    17: 0.75, // Toys cheaper
+    22: 0.8   // Plastics cheaper
   },
   [Location.Europe]: {
     4: 1.1,   // Gold more expensive
     5: 1.1,   // Silver more expensive
     10: 1.2,  // Oil more expensive
-    11: 1.15  // Gas more expensive
+    11: 1.15, // Gas more expensive
+    20: 0.85, // Ceramics cheaper
+    23: 0.9,  // Clothing cheaper
+    27: 0.8,  // Wine cheaper
+    28: 0.85  // Champagne cheaper
   },
   [Location.NorthAmerica]: {
     12: 0.8,  // Corn cheaper in North America
     13: 0.85, // Wheat cheaper
-    15: 0.9   // Electronics cheaper
+    15: 0.9,  // Electronics cheaper
+    19: 0.85, // Steel cheaper
+    25: 0.9,  // Medicine cheaper
+    26: 0.9   // Beer cheaper
   },
   [Location.Oceania]: {
     2: 0.9,   // Tea cheaper in Oceania
     9: 0.85,  // Copper cheaper
-    10: 1.1   // Oil more expensive
+    10: 1.1,  // Oil more expensive
+    18: 0.8,  // Food cheaper
+    21: 0.75, // Wool cheaper
+    19: 0.9   // Steel cheaper
   },
   [Location.SouthAmerica]: {
     1: 0.75,  // Coffee cheaper in South America
     3: 0.9,   // Spices cheaper
-    12: 0.9   // Corn cheaper
+    12: 0.9,  // Corn cheaper
+    16: 0.85, // Wood cheaper
+    24: 0.8,  // Rubber cheaper
+    29: 0.85  // Spirits cheaper
   }
 };
 
@@ -87,12 +106,28 @@ function getRandomDemandMultiplier(): number {
 
 // Generate a random quantity available
 function getRandomQuantity(productId: number): number {
-  // Rarer items have lower quantities
+  // Rarest items (very low quantities)
   if (productId === 6) { // Diamonds
     return Math.floor(Math.random() * 10) + 1;
-  } else if ([4, 5, 10, 15].includes(productId)) { // Gold, Silver, Oil, Electronics
+  } 
+  // Luxury/High-value items (low quantities)
+  else if ([4, 5, 28, 29].includes(productId)) { // Gold, Silver, Champagne, Spirits
+    return Math.floor(Math.random() * 15) + 3;
+  }
+  // Medium-value items (moderate quantities)
+  else if ([10, 15, 19, 25, 27].includes(productId)) { // Oil, Electronics, Steel, Medicine, Wine
     return Math.floor(Math.random() * 20) + 5;
-  } else {
+  }
+  // Industrial/Construction materials (higher quantities)
+  else if ([16, 19, 20, 22, 24].includes(productId)) { // Wood, Steel, Ceramics, Plastics, Rubber
+    return Math.floor(Math.random() * 40) + 15;
+  }
+  // Common consumer goods (high quantities)
+  else if ([17, 18, 23, 26].includes(productId)) { // Toys, Food, Clothing, Beer
+    return Math.floor(Math.random() * 60) + 20;
+  }
+  // Agricultural/textile products (standard quantities)
+  else {
     return Math.floor(Math.random() * 50) + 10;
   }
 }
