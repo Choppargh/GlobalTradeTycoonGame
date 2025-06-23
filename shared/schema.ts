@@ -108,6 +108,18 @@ export const playerSettings = pgTable("player_settings", {
   interestRate: real("interest_rate").notNull().default(0.05), // Current daily interest rate
 });
 
+// Player warehouse and office storage
+export const playerStorage = pgTable("player_storage", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  location: text("location").notNull(),
+  productId: integer("product_id").notNull(),
+  quantity: integer("quantity").notNull(),
+  storageType: text("storage_type").notNull(), // "office" or "warehouse"
+  purchasePrice: real("purchase_price").notNull(),
+  storedAt: text("stored_at").notNull().default(new Date().toISOString()),
+});
+
 // Insert schemas for new tables
 export const insertPlayerInfrastructureSchema = createInsertSchema(playerInfrastructure).pick({
   userId: true,
@@ -157,6 +169,15 @@ export const insertPlayerSettingsSchema = createInsertSchema(playerSettings).pic
   interestRate: true,
 });
 
+export const insertPlayerStorageSchema = createInsertSchema(playerStorage).pick({
+  userId: true,
+  location: true,
+  productId: true,
+  quantity: true,
+  storageType: true,
+  purchasePrice: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -178,6 +199,9 @@ export type Contract = typeof contracts.$inferSelect;
 
 export type InsertPlayerSettings = z.infer<typeof insertPlayerSettingsSchema>;
 export type PlayerSettings = typeof playerSettings.$inferSelect;
+
+export type InsertPlayerStorage = z.infer<typeof insertPlayerStorageSchema>;
+export type PlayerStorage = typeof playerStorage.$inferSelect;
 
 // Game types
 export enum Location {

@@ -1,37 +1,5 @@
 import { Location, ProductListing, PRODUCTS, InventoryItem } from "@shared/schema";
-
-// Base price ranges for products (min, max)
-const PRODUCT_PRICE_RANGES: Record<number, [number, number]> = {
-  1: [50, 120],     // Coffee
-  2: [30, 90],      // Tea  
-  3: [80, 200],     // Spices
-  4: [800, 1500],   // Gold
-  5: [400, 800],    // Silver
-  6: [2000, 5000],  // Diamonds
-  7: [150, 350],    // Silk
-  8: [40, 100],     // Cotton
-  9: [80, 190],     // Copper
-  10: [300, 700],   // Oil
-  11: [200, 450],   // Gas
-  12: [30, 80],     // Corn
-  13: [40, 90],     // Wheat
-  14: [35, 85],     // Rice
-  15: [500, 1200],  // Electronics
-  16: [60, 150],    // Wood
-  17: [25, 80],     // Toys
-  18: [20, 60],     // Food
-  19: [200, 500],   // Steel
-  20: [100, 250],   // Ceramics
-  21: [45, 120],    // Wool
-  22: [30, 90],     // Plastics
-  23: [50, 150],    // Clothing
-  24: [70, 180],    // Rubber
-  25: [150, 400],   // Medicine
-  26: [15, 40],     // Beer
-  27: [80, 300],    // Wine
-  28: [200, 600],   // Champagne
-  29: [120, 350]    // Spirits
-};
+import { PRODUCT_CONFIGS, getProductConfig, getProductsByUnlockLevel, getReputationLevel, ReputationLevel, STORAGE_CONFIG } from "@shared/productConfig";
 
 // Location price modifiers (makes certain products cheaper/more expensive in different regions)
 const LOCATION_PRICE_MODIFIERS: Record<Location, Record<number, number>> = {
@@ -104,49 +72,38 @@ function getRandomDemandMultiplier(): number {
   return 1 + (Math.random() * 0.24 + 0.01);
 }
 
-// Generate a random quantity available
+// Generate a random quantity based on product configuration
 function getRandomQuantity(productId: number): number {
-  // Rarest items (very low quantities)
-  if (productId === 6) { // Diamonds
-    return Math.floor(Math.random() * 10) + 1;
-  } 
-  // Luxury/High-value items (low quantities)
-  else if ([4, 5, 28, 29].includes(productId)) { // Gold, Silver, Champagne, Spirits
-    return Math.floor(Math.random() * 15) + 3;
-  }
-  // Medium-value items (moderate quantities)
-  else if ([10, 15, 19, 25, 27].includes(productId)) { // Oil, Electronics, Steel, Medicine, Wine
-    return Math.floor(Math.random() * 20) + 5;
-  }
-  // Industrial/Construction materials (higher quantities)
-  else if ([16, 19, 20, 22, 24].includes(productId)) { // Wood, Steel, Ceramics, Plastics, Rubber
-    return Math.floor(Math.random() * 40) + 15;
-  }
-  // Common consumer goods (high quantities)
-  else if ([17, 18, 23, 26].includes(productId)) { // Toys, Food, Clothing, Beer
-    return Math.floor(Math.random() * 60) + 20;
-  }
-  // Agricultural/textile products (standard quantities)
-  else {
-    return Math.floor(Math.random() * 50) + 10;
-  }
+  const config = getProductConfig(productId);
+  if (!config) return Math.floor(Math.random() * 50) + 10; // fallback
+  
+  const [min, max] = config.quantityRange;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Generate market listings for a location
-export function generateMarketListings(location: Location): ProductListing[] {
-  // Determine how many products to show (3-12)
-  const numProducts = Math.floor(Math.random() * 10) + 3;
+// Generate market listings for a location with reputation-based filtering
+export function generateMarketListings(location: Location, playerReputationScore: number = 0): ProductListing[] {
+  // Get player's reputation level and available products
+  const reputationLevel = getReputationLevel(playerReputationScore);
+  const availableProducts = getProductsByUnlockLevel(reputationLevel);
   
-  // Choose random products
-  const productIndices = new Set<number>();
-  while (productIndices.size < numProducts) {
-    const randomIndex = Math.floor(Math.random() * PRODUCTS.length);
-    productIndices.add(PRODUCTS[randomIndex].id);
+  // Determine how many products to show (3-12, but limited by unlocked products)
+  const maxProducts = Math.min(12, availableProducts.length);
+  const numProducts = Math.floor(Math.random() * (maxProducts - 2)) + 3;
+  
+  // Choose random products from available ones
+  const selectedProducts = new Set<number>();
+  while (selectedProducts.size < numProducts && selectedProducts.size < availableProducts.length) {
+    const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)];
+    selectedProducts.add(randomProduct.id);
   }
   
   // Generate listings for the selected products
-  return Array.from(productIndices).map(productId => {
-    const [minPrice, maxPrice] = PRODUCT_PRICE_RANGES[productId];
+  return Array.from(selectedProducts).map(productId => {
+    const config = getProductConfig(productId);
+    if (!config) return null;
+    
+    const [minPrice, maxPrice] = config.basePriceRange;
     
     // Apply location modifier if exists
     const modifier = LOCATION_PRICE_MODIFIERS[location][productId] || 1.0;
@@ -156,12 +113,12 @@ export function generateMarketListings(location: Location): ProductListing[] {
     
     return {
       productId,
-      name: PRODUCTS.find(p => p.id === productId)?.name || "",
+      name: config.name,
       marketPrice,
       demandMultiplier: getRandomDemandMultiplier(),
       available: getRandomQuantity(productId)
     };
-  });
+  }).filter(Boolean) as ProductListing[];
 }
 
 // Calculate total net worth
