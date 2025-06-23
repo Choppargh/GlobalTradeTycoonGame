@@ -2,6 +2,10 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { initializeCacheMonitoring } from "./lib/cacheManager";
+
+// Initialize cache monitoring to prevent useState corruption
+initializeCacheMonitoring();
 
 // Verify React is properly loaded before rendering
 if (typeof React === 'undefined' || typeof React.useState !== 'function') {
