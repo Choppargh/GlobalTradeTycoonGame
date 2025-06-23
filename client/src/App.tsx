@@ -14,36 +14,39 @@ import NotFound from "./pages/not-found";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { Loading } from "./components/ui/loading";
 import { Toaster } from "./components/ui/sonner";
+import { ReactStabilityProvider } from "./components/ReactStabilityProvider";
 import "@fontsource/inter";
 
 function App() {
   const [isLoading, setIsLoading] = React.useState(false);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Loading isLoading={isLoading} />
-      <Toaster />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/game" element={
-            <ProtectedRoute>
-              <GamePage />
-            </ProtectedRoute>
-          } />
-          <Route path="/leaderboard" element={
-            <ProtectedRoute>
-              <LeaderboardPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/rules" element={<RulesPage />} />
-          <Route path="/privacy" element={<PrivacyPolicyPage />} />
-          <Route path="/terms" element={<TermsOfServicePage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ReactStabilityProvider>
+      <QueryClientProvider client={queryClient}>
+        <Loading isLoading={isLoading} />
+        <Toaster />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/game" element={
+              <ProtectedRoute>
+                <GamePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/leaderboard" element={
+              <ProtectedRoute>
+                <LeaderboardPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/rules" element={<RulesPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ReactStabilityProvider>
   );
 }
 
