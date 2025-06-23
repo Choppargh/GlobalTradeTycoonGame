@@ -269,7 +269,21 @@ export const PRODUCT_NAMES = [
   "Corn",
   "Wheat",
   "Rice",
-  "Electronics"
+  "Electronics",
+  "Wood",
+  "Toys",
+  "Food",
+  "Steel",
+  "Ceramics",
+  "Wool",
+  "Plastics",
+  "Clothing",
+  "Rubber",
+  "Medicine",
+  "Beer",
+  "Wine",
+  "Champagne",
+  "Spirits"
 ];
 
 export const PRODUCTS = PRODUCT_NAMES.map((name, index) => ({

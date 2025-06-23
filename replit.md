@@ -45,7 +45,7 @@ Global Trade Tycoon is a web-based trading simulation game built with React, Typ
 - **Display Name Management**: Customizable user display names
 
 ### Game Features
-- **15 Different Products**: Coffee, tea, spices, precious metals, textiles, etc.
+- **29 Different Products**: Coffee, tea, spices, precious metals, textiles, wood, toys, food, steel, ceramics, wool, plastics, clothing, rubber, medicine, alcoholic beverages, etc.
 - **7 Global Locations**: Africa, Antarctica, Asia, Australia, Europe, North America, South America
 - **Banking System**: Loans, deposits, interest calculations
 - **Leaderboard**: Weekly score tracking with automatic resets
@@ -306,6 +306,13 @@ Changelog:
   * Production environment uses DATABASE_URL from deployment settings
   * Added comprehensive database setup documentation in DATABASE_SETUP.md
   * Ensures data isolation between development testing and production user data
+- June 23, 2025. Expanded product catalog from 15 to 29 products:
+  * Added 14 new products: Wood, Toys, Food, Steel, Ceramics, Wool, Plastics, Clothing, Rubber, Medicine, Beer, Wine, Champagne, Spirits
+  * Updated TOTAL_PRODUCTS configuration from 15 to 29
+  * Created 16 new random events for the expanded product range
+  * Enhanced base selection descriptions to showcase new products in each region
+  * Added realistic market events for construction, luxury goods, textiles, and beverages
+  * Increased trading variety and strategic depth with diverse product categories
 ```
 
 ## User Preferences

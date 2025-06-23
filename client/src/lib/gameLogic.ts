@@ -262,6 +262,126 @@ export const GAME_EVENTS: GameEvent[] = [
     affectedProducts: [11], // Gas
     modifier: 1.7, // 70% price increase
     location: Location.Europe
+  },
+  {
+    id: 'lumber_shortage',
+    title: 'Global Lumber Shortage',
+    description: 'Environmental restrictions and increased demand have caused wood prices to surge.',
+    type: 'price_change',
+    affectedProducts: [16], // Wood
+    modifier: 1.6 // 60% price increase
+  },
+  {
+    id: 'toy_season',
+    title: 'Holiday Toy Demand',
+    description: 'Seasonal shopping has driven up demand for toys worldwide.',
+    type: 'price_change',
+    affectedProducts: [17], // Toys
+    modifier: 1.4 // 40% price increase
+  },
+  {
+    id: 'food_safety_recall',
+    title: 'Food Safety Concerns',
+    description: 'Safety recalls have reduced food supply, driving up prices.',
+    type: 'price_change',
+    affectedProducts: [18], // Food
+    modifier: 1.3 // 30% price increase
+  },
+  {
+    id: 'steel_tariffs',
+    title: 'Steel Import Tariffs',
+    description: 'New trade restrictions have increased steel prices globally.',
+    type: 'price_change',
+    affectedProducts: [19], // Steel
+    modifier: 1.5 // 50% price increase
+  },
+  {
+    id: 'ceramics_boom',
+    title: 'Artisan Ceramics Trend',
+    description: 'A cultural trend toward handmade ceramics has increased demand.',
+    type: 'price_change',
+    affectedProducts: [20], // Ceramics
+    modifier: 1.35 // 35% price increase
+  },
+  {
+    id: 'wool_shortage',
+    title: 'Wool Production Decline',
+    description: 'Droughts in major wool-producing regions have reduced supply.',
+    type: 'price_change',
+    affectedProducts: [21], // Wool
+    modifier: 1.45 // 45% price increase
+  },
+  {
+    id: 'plastic_ban',
+    title: 'Plastic Restrictions',
+    description: 'Environmental regulations have limited plastic production.',
+    type: 'price_change',
+    affectedProducts: [22], // Plastics
+    modifier: 1.25 // 25% price increase
+  },
+  {
+    id: 'fashion_week',
+    title: 'Fashion Week Surge',
+    description: 'International fashion events have boosted clothing demand.',
+    type: 'price_change',
+    affectedProducts: [23], // Clothing
+    modifier: 1.3 // 30% price increase
+  },
+  {
+    id: 'rubber_supply_chain',
+    title: 'Rubber Supply Chain Issues',
+    description: 'Transportation problems have disrupted rubber shipments.',
+    type: 'price_change',
+    affectedProducts: [24], // Rubber
+    modifier: 1.4 // 40% price increase
+  },
+  {
+    id: 'medical_breakthrough',
+    title: 'Medical Innovation',
+    description: 'New treatments have increased demand for medical supplies.',
+    type: 'price_change',
+    affectedProducts: [25], // Medicine
+    modifier: 1.6 // 60% price increase
+  },
+  {
+    id: 'brewery_festival',
+    title: 'Global Beer Festival',
+    description: 'International celebrations have boosted beer sales.',
+    type: 'price_change',
+    affectedProducts: [26], // Beer
+    modifier: 1.2 // 20% price increase
+  },
+  {
+    id: 'wine_harvest',
+    title: 'Exceptional Wine Harvest',
+    description: 'Perfect weather conditions have produced an excellent wine vintage.',
+    type: 'price_change',
+    affectedProducts: [27], // Wine
+    modifier: 0.8 // 20% price decrease
+  },
+  {
+    id: 'luxury_celebration',
+    title: 'Luxury Market Boom',
+    description: 'Economic prosperity has increased demand for champagne and spirits.',
+    type: 'price_change',
+    affectedProducts: [28, 29], // Champagne, Spirits
+    modifier: 1.5 // 50% price increase
+  },
+  {
+    id: 'construction_boom',
+    title: 'Construction Industry Surge',
+    description: 'Major infrastructure projects have increased demand for steel, wood, and ceramics.',
+    type: 'price_change',
+    affectedProducts: [16, 19, 20], // Wood, Steel, Ceramics
+    modifier: 1.3 // 30% price increase
+  },
+  {
+    id: 'textile_revival',
+    title: 'Traditional Textile Revival',
+    description: 'Fashion trends favoring natural materials have boosted wool and cotton prices.',
+    type: 'price_change',
+    affectedProducts: [8, 21], // Cotton, Wool
+    modifier: 1.25 // 25% price increase
   }
 ];
 

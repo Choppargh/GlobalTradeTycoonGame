@@ -11,7 +11,7 @@ export const GAME_CONFIG = {
   LOAN_INTEREST_RATE: 0.05, // 5% per travel
   
   // Product settings
-  TOTAL_PRODUCTS: 15,
+  TOTAL_PRODUCTS: 29,
   
   // Location settings
   TOTAL_LOCATIONS: 7,

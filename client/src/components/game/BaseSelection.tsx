@@ -12,43 +12,43 @@ const LOCATION_DESCRIPTIONS = {
     title: "African Trading Hub",
     description: "Rich in agricultural products and natural resources. Perfect for food commodity trading.",
     bonus: "Food Products Bonus",
-    products: ["Coffee", "Spices", "Gold", "Diamonds"]
+    products: ["Coffee", "Spices", "Gold", "Diamonds", "Food", "Wood"]
   },
   [Location.Asia]: {
     title: "Asian Tech Center", 
     description: "Technology and manufacturing powerhouse. Ideal for electronics and industrial goods.",
     bonus: "Technology Bonus",
-    products: ["Electronics", "Tea", "Silk", "Rice"]
+    products: ["Electronics", "Tea", "Silk", "Rice", "Toys", "Plastics"]
   },
   [Location.Europe]: {
     title: "European Financial District",
     description: "Luxury goods and financial services. Great for high-value commodity trading.",
     bonus: "Luxury Goods Bonus", 
-    products: ["Silver", "Cotton", "Wheat", "Gas"]
+    products: ["Wine", "Champagne", "Clothing", "Ceramics", "Wheat", "Wool"]
   },
   [Location.NorthAmerica]: {
     title: "North American Trade Hub",
     description: "Advanced financial markets and energy sector. Excellent for oil and gas trading.",
     bonus: "Financial Services Bonus",
-    products: ["Oil", "Corn", "Copper", "Electronics"]
+    products: ["Oil", "Steel", "Medicine", "Beer", "Corn", "Rubber"]
   },
   [Location.SouthAmerica]: {
     title: "South American Resource Center",
     description: "Abundant natural resources and mining operations. Perfect for raw materials.",
     bonus: "Natural Resources Bonus",
-    products: ["Copper", "Coffee", "Gold", "Oil"]
+    products: ["Copper", "Coffee", "Gold", "Wood", "Rubber", "Spirits"]
   },
   [Location.Oceania]: {
     title: "Oceanic Trade Network",
     description: "Strategic island trading posts with excellent maritime connections.",
     bonus: "Maritime Trade Bonus",
-    products: ["Gold", "Wheat", "Cotton", "Gas"]
+    products: ["Wool", "Food", "Cotton", "Gas", "Beer", "Steel"]
   },
   [Location.Antarctica]: {
     title: "Antarctic Research Station",
     description: "Advanced research facilities with unique trading opportunities.",
     bonus: "Research & Development Bonus",
-    products: ["Gas", "Oil", "Electronics", "Silver"]
+    products: ["Gas", "Oil", "Electronics", "Medicine", "Plastics", "Steel"]
   }
 };
 
