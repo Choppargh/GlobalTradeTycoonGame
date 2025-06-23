@@ -21,6 +21,7 @@ configureTwitterAuth();
 import { registerRoutes } from "./routes";
 import { registerAuthRoutes } from "./authRoutes";
 import playerRoutes from "./routes/playerRoutes";
+import storageRoutes from "./routes/storageRoutes";
 import { setupVite, serveStatic, log } from "./vite";
 import { startWeeklyResetScheduler } from "./scheduler";
 
@@ -97,6 +98,9 @@ app.use((req, res, next) => {
   
   // Register Phase 2 player routes
   app.use('/api/player', playerRoutes);
+  
+  // Register storage management routes
+  app.use('/api', storageRoutes);
   
   const server = await registerRoutes(app);
   

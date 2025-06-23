@@ -313,6 +313,18 @@ Changelog:
   * Enhanced base selection descriptions to showcase new products in each region
   * Added realistic market events for construction, luxury goods, textiles, and beverages
   * Increased trading variety and strategic depth with diverse product categories
+- June 24, 2025. Implemented comprehensive product configuration and storage system:
+  * Created centralized product configuration system in shared/productConfig.ts with all attributes viewable and modifiable
+  * Added reputation-based product unlocks: Base (11 products), Bronze (8 products), Silver (7 products), Gold (2 products)
+  * Implemented storage unit system: each product requires different storage space (1-15 units)
+  * Created player carrying capacity limit of 10 units with overflow requiring warehouse storage
+  * Built warehouse/office storage system: offices hold 20 units, warehouses hold 100 units
+  * Added inter-region shipping with 5-10% shipping fees for moving items between locations
+  * Created comprehensive storage management API with store/retrieve/ship functionality
+  * Built StorageModal component for managing inventory transfers between player and storage facilities
+  * Added storage capacity tracking and validation throughout the trading system
+  * Enhanced market generation to filter products based on player reputation level
+  * Created player_storage database table for persistent storage management
 ```
 
 ## User Preferences
